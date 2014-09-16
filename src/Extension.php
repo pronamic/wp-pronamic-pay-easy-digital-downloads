@@ -309,7 +309,7 @@ class Pronamic_WP_Pay_Extensions_EDD_Extension {
 	 * @return array
 	 */
 	public static function accepted_payment_icons( $icons ) {
-		$key = plugins_url( 'images/icon-24x24.png', Pronamic_WP_Pay_Plugin::$file );
+		$key = plugins_url( 'images/ideal/icon-64x48.png', Pronamic_WP_Pay_Plugin::$file );
 
 		$icons[ $key ] = __( 'iDEAL', 'pronamic_ideal' );
 
