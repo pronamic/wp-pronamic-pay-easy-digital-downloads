@@ -46,6 +46,9 @@ class Pronamic_WP_Pay_Extensions_EDD_Extension {
 			// Filters
 			add_filter( 'edd_settings_gateways', array( __CLASS__, 'settings_gateways' ) );
 			add_filter( 'edd_payment_gateways' , array( __CLASS__, 'payment_gateways' ) );
+
+			// Icons
+			add_filter( 'edd_accepted_payment_icons', array( __CLASS__, 'accepted_payment_icons' ) );
 		}
 	}
 
@@ -292,5 +295,24 @@ class Pronamic_WP_Pay_Extensions_EDD_Extension {
 		);
 
 		return $text;
+	}
+
+	//////////////////////////////////////////////////
+
+	/**
+	 * Accepted payment icons
+	 *
+	 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.1.3/includes/admin/settings/register-settings.php#L261-L268
+	 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.1.3/includes/checkout/template.php#L573-L609
+	 *
+	 * @param array $icons
+	 * @return array
+	 */
+	public static function accepted_payment_icons( $icons ) {
+		$key = plugins_url( 'images/icon-24x24.png', Pronamic_WP_Pay_Plugin::$file );
+
+		$icons[ $key ] = __( 'iDEAL', 'pronamic_ideal' );
+
+		return $icons;
 	}
 }
