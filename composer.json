@@ -1,0 +1,43 @@
+{
+	"name": "wp-pay-extensions/easy-digital-downloads",
+	"description": "Easy Digital Downloads driver for the WordPress payment processing library.",
+	"keywords": ["wordpress", "wp", "pay", "edd", "easy", "digital", "downlaods", "extension", "pronamic"],
+	"homepage": "http://www.wp-pay.org/extensions/easy-digital-downloads/",
+	"license": "GPL-3.0+",
+	"authors": [
+		{
+			"name": "Pronamic",
+			"email": "info@pronamic.eu",
+			"homepage": "http://www.pronamic.eu/",
+			"role": "Company"
+		},
+		{
+			"name": "Remco Tolsma",
+			"email": "info@remcotolsma.nl",
+			"homepage": "http://www.remcotolsma.nl/",
+			"role": "Developer"
+		}
+	],
+	"support": {
+		"email": "support@wp-pay.org",
+		"issues": "https://github.com/wp-pay-extensions/easy-digital-downloads/issues",
+		"source": "https://github.com/wp-pay-extensions/easy-digital-downloads"
+	},
+	"autoload": {
+		"classmap": ["src/"]
+	},
+	"repositories":[
+		{
+			"type": "composer",
+			"url": "http://wpackagist.org/"
+		}
+	],
+	"require": {
+		"php": ">=5.2.4",
+		"wpackagist-plugin/easy-digital-downloads": "2.1.12",
+		"wp-pay/core": "dev-develop"
+	},
+	"require-dev": {
+		"satooshi/php-coveralls": "dev-master"
+	}
+}

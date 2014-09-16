@@ -1,0 +1,45 @@
+{
+  "name": "easy-digital-downloads",
+  "version": "1.0.0",
+  "description": "Easy Digital Downloads driver for the WordPress payment processing library.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wp-pay-extensions/easy-digital-downloads"
+  },
+  "keywords": [
+    "wordpress",
+    "wp",
+    "pay",
+    "edd",
+    "easy",
+    "digital",
+    "downloads",
+    "gateway",
+    "pronamic"
+  ],
+  "author": {
+    "name": "Pronamic",
+    "email": "info@pronamic.nl",
+    "url": "http://www.pronamic.nl/"
+  },
+  "contributors": [
+    {
+      "name": "Remco Tolsma",
+      "email": "info@remcotolsma.nl",
+      "url": "http://www.remcotolsma.nl/"
+    }
+  ],
+  "license": "GPL",
+  "bugs": {
+    "url": "https://github.com/wp-pay-extensions/easy-digital-downloads/issues"
+  },
+  "homepage": "http://www.wp-pay.org/extensions/easy-digital-downloads/",
+  "devDependencies": {
+    "grunt": "~0.4.5",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-phpcs": "^0.2.3",
+    "grunt-phplint": "0.0.5",
+    "grunt-phpmd": "^0.1.0",
+    "grunt-phpunit": "^0.3.4"
+  }
+}
