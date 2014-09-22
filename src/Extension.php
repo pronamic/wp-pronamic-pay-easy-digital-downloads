@@ -309,9 +309,15 @@ class Pronamic_WP_Pay_Extensions_EDD_Extension {
 	 * @return array
 	 */
 	public static function accepted_payment_icons( $icons ) {
+		// iDEAL
 		$key = plugins_url( 'images/ideal/icon-64x48.png', Pronamic_WP_Pay_Plugin::$file );
 
 		$icons[ $key ] = __( 'iDEAL', 'pronamic_ideal' );
+
+		// Bancontact/Mister Cash
+		$key = plugins_url( 'images/mistercash/icon-64x48.png', Pronamic_WP_Pay_Plugin::$file );
+
+		$icons[ $key ] = __( 'Bancontact/Mister Cash', 'pronamic_ideal' );
 
 		return $icons;
 	}
