@@ -319,6 +319,7 @@ class Pronamic_WP_Pay_Extensions_EDD_Extension {
 
 		$icons[ $key ] = __( 'Bancontact/Mister Cash', 'pronamic_ideal' );
 
+		// Return
 		return $icons;
 	}
 }
