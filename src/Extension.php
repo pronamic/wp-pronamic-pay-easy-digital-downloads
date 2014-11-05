@@ -220,11 +220,11 @@ class Pronamic_WP_Pay_Extensions_EDD_Extension {
 		$status = $payment->get_status();
 
 		switch ( $status ) {
-			case Pronamic_Gateways_IDealAdvanced_Transaction::STATUS_CANCELLED:
+			case Pronamic_WP_Pay_Statuses::CANCELLED :
 				$url = $data->get_cancel_url();
 
 				break;
-			case Pronamic_Gateways_IDealAdvanced_Transaction::STATUS_EXPIRED:
+			case Pronamic_WP_Pay_Statuses::EXPIRED :
 				if ( $should_update ) {
 					edd_update_payment_status( $source_id, Pronamic_WP_Pay_Extensions_EDD_EasyDigitalDownloads::ORDER_STATUS_ABANDONED );
 				}
@@ -232,7 +232,7 @@ class Pronamic_WP_Pay_Extensions_EDD_Extension {
 				$url = $data->get_error_url();
 
 				break;
-			case Pronamic_Gateways_IDealAdvanced_Transaction::STATUS_FAILURE:
+			case Pronamic_WP_Pay_Statuses::FAILURE :
 				if ( $should_update ) {
 					edd_update_payment_status( $source_id, Pronamic_WP_Pay_Extensions_EDD_EasyDigitalDownloads::ORDER_STATUS_FAILED );
 				}
@@ -240,7 +240,7 @@ class Pronamic_WP_Pay_Extensions_EDD_Extension {
 				$url = $data->get_error_url();
 
 				break;
-			case Pronamic_Gateways_IDealAdvanced_Transaction::STATUS_SUCCESS:
+			case Pronamic_WP_Pay_Statuses::SUCCESS :
 				if ( $should_update ) {
 					edd_insert_payment_note( $source_id, __( 'iDEAL payment completed.', 'pronamic_ideal' ) );
 				}
@@ -252,7 +252,7 @@ class Pronamic_WP_Pay_Extensions_EDD_Extension {
 				$url = $data->get_success_url();
 
 				break;
-			case Pronamic_Gateways_IDealAdvanced_Transaction::STATUS_OPEN:
+			case Pronamic_WP_Pay_Statuses::OPEN :
 				if ( $should_update ) {
 					edd_insert_payment_note( $source_id, __( 'iDEAL payment open.', 'pronamic_ideal' ) );
 				}
