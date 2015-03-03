@@ -3,10 +3,10 @@
 /**
  * Title: Easy Digital Downloads iDEAL Add-On
  * Description:
- * Copyright: Copyright (c) 2005 - 2011
+ * Copyright: Copyright (c) 2005 - 2015
  * Company: Pronamic
  * @author Stefan Boonstra
- * @version 1.0
+ * @version 1.0.0
  */
 class Pronamic_WP_Pay_Extensions_EDD_Extension {
 	/**
