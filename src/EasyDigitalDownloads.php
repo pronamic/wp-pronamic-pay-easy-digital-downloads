@@ -3,7 +3,7 @@
 /**
  * Title: Easy Digital Downloads
  * Description:
- * Copyright: Copyright (c) 2005 - 2014
+ * Copyright: Copyright (c) 2005 - 2015
  * Company: Pronamic
  * @author Stefan Boonstra
  * @version 1.0.0
