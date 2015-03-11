@@ -95,6 +95,13 @@ class Pronamic_WP_Pay_Extensions_EDD_Extension {
 			case Pronamic_WP_Pay_Statuses::SUCCESS :
 				if ( $should_update ) {
 					edd_insert_payment_note( $source_id, __( 'Payment completed.', 'pronamic_ideal' ) );
+
+					/*
+					 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.8/includes/admin/payments/view-order-details.php#L36
+					 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.8/includes/admin/payments/view-order-details.php#L199-L206
+					 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.8/includes/payments/functions.php#L1312-L1332
+					 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.8/includes/gateways/paypal-standard.php#L555-L576
+					 */
 				}
 
 				edd_update_payment_status( $source_id, Pronamic_WP_Pay_Extensions_EDD_EasyDigitalDownloads::ORDER_STATUS_PUBLISH );
