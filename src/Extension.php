@@ -11,15 +11,6 @@
  */
 class Pronamic_WP_Pay_Extensions_EDD_Extension {
 	/**
-	 * Slug
-	 *
-	 * @var string
-	 */
-	const SLUG = 'pronamic_ideal';
-
-	//////////////////////////////////////////////////
-
-	/**
 	 * Bootstrap
 	 */
 	public static function bootstrap() {
