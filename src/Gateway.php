@@ -195,7 +195,7 @@ class Pronamic_WP_Pay_Extensions_EDD_Gateway {
 		// Check payment
 		if ( ! $payment_id ) {
 			// Log error
-			edd_record_gateway_error( __( 'Payment Error', 'pronamic_ideal' ), sprintf( __( 'Payment creation failed before sending buyer to the iDEAL provider. Payment data: %s', 'pronamic_ideal' ), json_encode( $payment_data ) ), $payment_id );
+			edd_record_gateway_error( __( 'Payment Error', 'pronamic_ideal' ), sprintf( __( 'Payment creation failed before sending buyer to the payment provider. Payment data: %s', 'pronamic_ideal' ), json_encode( $payment_data ) ), $payment_id );
 
 			edd_send_back_to_checkout( '?payment-mode=' . $purchase_data['post_data']['edd-gateway'] );
 		} else {
@@ -210,7 +210,7 @@ class Pronamic_WP_Pay_Extensions_EDD_Gateway {
 				$error = $gateway->get_error();
 
 				if ( is_wp_error( $error ) ) {
-					edd_record_gateway_error( __( 'Payment Error', 'pronamic_ideal' ), sprintf( __( 'Payment creation failed before sending buyer to the iDEAL provider. Payment data: %s', 'pronamic_ideal' ), json_encode( $payment_data ) ), $payment_id );
+					edd_record_gateway_error( __( 'Payment Error', 'pronamic_ideal' ), sprintf( __( 'Payment creation failed before sending buyer to the payment provider. Payment data: %s', 'pronamic_ideal' ), json_encode( $payment_data ) ), $payment_id );
 
 					edd_set_error( 'pronamic_pay_error', Pronamic_WP_Pay_Plugin::get_default_error_message() );
 
