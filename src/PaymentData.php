@@ -5,8 +5,9 @@
  * Description:
  * Copyright: Copyright (c) 2005 - 2015
  * Company: Pronamic
- * @author Stefan Boonstra
+ * @author Remco Tolsma
  * @version 1.0.0
+ * @since 1.0.0
  */
 class Pronamic_WP_Pay_Extensions_EDD_PaymentData extends Pronamic_WP_Pay_PaymentData {
 	/**
