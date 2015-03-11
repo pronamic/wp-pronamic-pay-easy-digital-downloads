@@ -103,7 +103,7 @@ class Pronamic_WP_Pay_Extensions_EDD_Extension {
 				break;
 			case Pronamic_WP_Pay_Statuses::SUCCESS :
 				if ( $should_update ) {
-					edd_insert_payment_note( $source_id, __( 'iDEAL payment completed.', 'pronamic_ideal' ) );
+					edd_insert_payment_note( $source_id, __( 'Payment completed.', 'pronamic_ideal' ) );
 				}
 
 				edd_update_payment_status( $source_id, Pronamic_WP_Pay_Extensions_EDD_EasyDigitalDownloads::ORDER_STATUS_PUBLISH );
@@ -115,13 +115,13 @@ class Pronamic_WP_Pay_Extensions_EDD_Extension {
 				break;
 			case Pronamic_WP_Pay_Statuses::OPEN :
 				if ( $should_update ) {
-					edd_insert_payment_note( $source_id, __( 'iDEAL payment open.', 'pronamic_ideal' ) );
+					edd_insert_payment_note( $source_id, __( 'Payment open.', 'pronamic_ideal' ) );
 				}
 
 				break;
 			default:
 				if ( $should_update ) {
-					edd_insert_payment_note( $source_id, __( 'iDEAL payment unknown.', 'pronamic_ideal' ) );
+					edd_insert_payment_note( $source_id, __( 'Payment unknown.', 'pronamic_ideal' ) );
 				}
 
 				break;
