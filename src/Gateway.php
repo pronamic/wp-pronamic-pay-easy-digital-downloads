@@ -185,7 +185,7 @@ class Pronamic_WP_Pay_Extensions_EDD_Gateway {
 			'downloads'    => $purchase_data['downloads'],
 			'user_info'    => $purchase_data['user_info'],
 			'cart_details' => $purchase_data['cart_details'],
-			'gateway'      => self::SLUG,
+			'gateway'      => $this->id,
 			'status'       => 'pending',
 		);
 
