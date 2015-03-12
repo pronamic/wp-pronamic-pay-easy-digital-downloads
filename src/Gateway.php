@@ -222,6 +222,10 @@ class Pronamic_WP_Pay_Extensions_EDD_Gateway {
 
 					edd_send_back_to_checkout( '?payment-mode=' . $purchase_data['post_data']['edd-gateway'] );
 				} else {
+					// Transaction ID
+					// @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.3/includes/payments/functions.php#L1400-L1416
+					edd_set_payment_transaction_id( $payment_id, $payment->get_transaction_id() );
+
 					// Redirect
 					$gateway->redirect( $payment );
 
