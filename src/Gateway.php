@@ -226,6 +226,19 @@ class Pronamic_WP_Pay_Extensions_EDD_Gateway {
 					// @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.3/includes/payments/functions.php#L1400-L1416
 					edd_set_payment_transaction_id( $payment_id, $payment->get_transaction_id() );
 
+					// Payment note
+					$payment_link = add_query_arg( array(
+						'post'   => $payment->get_id(),
+						'action' => 'edit',
+					), admin_url( 'post.php' ) );
+
+					$note = sprintf(
+						__( 'Payment %s pending.', 'pronamic_ideal' ),
+						sprintf( '<a href="%s">#%s</a>', $payment_link, $payment->get_id() )
+					);
+
+					edd_insert_payment_note( $payment_id, $note );
+
 					// Redirect
 					$gateway->redirect( $payment );
 
