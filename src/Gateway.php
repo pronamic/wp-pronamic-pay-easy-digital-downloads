@@ -76,6 +76,8 @@ class Pronamic_WP_Pay_Extensions_EDD_Gateway {
 		// Filters
 		add_filter( 'edd_settings_gateways', array( $this, 'settings_gateways' ) );
 		add_filter( 'edd_payment_gateways' , array( $this, 'payment_gateways' ) );
+
+		add_filter( 'edd_get_payment_transaction_id-' . $this->id, array( $this, 'get_payment_transaction_id' ) );
 	}
 
 	//////////////////////////////////////////////////
@@ -227,5 +229,16 @@ class Pronamic_WP_Pay_Extensions_EDD_Gateway {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Get payment transaction ID
+	 *
+	 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.3/includes/payments/functions.php#L1378-L1398
+	 *
+	 * @param string $payment_id
+	 */
+	public function get_payment_transaction_id( $payment_id ) {
+		return null;
 	}
 }
