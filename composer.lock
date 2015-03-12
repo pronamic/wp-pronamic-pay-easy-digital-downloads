@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "3bca49da9a44613c6f23aae723b275a4",
+    "hash": "fd3ee4c6fb1cfd35fab51c755c9818a9",
     "packages": [
         {
             "name": "composer/installers",
@@ -156,26 +156,23 @@
         },
         {
             "name": "wpackagist-plugin/easy-digital-downloads",
-            "version": "2.1.3",
+            "version": "2.3",
             "source": {
                 "type": "svn",
                 "url": "http://plugins.svn.wordpress.org/easy-digital-downloads/",
-                "reference": "tags/2.1.3"
+                "reference": "tags/2.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "http://downloads.wordpress.org/plugin/easy-digital-downloads.2.1.3.zip",
+                "url": "https://downloads.wordpress.org/plugin/easy-digital-downloads.2.3.zip",
                 "reference": null,
                 "shasum": null
             },
             "require": {
                 "composer/installers": "~1.0"
             },
-            "replace": {
-                "wpackagist/easy-digital-downloads": "self.version"
-            },
             "type": "wordpress-plugin",
-            "homepage": "http://wordpress.org/plugins/easy-digital-downloads/"
+            "homepage": "https://wordpress.org/plugins/easy-digital-downloads/"
         }
     ],
     "packages-dev": [
