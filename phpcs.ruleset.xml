@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <ruleset name="WordPress Pay Easy Digital Downloads rules">
-	<rule ref="WordPress">	
-
+	<rule ref="WordPress">
+		<!-- Excluded for wp_json_encode() function which is only available since WordPress 4.1 -->
+		<exclude name="WordPress.PHP.DiscouragedFunctions.DiscouragedWithAlternative"></exclude>
 	</rule>
 </ruleset>

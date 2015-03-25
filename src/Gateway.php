@@ -148,8 +148,10 @@ class Pronamic_WP_Pay_Extensions_EDD_Gateway {
 
 			if ( $input ) {
 				echo '<fieldset id="edd_cc_fields" class="edd-do-validate">';
-				echo '<span><legend>', $this->checkout_label, '</legend></span>';
+				echo '<span><legend>', esc_html( $this->checkout_label ), '</legend></span>';
+				// @codingStandardsIgnoreStart
 				echo $input;
+				// @codingStandardsIgnoreEnd
 				echo '</fieldset>';
 			}
 		}
