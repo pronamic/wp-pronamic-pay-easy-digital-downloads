@@ -75,6 +75,8 @@ class Pronamic_WP_Pay_Extensions_EDD_PaymentData extends Pronamic_WP_Pay_Payment
 		$description = '';
 
 		if ( count( $this->payment_data['cart_details'] ) > 0 ) {
+			$description .= sprintf( __( 'Order #%s', 'pronamic_ideal' ), $this->get_source_id() ) . ' - ';
+
 			foreach ( $this->payment_data['cart_details'] as $cart_details ) {
 				$description .= $cart_details['name'] . ', ';
 			}
