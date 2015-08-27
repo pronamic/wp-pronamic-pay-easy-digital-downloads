@@ -150,7 +150,7 @@ class Pronamic_WP_Pay_Extensions_EDD_Extension {
 		$text .= sprintf(
 			'<a href="%s">%s</a>',
 			get_edit_post_link( $payment->source_id ),
-			sprintf( __( 'Order #%s', 'pronamic_ideal' ), $payment->source_id )
+			sprintf( __( 'Payment %s', 'pronamic_ideal' ), $payment->source_id )
 		);
 
 		return $text;
