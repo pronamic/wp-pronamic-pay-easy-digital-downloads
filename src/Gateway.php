@@ -203,8 +203,6 @@ class Pronamic_WP_Pay_Extensions_EDD_Gateway {
 
 			edd_send_back_to_checkout( '?payment-mode=' . $purchase_data['post_data']['edd-gateway'] );
 		} else {
-			$payment_data['payment_number'] = edd_get_payment_number( $payment_id );
-
 			$data = new Pronamic_WP_Pay_Extensions_EDD_PaymentData( $payment_id, $payment_data );
 
 			$gateway = Pronamic_WP_Pay_Plugin::get_gateway( $config_id );

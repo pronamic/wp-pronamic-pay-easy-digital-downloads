@@ -91,7 +91,16 @@ class Pronamic_WP_Pay_Extensions_EDD_PaymentData extends Pronamic_WP_Pay_Payment
 	 * @return string
 	 */
 	public function get_order_id() {
-		return $this->payment_data['payment_number'];
+		/*
+		 * Check if the 'edd_get_payment_number' function exists, it was added in Easy Digital Downloads version 2.0.
+		 *
+		 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.4.3/includes/payments/functions.php#L1178-L1204
+		 */
+		if ( function_exists( 'edd_get_payment_number' ) ) {
+			return edd_get_payment_number( $this->payment_id );
+		} else {
+			return $this->payment_id;
+		}
 	}
 
 	/**
