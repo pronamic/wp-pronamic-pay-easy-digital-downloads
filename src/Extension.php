@@ -6,7 +6,7 @@
  * Copyright: Copyright (c) 2005 - 2015
  * Company: Pronamic
  * @author Remco Tolsma
- * @version 1.1.0
+ * @version 1.2.0
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Extensions_EDD_Extension {
@@ -62,7 +62,7 @@ class Pronamic_WP_Pay_Extensions_EDD_Extension {
 		$data = new Pronamic_WP_Pay_Extensions_EDD_PaymentData( $source_id, array() );
 
 		// Only update if order is not completed
-		$should_update = edd_get_payment_status( $source_id ) != Pronamic_WP_Pay_Extensions_EDD_EasyDigitalDownloads::ORDER_STATUS_PUBLISH;
+		$should_update = edd_get_payment_status( $source_id ) !== Pronamic_WP_Pay_Extensions_EDD_EasyDigitalDownloads::ORDER_STATUS_PUBLISH;
 
 		// Defaults
 		$status = null;
