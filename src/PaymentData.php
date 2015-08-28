@@ -6,7 +6,7 @@
  * Copyright: Copyright (c) 2005 - 2015
  * Company: Pronamic
  * @author Remco Tolsma
- * @version 1.0.0
+ * @version 1.2.0
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Extensions_EDD_PaymentData extends Pronamic_WP_Pay_PaymentData {
@@ -63,7 +63,7 @@ class Pronamic_WP_Pay_Extensions_EDD_PaymentData extends Pronamic_WP_Pay_Payment
 	//////////////////////////////////////////////////
 
 	public function get_title() {
-		return sprintf( __( 'Easy Digital Downloads order %s', 'pronamic_ideal' ), $this->payment_id );
+		return sprintf( __( 'Easy Digital Downloads order %s', 'pronamic_ideal' ), $this->get_order_id() );
 	}
 
 	/**
@@ -91,7 +91,17 @@ class Pronamic_WP_Pay_Extensions_EDD_PaymentData extends Pronamic_WP_Pay_Payment
 	 * @return string
 	 */
 	public function get_order_id() {
-		return $this->payment_id;
+		/*
+		 * Check if the 'edd_get_payment_number' function exists, it was added in Easy Digital Downloads version 2.0.
+		 *
+		 * @since 1.2.0
+		 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.4.3/includes/payments/functions.php#L1178-L1204
+		 */
+		if ( function_exists( 'edd_get_payment_number' ) ) {
+			return edd_get_payment_number( $this->payment_id );
+		} else {
+			return $this->payment_id;
+		}
 	}
 
 	/**
