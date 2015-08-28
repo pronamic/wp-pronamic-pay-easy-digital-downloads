@@ -6,7 +6,7 @@
  * Copyright: Copyright (c) 2005 - 2015
  * Company: Pronamic
  * @author Remco Tolsma
- * @version 1.1.0
+ * @version 1.2.0
  * @since 1.1.0
  */
 class Pronamic_WP_Pay_Extensions_EDD_Gateway {
@@ -103,6 +103,7 @@ class Pronamic_WP_Pay_Extensions_EDD_Gateway {
 
 	/**
 	 * Add the iDEAL configuration settings to the Easy Digital Downloads payment gateways settings page.
+	 *
 	 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.8/includes/admin/settings/register-settings.php#L126
 	 *
 	 * @param mixed $settings_gateways
