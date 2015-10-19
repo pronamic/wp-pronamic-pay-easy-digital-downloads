@@ -6,7 +6,7 @@
  * Copyright: Copyright (c) 2005 - 2015
  * Company: Pronamic
  * @author Remco Tolsma
- * @version 1.2.0
+ * @version 1.2.1
  * @since 1.1.0
  */
 class Pronamic_WP_Pay_Extensions_EDD_Gateway {
@@ -139,12 +139,17 @@ class Pronamic_WP_Pay_Extensions_EDD_Gateway {
 	/**
 	 * Payment fields for this gateway
 	 *
+	 * @version 1.2.1
 	 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/1.9.4/includes/checkout/template.php#L167
 	 */
 	public function payment_fields() {
 		$gateway = Pronamic_WP_Pay_Plugin::get_gateway( edd_get_option( $this->id . '_config_id' ) );
 
 		if ( $gateway ) {
+			// Let the gateay no wich payment method to use so it can return the correct inputs.
+			// @since 1.2.1
+			$gateway->set_payment_method( $this->payment_method );
+
 			$input = $gateway->get_input_html();
 
 			if ( $input ) {
