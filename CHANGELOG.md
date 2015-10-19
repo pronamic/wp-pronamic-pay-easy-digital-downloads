@@ -7,7 +7,7 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 - 
 
-## [1.2.1] - 2015-010-19
+## [1.2.1] - 2015-10-19
 - Set the payment method to use before getting the gateway inputs. 
 
 ## [1.2.0] - 2015-08-28
