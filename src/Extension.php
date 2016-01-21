@@ -36,7 +36,6 @@ class Pronamic_WP_Pay_Extensions_EDD_Extension {
 			new Pronamic_WP_Pay_Extensions_EDD_CreditCardGateway();
 			new Pronamic_WP_Pay_Extensions_EDD_DirectDebitGateway();
 			new Pronamic_WP_Pay_Extensions_EDD_IDealGateway();
-			new Pronamic_WP_Pay_Extensions_EDD_MiniTixGateway();
 			new Pronamic_WP_Pay_Extensions_EDD_MisterCashGateway();
 			new Pronamic_WP_Pay_Extensions_EDD_SofortGateway();
 
