@@ -26,8 +26,10 @@ class Pronamic_WP_Pay_Extensions_EDD_Extension {
 	 */
 	public static function plugins_loaded() {
 		if ( Pronamic_WP_Pay_Extensions_EDD_EasyDigitalDownloads::is_active() ) {
-			// Gateways
-			// @since 1.1.0
+			/*
+			 * Gateways
+			 * @since 1.1.0
+			 */
 			new Pronamic_WP_Pay_Extensions_EDD_Gateway( array(
 				'id'             => 'pronamic_ideal',
 				'admin_label'    => __( 'Pronamic', 'pronamic_ideal' ),
@@ -178,7 +180,6 @@ class Pronamic_WP_Pay_Extensions_EDD_Extension {
 
 		$icons[ $key ] = __( 'Bancontact/Mister Cash', 'pronamic_ideal' );
 
-		// Return
 		return $icons;
 	}
 }

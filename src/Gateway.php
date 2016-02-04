@@ -147,8 +147,10 @@ class Pronamic_WP_Pay_Extensions_EDD_Gateway {
 		$gateway = Pronamic_WP_Pay_Plugin::get_gateway( edd_get_option( $this->id . '_config_id' ) );
 
 		if ( $gateway ) {
-			// Let the gateay no wich payment method to use so it can return the correct inputs.
-			// @since 1.2.1
+			/*
+			 * Let the gateay no wich payment method to use so it can return the correct inputs.
+			 * @since 1.2.1
+			 */
 			$gateway->set_payment_method( $this->payment_method );
 
 			$input = $gateway->get_input_html();
@@ -248,7 +250,6 @@ class Pronamic_WP_Pay_Extensions_EDD_Gateway {
 
 					edd_insert_payment_note( $payment_id, $note );
 
-					// Redirect
 					$gateway->redirect( $payment );
 
 					exit;
