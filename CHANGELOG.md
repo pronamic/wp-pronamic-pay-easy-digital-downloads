@@ -11,6 +11,7 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 - Tested Easy Digital Downloads version 2.5.9.
 - Set global WordPress gateway config as default config in gateways.
 - Use new redirect URL filter.
+- Return to checkout if there is no gateway found.
 
 ## [1.2.2] - 2016-02-04
 - Removed discontinued MiniTix gateway.
