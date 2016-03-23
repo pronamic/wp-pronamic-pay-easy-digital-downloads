@@ -257,6 +257,10 @@ class Pronamic_WP_Pay_Extensions_EDD_Gateway {
 
 					exit;
 				}
+			} else {
+				edd_set_error( 'pronamic_pay_error', Pronamic_WP_Pay_Plugin::get_default_error_message() );
+
+				edd_send_back_to_checkout( '?payment-mode=' . $purchase_data['post_data']['edd-gateway'] );
 			}
 		}
 	}
