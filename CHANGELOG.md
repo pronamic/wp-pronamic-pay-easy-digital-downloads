@@ -9,6 +9,7 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 
 ## [1.2.3] - 2016-03-23
 - Tested Easy Digital Downloads version 2.5.9.
+- Set global WordPress gateway config as default config in gateways.
 
 ## [1.2.2] - 2016-02-04
 - Removed discontinued MiniTix gateway.

@@ -123,12 +123,15 @@ class Pronamic_WP_Pay_Extensions_EDD_Gateway {
 			'name'    => __( 'Gateway Configuration', 'pronamic_ideal' ),
 			'type'    => 'select',
 			'options' => Pronamic_WP_Pay_Plugin::get_config_select_options( $this->payment_method ),
+			'std'     => get_option( 'pronamic_pay_config_id' ),
 		);
 
 		$settings_gateways[ $this->id . '_checkout_label' ] = array(
 			'id'      => $this->id . '_checkout_label',
 			'name'    => __( 'Checkout Label', 'pronamic_ideal' ),
 			'type'    => 'text',
+			// @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.5.9/includes/admin/settings/register-settings.php#L1537-L1541
+			// @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.5.9/includes/gateways/amazon-payments.php#L330
 			'std'     => $this->checkout_label,
 		);
 
