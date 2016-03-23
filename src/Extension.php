@@ -42,7 +42,8 @@ class Pronamic_WP_Pay_Extensions_EDD_Extension {
 			new Pronamic_WP_Pay_Extensions_EDD_MisterCashGateway();
 			new Pronamic_WP_Pay_Extensions_EDD_SofortGateway();
 
-			add_action( 'pronamic_payment_status_update_easydigitaldownloads', array( __CLASS__, 'status_update' ), 10, 2 );
+			add_filter( 'pronamic_payment_redirect_url_easydigitaldownloads', array( __CLASS__, 'redirect_url' ), 10, 2 );
+			add_action( 'pronamic_payment_status_update_easydigitaldownloads', array( __CLASS__, 'status_update' ), 10, 1 );
 			add_filter( 'pronamic_payment_source_text_easydigitaldownloads', array( __CLASS__, 'source_text' ), 10, 2 );
 
 			// Icons
@@ -50,15 +51,52 @@ class Pronamic_WP_Pay_Extensions_EDD_Extension {
 		}
 	}
 
-	//////////////////////////////////////////////////
+	/**
+	 * Payment redirect URL filter.
+	 *
+	 * @param string                  $url
+	 * @param Pronamic_WP_Pay_Payment $payment
+	 * @return string
+	 */
+	public static function redirect_url( $url, $payment ) {
+		$source_id = $payment->get_source_id();
+
+		$data = new Pronamic_WP_Pay_Extensions_EDD_PaymentData( $source_id, array() );
+
+		$url = $data->get_normal_return_url();
+
+		switch ( $payment->get_status() ) {
+			case Pronamic_WP_Pay_Statuses::CANCELLED :
+				$url = $data->get_cancel_url();
+
+				break;
+			case Pronamic_WP_Pay_Statuses::EXPIRED :
+				$url = $data->get_error_url();
+
+				break;
+			case Pronamic_WP_Pay_Statuses::FAILURE :
+				$url = $data->get_error_url();
+
+				break;
+			case Pronamic_WP_Pay_Statuses::SUCCESS :
+				$url = $data->get_success_url();
+
+				break;
+			case Pronamic_WP_Pay_Statuses::OPEN :
+				// Nothing to do?
+
+				break;
+		}
+
+		return $url;
+	}
 
 	/**
 	 * Update the status of the specified payment
 	 *
 	 * @param Pronamic_Pay_Payment $payment
-	 * @param boolean			  $can_redirect (optional, defaults to false)
 	 */
-	public static function status_update( Pronamic_Pay_Payment $payment, $can_redirect = false ) {
+	public static function status_update( Pronamic_Pay_Payment $payment ) {
 		$source_id = $payment->get_source_id();
 
 		$data = new Pronamic_WP_Pay_Extensions_EDD_PaymentData( $source_id, array() );
@@ -66,36 +104,21 @@ class Pronamic_WP_Pay_Extensions_EDD_Extension {
 		// Only update if order is not completed
 		$should_update = edd_get_payment_status( $source_id ) !== Pronamic_WP_Pay_Extensions_EDD_EasyDigitalDownloads::ORDER_STATUS_PUBLISH;
 
-		// Defaults
-		$status = null;
-		$note   = null;
-		$url	= $data->get_normal_return_url();
+		if ( $should_update ) {
+			switch ( $payment->get_status() ) {
+				case Pronamic_WP_Pay_Statuses::CANCELLED :
+					// Nothing to do?
 
-		$status = $payment->get_status();
-
-		switch ( $status ) {
-			case Pronamic_WP_Pay_Statuses::CANCELLED :
-				$url = $data->get_cancel_url();
-
-				break;
-			case Pronamic_WP_Pay_Statuses::EXPIRED :
-				if ( $should_update ) {
+					break;
+				case Pronamic_WP_Pay_Statuses::EXPIRED :
 					edd_update_payment_status( $source_id, Pronamic_WP_Pay_Extensions_EDD_EasyDigitalDownloads::ORDER_STATUS_ABANDONED );
-				}
 
-				$url = $data->get_error_url();
-
-				break;
-			case Pronamic_WP_Pay_Statuses::FAILURE :
-				if ( $should_update ) {
+					break;
+				case Pronamic_WP_Pay_Statuses::FAILURE :
 					edd_update_payment_status( $source_id, Pronamic_WP_Pay_Extensions_EDD_EasyDigitalDownloads::ORDER_STATUS_FAILED );
-				}
 
-				$url = $data->get_error_url();
-
-				break;
-			case Pronamic_WP_Pay_Statuses::SUCCESS :
-				if ( $should_update ) {
+					break;
+				case Pronamic_WP_Pay_Statuses::SUCCESS :
 					edd_insert_payment_note( $source_id, __( 'Payment completed.', 'pronamic_ideal' ) );
 
 					/*
@@ -104,33 +127,20 @@ class Pronamic_WP_Pay_Extensions_EDD_Extension {
 					 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.8/includes/payments/functions.php#L1312-L1332
 					 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.8/includes/gateways/paypal-standard.php#L555-L576
 					 */
-				}
+					edd_update_payment_status( $source_id, Pronamic_WP_Pay_Extensions_EDD_EasyDigitalDownloads::ORDER_STATUS_PUBLISH );
 
-				edd_update_payment_status( $source_id, Pronamic_WP_Pay_Extensions_EDD_EasyDigitalDownloads::ORDER_STATUS_PUBLISH );
+					edd_empty_cart();
 
-				edd_empty_cart();
-
-				$url = $data->get_success_url();
-
-				break;
-			case Pronamic_WP_Pay_Statuses::OPEN :
-				if ( $should_update ) {
+					break;
+				case Pronamic_WP_Pay_Statuses::OPEN :
 					edd_insert_payment_note( $source_id, __( 'Payment open.', 'pronamic_ideal' ) );
-				}
 
-				break;
-			default:
-				if ( $should_update ) {
+					break;
+				default:
 					edd_insert_payment_note( $source_id, __( 'Payment unknown.', 'pronamic_ideal' ) );
-				}
 
-				break;
-		}
-
-		if ( $can_redirect ) {
-			wp_redirect( $url );
-
-			exit;
+					break;
+			}
 		}
 	}
 

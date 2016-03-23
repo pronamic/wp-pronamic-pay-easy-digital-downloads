@@ -7,6 +7,12 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [1.2.3] - 2016-03-23
+- Tested Easy Digital Downloads version 2.5.9.
+- Set global WordPress gateway config as default config in gateways.
+- Use new redirect URL filter.
+- Return to checkout if there is no gateway found.
+
 ## [1.2.2] - 2016-02-04
 - Removed discontinued MiniTix gateway.
 - Removed status code from redirect in status_update.
@@ -35,7 +41,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2015-01-20
 - First release.
 
-[unreleased]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/1.2.2...HEAD
+[unreleased]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/1.2.3...HEAD
+[1.2.3]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/1.2.2...1.2.3
 [1.2.2]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/1.2.1...1.2.2
 [1.2.1]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/1.2.0...1.2.1
 [1.2.0]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/1.1.0...1.2.0
