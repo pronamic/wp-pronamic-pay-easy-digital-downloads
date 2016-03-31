@@ -145,7 +145,7 @@ class Pronamic_WP_Pay_Extensions_EDD_PaymentData extends Pronamic_WP_Pay_Payment
 		return $this->payment_data['user_email'];
 	}
 
-	public function getCustomerName() {
+	public function get_customer_name() {
 		$name = '';
 
 		if ( is_array( $this->payment_data['user_info'] ) ) {
@@ -161,15 +161,15 @@ class Pronamic_WP_Pay_Extensions_EDD_PaymentData extends Pronamic_WP_Pay_Payment
 		return $name;
 	}
 
-	public function getOwnerAddress() {
+	public function get_address() {
 		return '';
 	}
 
-	public function getOwnerCity() {
+	public function get_city() {
 		return '';
 	}
 
-	public function getOwnerZip() {
+	public function get_zip() {
 		return '';
 	}
 
