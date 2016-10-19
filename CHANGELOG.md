@@ -7,6 +7,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [1.2.5] - 2016-10-19
+- Switched to Bancontact label and constant.
+
 ## [1.2.4] - 2016-04-12
 - No longer use camelCase for payment data.
 
@@ -44,8 +47,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2015-01-20
 - First release.
 
-[unreleased]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/1.2.4...HEAD
-[1.2.4]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/1.2.4...1.2.4
+[unreleased]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/1.2.5...HEAD
+[1.2.5]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/1.2.4...1.2.5
+[1.2.4]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/1.2.3...1.2.4
 [1.2.3]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/1.2.2...1.2.3
 [1.2.2]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/1.2.1...1.2.2
 [1.2.1]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/1.2.0...1.2.1
