@@ -1,6 +1,6 @@
 {
   "name": "easy-digital-downloads",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "Easy Digital Downloads driver for the WordPress payment processing library.",
   "repository": {
     "type": "git",
@@ -41,6 +41,6 @@
     "grunt-phplint": "0.0.8",
     "grunt-phpmd": "^0.1.1",
     "grunt-phpunit": "^0.3.6",
-    "load-grunt-tasks": "^3.5.0"
+    "load-grunt-tasks": "^3.5.2"
   }
 }
