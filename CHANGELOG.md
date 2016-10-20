@@ -7,7 +7,7 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
-## [1.2.5] - 2016-10-19
+## [1.2.5] - 2016-10-20
 - Switched to Bancontact label and constant.
 
 ## [1.2.4] - 2016-04-12
