@@ -33,7 +33,7 @@
 		}
 	],
 	"require": {
-		"php": ">=5.2.4",
+		"php": ">=5.3",
 		"wpackagist-plugin/easy-digital-downloads": "2.5.9",
 		"wp-pay/core": "^1.3"
 	},

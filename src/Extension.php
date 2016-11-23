@@ -36,6 +36,8 @@ class Pronamic_WP_Pay_Extensions_EDD_Extension {
 				'checkout_label' => __( 'iDEAL', 'pronamic_ideal' ),
 			) );
 
+			new Pronamic_WP_Pay_Extensions_EDD_BankTransferGateway();
+			new Pronamic_WP_Pay_Extensions_EDD_BitcoinGateway();
 			new Pronamic_WP_Pay_Extensions_EDD_CreditCardGateway();
 			new Pronamic_WP_Pay_Extensions_EDD_DirectDebitGateway();
 			new Pronamic_WP_Pay_Extensions_EDD_IDealGateway();
