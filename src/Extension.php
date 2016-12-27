@@ -47,12 +47,13 @@ class Pronamic_WP_Pay_Extensions_EDD_Extension {
 			add_filter( 'pronamic_payment_redirect_url_easydigitaldownloads', array( __CLASS__, 'redirect_url' ), 10, 2 );
 			add_action( 'pronamic_payment_status_update_easydigitaldownloads', array( __CLASS__, 'status_update' ), 10, 1 );
 			add_filter( 'pronamic_payment_source_text_easydigitaldownloads', array( __CLASS__, 'source_text' ), 10, 2 );
-			add_filter( 'pronamic_payment_source_description_easydigitaldownloads',   array( __CLASS__, 'source_description' ), 10, 2 );
-			add_filter( 'pronamic_payment_source_url_easydigitaldownloads',   array( __CLASS__, 'source_url' ), 10, 2 );
 
 			// Icons
 			add_filter( 'edd_accepted_payment_icons', array( __CLASS__, 'accepted_payment_icons' ) );
 		}
+
+		add_filter( 'pronamic_payment_source_description_easydigitaldownloads',   array( __CLASS__, 'source_description' ), 10, 2 );
+		add_filter( 'pronamic_payment_source_url_easydigitaldownloads',   array( __CLASS__, 'source_url' ), 10, 2 );
 	}
 
 	/**
