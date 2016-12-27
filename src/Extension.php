@@ -213,6 +213,16 @@ class Pronamic_WP_Pay_Extensions_EDD_Extension {
 
 		$icons[ $key ] = __( 'Bancontact', 'pronamic_ideal' );
 
+		// Bitcoin
+		$key = plugins_url( 'images/bitcoin/icon-64x48.png', Pronamic_WP_Pay_Plugin::$file );
+
+		$icons[ $key ] = __( 'Bitcoin', 'pronamic_ideal' );
+
+		// Sofort
+		$key = plugins_url( 'images/sofort/icon-64x48.png', Pronamic_WP_Pay_Plugin::$file );
+
+		$icons[ $key ] = __( 'SOFORT Überweisung', 'pronamic_ideal' );
+
 		return $icons;
 	}
 }
