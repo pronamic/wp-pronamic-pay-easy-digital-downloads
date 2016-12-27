@@ -47,8 +47,8 @@ class Pronamic_WP_Pay_Extensions_EDD_Extension {
 			add_filter( 'pronamic_payment_redirect_url_easydigitaldownloads', array( __CLASS__, 'redirect_url' ), 10, 2 );
 			add_action( 'pronamic_payment_status_update_easydigitaldownloads', array( __CLASS__, 'status_update' ), 10, 1 );
 			add_filter( 'pronamic_payment_source_text_easydigitaldownloads', array( __CLASS__, 'source_text' ), 10, 2 );
-			add_filter( 'pronamic_payment_source_description_easydigitaldownloads',   array( $this, 'source_description' ), 10, 2 );
-			add_filter( 'pronamic_payment_source_url_easydigitaldownloads',   array( $this, 'source_url' ), 10, 2 );
+			add_filter( 'pronamic_payment_source_description_easydigitaldownloads',   array( __CLASS__, 'source_description' ), 10, 2 );
+			add_filter( 'pronamic_payment_source_url_easydigitaldownloads',   array( __CLASS__, 'source_url' ), 10, 2 );
 
 			// Icons
 			add_filter( 'edd_accepted_payment_icons', array( __CLASS__, 'accepted_payment_icons' ) );
@@ -175,7 +175,7 @@ class Pronamic_WP_Pay_Extensions_EDD_Extension {
 	/**
 	 * Source description.
 	 */
-	public function source_description( $description, Pronamic_Pay_Payment $payment ) {
+	public static function source_description( $description, Pronamic_Pay_Payment $payment ) {
 		$description = __( 'Easy Digital Downloads Order', 'pronamic_ideal' );
 
 		return $description;
@@ -184,7 +184,7 @@ class Pronamic_WP_Pay_Extensions_EDD_Extension {
 	/**
 	 * Source URL.
 	 */
-	public function source_url( $url, Pronamic_Pay_Payment $payment ) {
+	public static function source_url( $url, Pronamic_Pay_Payment $payment ) {
 		$url = get_edit_post_link( $payment->source_id );
 
 		return $url;
