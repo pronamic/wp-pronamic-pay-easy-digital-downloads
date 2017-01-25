@@ -7,9 +7,12 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
-## [1.2.6] - Unreleased
+## [1.2.6] - 2017-01-25
 - Added Bank Transfer gateway.
 - Added Bitcoin gateway.
+- Added filter for payment source description and URL.
+- Changed to class functions.
+- Added new icons for Bitcoin and Soft.
 
 ## [1.2.5] - 2016-10-20
 - Switched to Bancontact label and constant.
