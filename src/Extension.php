@@ -3,7 +3,7 @@
 /**
  * Title: Easy Digital Downloads iDEAL Add-On
  * Description:
- * Copyright: Copyright (c) 2005 - 2016
+ * Copyright: Copyright (c) 2005 - 2017
  * Company: Pronamic
  *
  * @author Remco Tolsma
@@ -36,6 +36,8 @@ class Pronamic_WP_Pay_Extensions_EDD_Extension {
 				'checkout_label' => __( 'iDEAL', 'pronamic_ideal' ),
 			) );
 
+			new Pronamic_WP_Pay_Extensions_EDD_BankTransferGateway();
+			new Pronamic_WP_Pay_Extensions_EDD_BitcoinGateway();
 			new Pronamic_WP_Pay_Extensions_EDD_CreditCardGateway();
 			new Pronamic_WP_Pay_Extensions_EDD_DirectDebitGateway();
 			new Pronamic_WP_Pay_Extensions_EDD_IDealGateway();
@@ -49,6 +51,9 @@ class Pronamic_WP_Pay_Extensions_EDD_Extension {
 			// Icons
 			add_filter( 'edd_accepted_payment_icons', array( __CLASS__, 'accepted_payment_icons' ) );
 		}
+
+		add_filter( 'pronamic_payment_source_description_easydigitaldownloads',   array( __CLASS__, 'source_description' ), 10, 2 );
+		add_filter( 'pronamic_payment_source_url_easydigitaldownloads',   array( __CLASS__, 'source_url' ), 10, 2 );
 	}
 
 	/**
@@ -168,6 +173,24 @@ class Pronamic_WP_Pay_Extensions_EDD_Extension {
 		return $text;
 	}
 
+	/**
+	 * Source description.
+	 */
+	public static function source_description( $description, Pronamic_Pay_Payment $payment ) {
+		$description = __( 'Easy Digital Downloads Order', 'pronamic_ideal' );
+
+		return $description;
+	}
+
+	/**
+	 * Source URL.
+	 */
+	public static function source_url( $url, Pronamic_Pay_Payment $payment ) {
+		$url = get_edit_post_link( $payment->source_id );
+
+		return $url;
+	}
+
 	//////////////////////////////////////////////////
 
 	/**
@@ -189,6 +212,16 @@ class Pronamic_WP_Pay_Extensions_EDD_Extension {
 		$key = plugins_url( 'images/bancontact/icon-64x48.png', Pronamic_WP_Pay_Plugin::$file );
 
 		$icons[ $key ] = __( 'Bancontact', 'pronamic_ideal' );
+
+		// Bitcoin
+		$key = plugins_url( 'images/bitcoin/icon-64x48.png', Pronamic_WP_Pay_Plugin::$file );
+
+		$icons[ $key ] = __( 'Bitcoin', 'pronamic_ideal' );
+
+		// Sofort
+		$key = plugins_url( 'images/sofort/icon-64x48.png', Pronamic_WP_Pay_Plugin::$file );
+
+		$icons[ $key ] = __( 'SOFORT Überweisung', 'pronamic_ideal' );
 
 		return $icons;
 	}
