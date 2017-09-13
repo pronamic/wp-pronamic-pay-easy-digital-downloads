@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Title: Easy Digital Downloads Credit Card gateway
+ * Title: Easy Digital Downloads Direct Debit gateway
  * Description:
  * Copyright: Copyright (c) 2005 - 2017
  * Company: Pronamic

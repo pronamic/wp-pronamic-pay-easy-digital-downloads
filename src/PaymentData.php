@@ -7,7 +7,7 @@
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.2.4
+ * @version 1.2.7
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Extensions_EDD_PaymentData extends Pronamic_WP_Pay_PaymentData {
@@ -143,6 +143,22 @@ class Pronamic_WP_Pay_Extensions_EDD_PaymentData extends Pronamic_WP_Pay_Payment
 
 	public function get_email() {
 		return $this->payment_data['user_email'];
+	}
+
+	public function get_first_name() {
+		if ( is_array( $this->payment_data['user_info'] ) ) {
+			if ( isset( $this->payment_data['user_info']['first_name'] ) ) {
+				return $this->payment_data['user_info']['first_name'];
+			}
+		}
+	}
+
+	public function get_last_name() {
+		if ( is_array( $this->payment_data['user_info'] ) ) {
+			if ( isset( $this->payment_data['user_info']['last_name'] ) ) {
+				return $this->payment_data['user_info']['last_name'];
+			}
+		}
 	}
 
 	public function get_customer_name() {
