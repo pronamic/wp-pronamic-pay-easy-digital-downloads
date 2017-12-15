@@ -73,15 +73,27 @@ class Pronamic_WP_Pay_Extensions_EDD_PaymentData extends Pronamic_WP_Pay_Payment
 	 * @return string
 	 */
 	public function get_description() {
-		$description = '';
+		$edd_cart_details_name = '';
 
-		if ( count( $this->payment_data['cart_details'] ) > 0 ) {
+		if ( is_array( $this->payment_data['cart_details'] ) ) {
+			$names = array();
+
 			foreach ( $this->payment_data['cart_details'] as $cart_details ) {
-				$description .= $cart_details['name'] . ', ';
+				$names[] = $cart_details['name'];
 			}
 
-			$description = substr( $description, 0, -2 );
+			$edd_cart_details_name = implode( ', ', $names );
 		}
+
+		$replace_pairs = array(
+			'{edd_cart_details_name}' => $edd_cart_details_name,
+			'{edd_payment_id}'        => $this->get_order_id(),
+			'{pronamic_payment_id}'   => '',
+		);
+
+		$description = '{edd_cart_details_name}';
+
+		$description = strtr( $description, $replace_pairs );
 
 		return $description;
 	}
