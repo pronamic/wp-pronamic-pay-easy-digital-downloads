@@ -1,5 +1,7 @@
 <?php
 
+namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
+
 /**
  * Title: Easy Digital Downloads iDEAL gateway
  * Description:
@@ -10,7 +12,7 @@
  * @version 1.1.0
  * @since 1.1.0
  */
-class Pronamic_WP_Pay_Extensions_EDD_IDealGateway extends Pronamic_WP_Pay_Extensions_EDD_Gateway {
+class IDealGateway extends Gateway {
 	/**
 	 * Construct and initialize iDEAL gateway
 	 */
@@ -19,7 +21,7 @@ class Pronamic_WP_Pay_Extensions_EDD_IDealGateway extends Pronamic_WP_Pay_Extens
 			'id'             => 'pronamic_pay_ideal',
 			'admin_label'    => __( 'iDEAL', 'pronamic_ideal' ),
 			'checkout_label' => __( 'iDEAL', 'pronamic_ideal' ),
-			'payment_method' => Pronamic_WP_Pay_PaymentMethods::IDEAL,
+			'payment_method' => \Pronamic_WP_Pay_PaymentMethods::IDEAL,
 		) );
 	}
 }

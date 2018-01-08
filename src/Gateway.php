@@ -1,5 +1,7 @@
 <?php
 
+namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
+
 /**
  * Title: Easy Digital Downloads gateway
  * Description:
@@ -10,7 +12,7 @@
  * @version 1.2.1
  * @since 1.1.0
  */
-class Pronamic_WP_Pay_Extensions_EDD_Gateway {
+class Gateway {
 	/**
 	 * ID
 	 *
@@ -178,7 +180,7 @@ class Pronamic_WP_Pay_Extensions_EDD_Gateway {
 	 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/1.9.4/includes/checkout/template.php#L167
 	 */
 	public function payment_fields() {
-		$gateway = Pronamic_WP_Pay_Plugin::get_gateway( edd_get_option( $this->id . '_config_id' ) );
+		$gateway = \Pronamic_WP_Pay_Plugin::get_gateway( edd_get_option( $this->id . '_config_id' ) );
 
 		if ( $gateway ) {
 			/*
@@ -246,14 +248,14 @@ class Pronamic_WP_Pay_Extensions_EDD_Gateway {
 
 			edd_send_back_to_checkout( '?payment-mode=' . $purchase_data['post_data']['edd-gateway'] );
 		} else {
-			$data = new Pronamic_WP_Pay_Extensions_EDD_PaymentData( $payment_id, $payment_data );
+			$data = new PaymentData( $payment_id, $payment_data );
 			$data->description = edd_get_option( $this->id . '_description' );
 
-			$gateway = Pronamic_WP_Pay_Plugin::get_gateway( $config_id );
+			$gateway = \Pronamic_WP_Pay_Plugin::get_gateway( $config_id );
 
 			if ( $gateway ) {
 				// Start
-				$payment = Pronamic_WP_Pay_Plugin::start( $config_id, $gateway, $data, $this->payment_method );
+				$payment = \Pronamic_WP_Pay_Plugin::start( $config_id, $gateway, $data, $this->payment_method );
 
 				$error = $gateway->get_error();
 
@@ -290,7 +292,7 @@ class Pronamic_WP_Pay_Extensions_EDD_Gateway {
 					exit;
 				}
 			} else {
-				edd_set_error( 'pronamic_pay_error', Pronamic_WP_Pay_Plugin::get_default_error_message() );
+				edd_set_error( 'pronamic_pay_error', \Pronamic_WP_Pay_Plugin::get_default_error_message() );
 
 				edd_send_back_to_checkout( '?payment-mode=' . $purchase_data['post_data']['edd-gateway'] );
 			}

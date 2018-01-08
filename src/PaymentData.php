@@ -1,5 +1,7 @@
 <?php
 
+namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
+
 /**
  * Title: Easy Digital Downloads payment data
  * Description:
@@ -10,7 +12,7 @@
  * @version 1.2.7
  * @since 1.0.0
  */
-class Pronamic_WP_Pay_Extensions_EDD_PaymentData extends Pronamic_WP_Pay_PaymentData {
+class PaymentData extends \Pronamic_WP_Pay_PaymentData {
 	/**
 	 * Payment ID
 	 *
@@ -132,11 +134,11 @@ class Pronamic_WP_Pay_Extensions_EDD_PaymentData extends Pronamic_WP_Pay_Payment
 	 */
 	public function get_items() {
 		// Items
-		$items = new Pronamic_IDeal_Items();
+		$items = new \Pronamic_IDeal_Items();
 
 		// Item
 		// We only add one total item, because iDEAL cant work with negative price items (discount)
-		$item = new Pronamic_IDeal_Item();
+		$item = new \Pronamic_IDeal_Item();
 		$item->setNumber( $this->payment_id );
 		$item->setDescription( $this->get_description() );
 		$item->setPrice( $this->payment_data['price'] );

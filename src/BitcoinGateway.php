@@ -1,5 +1,7 @@
 <?php
 
+namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
+
 /**
  * Title: Easy Digital Downloads Bitcoin gateway
  * Description:
@@ -10,7 +12,7 @@
  * @version 1.2.6
  * @since 1.2.6
  */
-class Pronamic_WP_Pay_Extensions_EDD_BitcoinGateway extends Pronamic_WP_Pay_Extensions_EDD_Gateway {
+class BitcoinGateway extends Gateway {
 	/**
 	 * Construct and initialize Credit Card gateway
 	 */
@@ -19,7 +21,7 @@ class Pronamic_WP_Pay_Extensions_EDD_BitcoinGateway extends Pronamic_WP_Pay_Exte
 			'id'             => 'pronamic_pay_bitcoin',
 			'admin_label'    => __( 'Bitcoin', 'pronamic_ideal' ),
 			'checkout_label' => __( 'Bitcoin', 'pronamic_ideal' ),
-			'payment_method' => Pronamic_WP_Pay_PaymentMethods::BITCOIN,
+			'payment_method' => \Pronamic_WP_Pay_PaymentMethods::BITCOIN,
 		) );
 	}
 }

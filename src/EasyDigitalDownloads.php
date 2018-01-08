@@ -1,5 +1,7 @@
 <?php
 
+namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
+
 /**
  * Title: Easy Digital Downloads
  * Description:
@@ -10,7 +12,7 @@
  * @version 1.0.0
  * @since 1.0.0
  */
-class Pronamic_WP_Pay_Extensions_EDD_EasyDigitalDownloads {
+class EasyDigitalDownloads {
 	/**
 	 * Order status pending
 	 *

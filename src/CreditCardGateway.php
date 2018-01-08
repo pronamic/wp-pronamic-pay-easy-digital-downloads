@@ -1,5 +1,7 @@
 <?php
 
+namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
+
 /**
  * Title: Easy Digital Downloads Credit Card gateway
  * Description:
@@ -10,7 +12,7 @@
  * @version 1.1.0
  * @since 1.1.0
  */
-class Pronamic_WP_Pay_Extensions_EDD_CreditCardGateway extends Pronamic_WP_Pay_Extensions_EDD_Gateway {
+class CreditCardGateway extends Gateway {
 	/**
 	 * Construct and initialize Credit Card gateway
 	 */
@@ -19,7 +21,7 @@ class Pronamic_WP_Pay_Extensions_EDD_CreditCardGateway extends Pronamic_WP_Pay_E
 			'id'             => 'pronamic_pay_credit_card',
 			'admin_label'    => __( 'Credit Card', 'pronamic_ideal' ),
 			'checkout_label' => __( 'Credit Card', 'pronamic_ideal' ),
-			'payment_method' => Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD,
+			'payment_method' => \Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD,
 		) );
 	}
 }

@@ -1,5 +1,7 @@
 <?php
 
+namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
+
 /**
  * Title: Easy Digital Downloads Direct Debit gateway
  * Description:
@@ -10,7 +12,7 @@
  * @version 1.1.0
  * @since 1.1.0
  */
-class Pronamic_WP_Pay_Extensions_EDD_DirectDebitGateway extends Pronamic_WP_Pay_Extensions_EDD_Gateway {
+class DirectDebitGateway extends Gateway {
 	/**
 	 * Construct and initialize Credit Card gateway
 	 */
@@ -19,7 +21,7 @@ class Pronamic_WP_Pay_Extensions_EDD_DirectDebitGateway extends Pronamic_WP_Pay_
 			'id'             => 'pronamic_pay_direct_debit',
 			'admin_label'    => __( 'Direct Debit', 'pronamic_ideal' ),
 			'checkout_label' => __( 'Direct Debit', 'pronamic_ideal' ),
-			'payment_method' => Pronamic_WP_Pay_PaymentMethods::DIRECT_DEBIT,
+			'payment_method' => \Pronamic_WP_Pay_PaymentMethods::DIRECT_DEBIT,
 		) );
 	}
 }

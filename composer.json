@@ -24,7 +24,9 @@
 		"source": "https://github.com/wp-pay-extensions/easy-digital-downloads"
 	},
 	"autoload": {
-		"classmap": ["src/"]
+		"psr-4": {
+			"Pronamic\\WordPress\\Pay\\Extensions\\EasyDigitalDownloads\\": "src"
+		}
 	},
 	"config": {
 		"platform": {
