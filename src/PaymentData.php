@@ -25,6 +25,13 @@ class Pronamic_WP_Pay_Extensions_EDD_PaymentData extends Pronamic_WP_Pay_Payment
 	 */
 	private $payment_data;
 
+	/**
+	 * Description
+	 *
+	 * @var string
+	 */
+	public $description;
+
 	//////////////////////////////////////////////////
 
 	/**
@@ -73,27 +80,27 @@ class Pronamic_WP_Pay_Extensions_EDD_PaymentData extends Pronamic_WP_Pay_Payment
 	 * @return string
 	 */
 	public function get_description() {
+		if ( empty( $this->description ) ) {
+			$this->description = '{edd_cart_details_name}';
+		}
+
+		// Name
 		$edd_cart_details_name = '';
 
 		if ( is_array( $this->payment_data['cart_details'] ) ) {
-			$names = array();
-
-			foreach ( $this->payment_data['cart_details'] as $cart_details ) {
-				$names[] = $cart_details['name'];
-			}
+			$names = wp_list_pluck( $this->payment_data['cart_details'], 'name' );
 
 			$edd_cart_details_name = implode( ', ', $names );
 		}
 
+		// Replace pairs
 		$replace_pairs = array(
 			'{edd_cart_details_name}' => $edd_cart_details_name,
 			'{edd_payment_id}'        => $this->get_order_id(),
-			'{pronamic_payment_id}'   => '',
 		);
 
-		$description = '{edd_cart_details_name}';
-
-		$description = strtr( $description, $replace_pairs );
+		// Replace
+		$description = strtr( $this->description, $replace_pairs );
 
 		return $description;
 	}
