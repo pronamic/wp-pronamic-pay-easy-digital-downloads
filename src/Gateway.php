@@ -138,7 +138,7 @@ class Gateway {
 				'id'      => $this->id . '_config_id',
 				'name'    => __( 'Gateway Configuration', 'pronamic_ideal' ),
 				'type'    => 'select',
-				'options' => Pronamic_WP_Pay_Plugin::get_config_select_options( $this->payment_method ),
+				'options' => \Pronamic_WP_Pay_Plugin::get_config_select_options( $this->payment_method ),
 				'std'     => get_option( 'pronamic_pay_config_id' ),
 			),
 			$this->id . '_checkout_label' => array(
