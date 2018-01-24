@@ -12,7 +12,7 @@ namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
  * @version 1.2.7
  * @since 1.0.0
  */
-class PaymentData extends \Pronamic_WP_Pay_PaymentData {
+class PaymentData extends \Pronamic\WordPress\Pay\Payments\PaymentData {
 	/**
 	 * Payment ID
 	 *

@@ -2,6 +2,9 @@
 
 namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
 
+use Pronamic\WordPress\Pay\Payments\Payment;
+use Pronamic\WordPress\Pay\Plugin;
+
 /**
  * Title: Easy Digital Downloads iDEAL Add-On
  * Description:
@@ -54,15 +57,15 @@ class Extension {
 			add_filter( 'edd_accepted_payment_icons', array( __CLASS__, 'accepted_payment_icons' ) );
 		}
 
-		add_filter( 'pronamic_payment_source_description_easydigitaldownloads',   array( __CLASS__, 'source_description' ), 10, 2 );
-		add_filter( 'pronamic_payment_source_url_easydigitaldownloads',   array( __CLASS__, 'source_url' ), 10, 2 );
+		add_filter( 'pronamic_payment_source_description_easydigitaldownloads', array( __CLASS__, 'source_description' ), 10, 2 );
+		add_filter( 'pronamic_payment_source_url_easydigitaldownloads', array( __CLASS__, 'source_url' ), 10, 2 );
 	}
 
 	/**
 	 * Payment redirect URL filter.
 	 *
 	 * @param string                  $url
-	 * @param Pronamic_WP_Pay_Payment $payment
+	 * @param Payment $payment
 	 * @return string
 	 */
 	public static function redirect_url( $url, $payment ) {
@@ -101,9 +104,9 @@ class Extension {
 	/**
 	 * Update the status of the specified payment
 	 *
-	 * @param Pronamic_Pay_Payment $payment
+	 * @param Payment $payment
 	 */
-	public static function status_update( \Pronamic_Pay_Payment $payment ) {
+	public static function status_update( Payment $payment ) {
 		$source_id = $payment->get_source_id();
 
 		$data = new PaymentData( $source_id, array() );
@@ -156,15 +159,13 @@ class Extension {
 	/**
 	 * Source column
 	 *
-	 * @param string				  $text
-	 * @param Pronamic_WP_Pay_Payment $payment
+	 * @param string $text
+	 * @param Payment $payment
 	 *
 	 * @return string $text
 	 */
-	public static function source_text( $text, \Pronamic_WP_Pay_Payment $payment ) {
-		$text  = '';
-
-		$text .= __( 'Easy Digital Downloads', 'pronamic_ideal' ) . '<br />';
+	public static function source_text( $text, Payment $payment ) {
+		$text = __( 'Easy Digital Downloads', 'pronamic_ideal' ) . '<br />';
 
 		$text .= sprintf(
 			'<a href="%s">%s</a>',
@@ -178,7 +179,7 @@ class Extension {
 	/**
 	 * Source description.
 	 */
-	public static function source_description( $description, \Pronamic_Pay_Payment $payment ) {
+	public static function source_description( $description, Payment $payment ) {
 		$description = __( 'Easy Digital Downloads Order', 'pronamic_ideal' );
 
 		return $description;
@@ -187,7 +188,7 @@ class Extension {
 	/**
 	 * Source URL.
 	 */
-	public static function source_url( $url, \Pronamic_Pay_Payment $payment ) {
+	public static function source_url( $url, Payment $payment ) {
 		$url = get_edit_post_link( $payment->source_id );
 
 		return $url;
@@ -206,23 +207,19 @@ class Extension {
 	 */
 	public static function accepted_payment_icons( $icons ) {
 		// iDEAL
-		$key = plugins_url( 'images/ideal/icon-64x48.png', \Pronamic_WP_Pay_Plugin::$file );
-
+		$key           = plugins_url( 'images/ideal/icon-64x48.png', Plugin::$file );
 		$icons[ $key ] = __( 'iDEAL', 'pronamic_ideal' );
 
 		// Bancontact/Mister Cash
-		$key = plugins_url( 'images/bancontact/icon-64x48.png', \Pronamic_WP_Pay_Plugin::$file );
-
+		$key           = plugins_url( 'images/bancontact/icon-64x48.png', Plugin::$file );
 		$icons[ $key ] = __( 'Bancontact', 'pronamic_ideal' );
 
 		// Bitcoin
-		$key = plugins_url( 'images/bitcoin/icon-64x48.png', \Pronamic_WP_Pay_Plugin::$file );
-
+		$key           = plugins_url( 'images/bitcoin/icon-64x48.png', Plugin::$file );
 		$icons[ $key ] = __( 'Bitcoin', 'pronamic_ideal' );
 
 		// Sofort
-		$key = plugins_url( 'images/sofort/icon-64x48.png', \Pronamic_WP_Pay_Plugin::$file );
-
+		$key           = plugins_url( 'images/sofort/icon-64x48.png', Plugin::$file );
 		$icons[ $key ] = __( 'SOFORT Überweisung', 'pronamic_ideal' );
 
 		return $icons;
