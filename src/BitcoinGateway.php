@@ -21,7 +21,7 @@ class BitcoinGateway extends Gateway {
 			'id'             => 'pronamic_pay_bitcoin',
 			'admin_label'    => __( 'Bitcoin', 'pronamic_ideal' ),
 			'checkout_label' => __( 'Bitcoin', 'pronamic_ideal' ),
-			'payment_method' => \Pronamic_WP_Pay_PaymentMethods::BITCOIN,
+			'payment_method' => \Pronamic\WordPress\Pay\Core\PaymentMethods::BITCOIN,
 		) );
 	}
 }

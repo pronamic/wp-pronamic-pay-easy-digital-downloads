@@ -21,7 +21,7 @@ class MisterCashGateway extends Gateway {
 			'id'             => 'pronamic_pay_mister_cash',
 			'admin_label'    => __( 'Bancontact', 'pronamic_ideal' ),
 			'checkout_label' => __( 'Bancontact', 'pronamic_ideal' ),
-			'payment_method' => \Pronamic_WP_Pay_PaymentMethods::BANCONTACT,
+			'payment_method' => \Pronamic\WordPress\Pay\Core\PaymentMethods::BANCONTACT,
 		) );
 	}
 }

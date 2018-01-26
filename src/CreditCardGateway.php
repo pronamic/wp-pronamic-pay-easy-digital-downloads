@@ -21,7 +21,7 @@ class CreditCardGateway extends Gateway {
 			'id'             => 'pronamic_pay_credit_card',
 			'admin_label'    => __( 'Credit Card', 'pronamic_ideal' ),
 			'checkout_label' => __( 'Credit Card', 'pronamic_ideal' ),
-			'payment_method' => \Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD,
+			'payment_method' => \Pronamic\WordPress\Pay\Core\PaymentMethods::CREDIT_CARD,
 		) );
 	}
 }

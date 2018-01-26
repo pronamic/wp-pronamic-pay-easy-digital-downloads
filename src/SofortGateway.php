@@ -21,7 +21,7 @@ class SofortGateway extends Gateway {
 			'id'             => 'pronamic_pay_sofort',
 			'admin_label'    => __( 'SOFORT Banking', 'pronamic_ideal' ),
 			'checkout_label' => __( 'SOFORT Banking', 'pronamic_ideal' ),
-			'payment_method' => \Pronamic_WP_Pay_PaymentMethods::SOFORT,
+			'payment_method' => \Pronamic\WordPress\Pay\Core\PaymentMethods::SOFORT,
 		) );
 	}
 }

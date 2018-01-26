@@ -21,7 +21,7 @@ class DirectDebitGateway extends Gateway {
 			'id'             => 'pronamic_pay_direct_debit',
 			'admin_label'    => __( 'Direct Debit', 'pronamic_ideal' ),
 			'checkout_label' => __( 'Direct Debit', 'pronamic_ideal' ),
-			'payment_method' => \Pronamic_WP_Pay_PaymentMethods::DIRECT_DEBIT,
+			'payment_method' => \Pronamic\WordPress\Pay\Core\PaymentMethods::DIRECT_DEBIT,
 		) );
 	}
 }

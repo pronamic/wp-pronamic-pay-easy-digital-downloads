@@ -21,7 +21,7 @@ class IDealGateway extends Gateway {
 			'id'             => 'pronamic_pay_ideal',
 			'admin_label'    => __( 'iDEAL', 'pronamic_ideal' ),
 			'checkout_label' => __( 'iDEAL', 'pronamic_ideal' ),
-			'payment_method' => \Pronamic_WP_Pay_PaymentMethods::IDEAL,
+			'payment_method' => \Pronamic\WordPress\Pay\Core\PaymentMethods::IDEAL,
 		) );
 	}
 }

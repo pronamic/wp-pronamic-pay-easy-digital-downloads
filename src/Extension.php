@@ -76,23 +76,23 @@ class Extension {
 		$url = $data->get_normal_return_url();
 
 		switch ( $payment->get_status() ) {
-			case \Pronamic_WP_Pay_Statuses::CANCELLED :
+			case \Pronamic\WordPress\Pay\Core\Statuses::CANCELLED :
 				$url = $data->get_cancel_url();
 
 				break;
-			case \Pronamic_WP_Pay_Statuses::EXPIRED :
+			case \Pronamic\WordPress\Pay\Core\Statuses::EXPIRED :
 				$url = $data->get_error_url();
 
 				break;
-			case \Pronamic_WP_Pay_Statuses::FAILURE :
+			case \Pronamic\WordPress\Pay\Core\Statuses::FAILURE :
 				$url = $data->get_error_url();
 
 				break;
-			case \Pronamic_WP_Pay_Statuses::SUCCESS :
+			case \Pronamic\WordPress\Pay\Core\Statuses::SUCCESS :
 				$url = $data->get_success_url();
 
 				break;
-			case \Pronamic_WP_Pay_Statuses::OPEN :
+			case \Pronamic\WordPress\Pay\Core\Statuses::OPEN :
 				// Nothing to do?
 
 				break;
@@ -116,19 +116,19 @@ class Extension {
 
 		if ( $should_update ) {
 			switch ( $payment->get_status() ) {
-				case \Pronamic_WP_Pay_Statuses::CANCELLED :
+				case \Pronamic\WordPress\Pay\Core\Statuses::CANCELLED :
 					// Nothing to do?
 
 					break;
-				case \Pronamic_WP_Pay_Statuses::EXPIRED :
+				case \Pronamic\WordPress\Pay\Core\Statuses::EXPIRED :
 					edd_update_payment_status( $source_id, EasyDigitalDownloads::ORDER_STATUS_ABANDONED );
 
 					break;
-				case \Pronamic_WP_Pay_Statuses::FAILURE :
+				case \Pronamic\WordPress\Pay\Core\Statuses::FAILURE :
 					edd_update_payment_status( $source_id, EasyDigitalDownloads::ORDER_STATUS_FAILED );
 
 					break;
-				case \Pronamic_WP_Pay_Statuses::SUCCESS :
+				case \Pronamic\WordPress\Pay\Core\Statuses::SUCCESS :
 					edd_insert_payment_note( $source_id, __( 'Payment completed.', 'pronamic_ideal' ) );
 
 					/*
@@ -142,7 +142,7 @@ class Extension {
 					edd_empty_cart();
 
 					break;
-				case \Pronamic_WP_Pay_Statuses::OPEN :
+				case \Pronamic\WordPress\Pay\Core\Statuses::OPEN :
 					edd_insert_payment_note( $source_id, __( 'Payment open.', 'pronamic_ideal' ) );
 
 					break;

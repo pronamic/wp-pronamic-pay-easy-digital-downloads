@@ -21,7 +21,7 @@ class BankTransferGateway extends Gateway {
 			'id'             => 'pronamic_pay_bank_transfer',
 			'admin_label'    => __( 'Bank Transfer', 'pronamic_ideal' ),
 			'checkout_label' => __( 'Bank Transfer', 'pronamic_ideal' ),
-			'payment_method' => \Pronamic_WP_Pay_PaymentMethods::BANK_TRANSFER,
+			'payment_method' => \Pronamic\WordPress\Pay\Core\PaymentMethods::BANK_TRANSFER,
 		) );
 	}
 }
