@@ -46,7 +46,7 @@ class Extension {
 			new CreditCardGateway();
 			new DirectDebitGateway();
 			new IDealGateway();
-			new MisterCashGateway();
+			new BancontactGateway();
 			new SofortGateway();
 
 			add_filter( 'pronamic_payment_redirect_url_easydigitaldownloads', array( __CLASS__, 'redirect_url' ), 10, 2 );

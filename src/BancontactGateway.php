@@ -12,7 +12,7 @@ namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
  * @version 1.2.5
  * @since 1.1.0
  */
-class MisterCashGateway extends Gateway {
+class BancontactGateway extends Gateway {
 	/**
 	 * Construct and initialize Mister Cash gateway
 	 */
