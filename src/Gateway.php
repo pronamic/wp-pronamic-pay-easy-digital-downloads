@@ -43,8 +43,6 @@ class Gateway {
 	 */
 	private $supports;
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Bootstrap
 	 */
@@ -85,8 +83,6 @@ class Gateway {
 
 		add_filter( 'edd_get_payment_transaction_id-' . $this->id, array( $this, 'get_payment_transaction_id' ) );
 	}
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * Add the gateway to Easy Digital Downloads
@@ -168,8 +164,6 @@ class Gateway {
 		return $settings_gateways;
 	}
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Payment fields for this gateway
 	 *
@@ -198,8 +192,6 @@ class Gateway {
 			}
 		}
 	}
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * The $purchase_data array consists of the following data:

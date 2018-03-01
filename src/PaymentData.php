@@ -34,8 +34,6 @@ class PaymentData extends \Pronamic\WordPress\Pay\Payments\PaymentData {
 	 */
 	public $description;
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Constructs and initializes an Easy Digital Downloads iDEAL data proxy
 	 *
@@ -48,8 +46,6 @@ class PaymentData extends \Pronamic\WordPress\Pay\Payments\PaymentData {
 		$this->payment_id   = $payment_id;
 		$this->payment_data = $payment_data;
 	}
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * Get source ID
@@ -69,8 +65,6 @@ class PaymentData extends \Pronamic\WordPress\Pay\Payments\PaymentData {
 	public function get_source() {
 		return 'easydigitaldownloads';
 	}
-
-	//////////////////////////////////////////////////
 
 	public function get_title() {
 		return sprintf( __( 'Easy Digital Downloads order %s', 'pronamic_ideal' ), $this->get_order_id() );
@@ -149,8 +143,6 @@ class PaymentData extends \Pronamic\WordPress\Pay\Payments\PaymentData {
 		return $items;
 	}
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Get currency
 	 *
@@ -159,8 +151,6 @@ class PaymentData extends \Pronamic\WordPress\Pay\Payments\PaymentData {
 	public function get_currency_alphabetic_code() {
 		return edd_get_option( 'currency' );
 	}
-
-	//////////////////////////////////////////////////
 
 	public function get_email() {
 		return $this->payment_data['user_email'];
@@ -209,8 +199,6 @@ class PaymentData extends \Pronamic\WordPress\Pay\Payments\PaymentData {
 	public function get_zip() {
 		return '';
 	}
-
-	//////////////////////////////////////////////////
 
 	public function get_normal_return_url() {
 		return home_url();

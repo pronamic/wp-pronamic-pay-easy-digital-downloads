@@ -55,8 +55,6 @@ class EasyDigitalDownloads {
 	 */
 	const ORDER_STATUS_REVOKED = 'revoked';
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Check if Easy Digital Downloads is active
 	 *
