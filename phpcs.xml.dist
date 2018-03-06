@@ -14,7 +14,7 @@
 
 		<exclude name="Squiz.Commenting"></exclude>
 
-		<!-- Excluded for wp_json_encode() function which is only available since WordPress 4.1 -->
-		<exclude name="WordPress.PHP.DiscouragedFunctions.DiscouragedWithAlternative"></exclude>
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
+		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
 	</rule>
 </ruleset>
