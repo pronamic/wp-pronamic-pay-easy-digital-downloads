@@ -67,6 +67,7 @@ class PaymentData extends \Pronamic\WordPress\Pay\Payments\PaymentData {
 	}
 
 	public function get_title() {
+		/* translators: %s: order id */
 		return sprintf( __( 'Easy Digital Downloads order %s', 'pronamic_ideal' ), $this->get_order_id() );
 	}
 
@@ -80,7 +81,7 @@ class PaymentData extends \Pronamic\WordPress\Pay\Payments\PaymentData {
 			$this->description = '{edd_cart_details_name}';
 		}
 
-		// Name
+		// Name.
 		$edd_cart_details_name = '';
 
 		if ( is_array( $this->payment_data['cart_details'] ) ) {
@@ -89,14 +90,14 @@ class PaymentData extends \Pronamic\WordPress\Pay\Payments\PaymentData {
 			$edd_cart_details_name = implode( ', ', $names );
 		}
 
-		// Replace pairs
-		$replace_pairs = array(
+		// Replacements.
+		$replacements = array(
 			'{edd_cart_details_name}' => $edd_cart_details_name,
 			'{edd_payment_id}'        => $this->get_order_id(),
 		);
 
-		// Replace
-		$description = strtr( $this->description, $replace_pairs );
+		// Replace.
+		$description = strtr( $this->description, $replacements );
 
 		return $description;
 	}

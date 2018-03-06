@@ -2,6 +2,7 @@
 
 namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
 
+use Pronamic\WordPress\Pay\Core\Statuses as Core_Statuses;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Plugin;
 
@@ -74,23 +75,23 @@ class Extension {
 		$url = $data->get_normal_return_url();
 
 		switch ( $payment->get_status() ) {
-			case \Pronamic\WordPress\Pay\Core\Statuses::CANCELLED :
+			case Core_Statuses::CANCELLED:
 				$url = $data->get_cancel_url();
 
 				break;
-			case \Pronamic\WordPress\Pay\Core\Statuses::EXPIRED :
+			case Core_Statuses::EXPIRED:
 				$url = $data->get_error_url();
 
 				break;
-			case \Pronamic\WordPress\Pay\Core\Statuses::FAILURE :
+			case Core_Statuses::FAILURE:
 				$url = $data->get_error_url();
 
 				break;
-			case \Pronamic\WordPress\Pay\Core\Statuses::SUCCESS :
+			case Core_Statuses::SUCCESS:
 				$url = $data->get_success_url();
 
 				break;
-			case \Pronamic\WordPress\Pay\Core\Statuses::OPEN :
+			case Core_Statuses::OPEN:
 				// Nothing to do?
 
 				break;
@@ -114,19 +115,19 @@ class Extension {
 
 		if ( $should_update ) {
 			switch ( $payment->get_status() ) {
-				case \Pronamic\WordPress\Pay\Core\Statuses::CANCELLED :
+				case Core_Statuses::CANCELLED:
 					// Nothing to do?
 
 					break;
-				case \Pronamic\WordPress\Pay\Core\Statuses::EXPIRED :
+				case Core_Statuses::EXPIRED:
 					edd_update_payment_status( $source_id, EasyDigitalDownloads::ORDER_STATUS_ABANDONED );
 
 					break;
-				case \Pronamic\WordPress\Pay\Core\Statuses::FAILURE :
+				case Core_Statuses::FAILURE:
 					edd_update_payment_status( $source_id, EasyDigitalDownloads::ORDER_STATUS_FAILED );
 
 					break;
-				case \Pronamic\WordPress\Pay\Core\Statuses::SUCCESS :
+				case Core_Statuses::SUCCESS:
 					edd_insert_payment_note( $source_id, __( 'Payment completed.', 'pronamic_ideal' ) );
 
 					/*
@@ -140,7 +141,7 @@ class Extension {
 					edd_empty_cart();
 
 					break;
-				case \Pronamic\WordPress\Pay\Core\Statuses::OPEN :
+				case Core_Statuses::OPEN:
 					edd_insert_payment_note( $source_id, __( 'Payment open.', 'pronamic_ideal' ) );
 
 					break;
@@ -166,6 +167,7 @@ class Extension {
 		$text .= sprintf(
 			'<a href="%s">%s</a>',
 			get_edit_post_link( $payment->source_id ),
+			/* translators: %s: source id */
 			sprintf( __( 'Payment %s', 'pronamic_ideal' ), $payment->source_id )
 		);
 
@@ -174,20 +176,26 @@ class Extension {
 
 	/**
 	 * Source description.
+	 *
+	 * @param string  $description Description.
+	 * @param Payment $payment     Payment.
+	 *
+	 * @return string
 	 */
 	public static function source_description( $description, Payment $payment ) {
-		$description = __( 'Easy Digital Downloads Order', 'pronamic_ideal' );
-
-		return $description;
+		return __( 'Easy Digital Downloads Order', 'pronamic_ideal' );
 	}
 
 	/**
 	 * Source URL.
+	 *
+	 * @param string  $url     URL.
+	 * @param Payment $payment Payment.
+	 *
+	 * @return string
 	 */
 	public static function source_url( $url, Payment $payment ) {
-		$url = get_edit_post_link( $payment->source_id );
-
-		return $url;
+		return get_edit_post_link( $payment->source_id );
 	}
 
 	/**
@@ -196,23 +204,24 @@ class Extension {
 	 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.1.3/includes/admin/settings/register-settings.php#L261-L268
 	 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.1.3/includes/checkout/template.php#L573-L609
 	 *
-	 * @param array $icons
+	 * @param array $icons Icons.
+	 *
 	 * @return array
 	 */
 	public static function accepted_payment_icons( $icons ) {
-		// iDEAL
+		// iDEAL.
 		$key           = plugins_url( 'images/ideal/icon-64x48.png', Plugin::$file );
 		$icons[ $key ] = __( 'iDEAL', 'pronamic_ideal' );
 
-		// Bancontact/Mister Cash
+		// Bancontact.
 		$key           = plugins_url( 'images/bancontact/icon-64x48.png', Plugin::$file );
 		$icons[ $key ] = __( 'Bancontact', 'pronamic_ideal' );
 
-		// Bitcoin
+		// Bitcoin.
 		$key           = plugins_url( 'images/bitcoin/icon-64x48.png', Plugin::$file );
 		$icons[ $key ] = __( 'Bitcoin', 'pronamic_ideal' );
 
-		// Sofort
+		// Sofort.
 		$key           = plugins_url( 'images/sofort/icon-64x48.png', Plugin::$file );
 		$icons[ $key ] = __( 'SOFORT Überweisung', 'pronamic_ideal' );
 

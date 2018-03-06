@@ -128,7 +128,9 @@ class Gateway {
 		$settings = array(
 			$this->id                     => array(
 				'id'   => $this->id,
+				/* translators: %s: gateway admin label */
 				'name' => '<strong>' . sprintf( __( '%s Settings', 'pronamic_ideal' ), $this->admin_label ) . '</strong>',
+				/* translators: %s: gateway admin label */
 				'desc' => sprintf( __( 'Configure the %s settings', 'pronamic_ideal' ), $this->admin_label ),
 				'type' => 'header',
 			),
@@ -154,8 +156,10 @@ class Gateway {
 				// @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.5.9/includes/admin/settings/register-settings.php#L1537-L1541
 				// @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.5.9/includes/gateways/amazon-payments.php#L330
 				'std'  => '{edd_cart_details_name}',
+				/* translators: %s: <code>{edd_cart_details_name}</code> */
 				'desc' => '<br />' . sprintf( __( 'Default: %s', 'pronamic_ideal' ), '<code>{edd_cart_details_name}</code>' ) .
-							'<br />' . sprintf( __( 'Available Tags: %s', 'pronamic_ideal' ), '<code>{edd_cart_details_name}</code> <code>{edd_payment_id}</code>' ),
+					/* translators: %s: <code>{edd_cart_details_name}</code> */
+					'<br />' . sprintf( __( 'Available Tags: %s', 'pronamic_ideal' ), '<code>{edd_cart_details_name}</code> <code>{edd_payment_id}</code>' ),
 			),
 		);
 
@@ -209,11 +213,13 @@ class Gateway {
 	 *   'user_info'    => array of user's information and used discount code
 	 *   'cart_details' => array of cart details,
 	 * );
+	 *
+	 * @param array $purchase_data Purchase data.
 	 */
 	public function process_purchase( $purchase_data ) {
 		$config_id = edd_get_option( $this->id . '_config_id' );
 
-		// Collect payment data
+		// Collect payment data.
 		$payment_data = array(
 			'price'        => $purchase_data['price'],
 			'date'         => $purchase_data['date'],
@@ -227,12 +233,13 @@ class Gateway {
 			'status'       => 'pending',
 		);
 
-		// Record the pending payment
+		// Record the pending payment.
 		$payment_id = edd_insert_payment( $payment_data );
 
-		// Check payment
+		// Check payment.
 		if ( ! $payment_id ) {
 			// Log error
+			/* translators: %s: payment data JSON */
 			edd_record_gateway_error( __( 'Payment Error', 'pronamic_ideal' ), sprintf( __( 'Payment creation failed before sending buyer to the payment provider. Payment data: %s', 'pronamic_ideal' ), wp_json_encode( $payment_data ) ), $payment_id );
 
 			edd_send_back_to_checkout( '?payment-mode=' . $purchase_data['post_data']['edd-gateway'] );
@@ -243,12 +250,13 @@ class Gateway {
 			$gateway = Plugin::get_gateway( $config_id );
 
 			if ( $gateway ) {
-				// Start
+				// Start.
 				$payment = Plugin::start( $config_id, $gateway, $data, $this->payment_method );
 
 				$error = $gateway->get_error();
 
 				if ( is_wp_error( $error ) ) {
+					/* translators: %s: payment data JSON */
 					edd_record_gateway_error( __( 'Payment Error', 'pronamic_ideal' ), sprintf( __( 'Payment creation failed before sending buyer to the payment provider. Payment data: %s', 'pronamic_ideal' ), wp_json_encode( $payment_data ) ), $payment_id );
 
 					edd_set_error( 'pronamic_pay_error', Plugin::get_default_error_message() );
@@ -263,13 +271,14 @@ class Gateway {
 					// @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.3/includes/payments/functions.php#L1400-L1416
 					edd_set_payment_transaction_id( $payment_id, $payment->get_transaction_id() );
 
-					// Payment note
+					// Insert payment note.
 					$payment_link = add_query_arg( array(
 						'post'   => $payment->get_id(),
 						'action' => 'edit',
 					), admin_url( 'post.php' ) );
 
 					$note = sprintf(
+						/* translators: %s: payment id */
 						__( 'Payment %s pending.', 'pronamic_ideal' ),
 						sprintf( '<a href="%s">#%s</a>', $payment_link, $payment->get_id() )
 					);
@@ -293,7 +302,9 @@ class Gateway {
 	 *
 	 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.3/includes/payments/functions.php#L1378-L1398
 	 *
-	 * @param string $payment_id
+	 * @param string $payment_id Payment ID.
+	 *
+	 * @return null
 	 */
 	public function get_payment_transaction_id( $payment_id ) {
 		return null;
