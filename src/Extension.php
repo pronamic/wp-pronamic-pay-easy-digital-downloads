@@ -2,6 +2,7 @@
 
 namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
 
+use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Core\Statuses as Core_Statuses;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Plugin;
@@ -48,12 +49,22 @@ class Extension {
 			new BancontactGateway();
 			new SofortGateway();
 
+			if ( PaymentMethods::is_active( PaymentMethods::GULDEN ) ) {
+				new GuldenGateway();
+			}
+
 			add_filter( 'pronamic_payment_redirect_url_easydigitaldownloads', array( __CLASS__, 'redirect_url' ), 10, 2 );
 			add_action( 'pronamic_payment_status_update_easydigitaldownloads', array( __CLASS__, 'status_update' ), 10, 1 );
 			add_filter( 'pronamic_payment_source_text_easydigitaldownloads', array( __CLASS__, 'source_text' ), 10, 2 );
 
 			// Icons
 			add_filter( 'edd_accepted_payment_icons', array( __CLASS__, 'accepted_payment_icons' ) );
+
+			// Currencies.
+			add_filter( 'edd_currencies', array( __CLASS__, 'currencies' ), 10, 1 );
+			add_filter( 'edd_currency_symbol', array( __CLASS__, 'currency_symbol' ), 10, 2 );
+			add_filter( 'edd_nlg_currency_filter_before', array( __CLASS__, 'currency_filter_before' ), 10, 3 );
+			add_filter( 'edd_nlg_currency_filter_after', array( __CLASS__, 'currency_filter_after' ), 10, 3 );
 		}
 
 		add_filter( 'pronamic_payment_source_description_easydigitaldownloads', array( __CLASS__, 'source_description' ), 10, 2 );
@@ -154,6 +165,89 @@ class Extension {
 	}
 
 	/**
+	 * Filter currencies.
+	 *
+	 * @param array $currencies Available currencies.
+	 *
+	 * @return mixed
+	 */
+	public static function currencies( $currencies ) {
+		if ( PaymentMethods::is_active( PaymentMethods::GULDEN ) ) {
+			$currencies['NLG'] = __( 'Gulden (G)', 'woocommerce' );
+		}
+
+		return $currencies;
+	}
+
+	/**
+	 * Filter currency symbol.
+	 *
+	 * @param string $symbol   Symbol.
+	 * @param string $currency Currency.
+	 *
+	 * @return string
+	 */
+	public static function currency_symbol( $symbol, $currency ) {
+		if ( 'NLG' === $currency ) {
+			$symbol = 'G';
+		}
+
+		return $symbol;
+	}
+
+	/**
+	 * Filter currency before.
+	 *
+	 * @param string $formatted Formatted symbol and price.
+	 * @param string $currency  Currency.
+	 * @param string $price     Price.
+	 *
+	 * @return string
+	 */
+	public static function currency_filter_before( $formatted, $currency, $price ) {
+		if ( ! function_exists( 'edd_currency_symbol' ) ) {
+			return $formatted;
+		}
+
+		$symbol = edd_currency_symbol( $currency );
+
+		switch ( $currency ) {
+			case 'NLG':
+				$formatted = $symbol . $price;
+
+				break;
+		}
+
+		return $formatted;
+	}
+
+	/**
+	 * Filter currency after.
+	 *
+	 * @param string $formatted Formatted symbol and price.
+	 * @param string $currency  Currency.
+	 * @param string $price     Price.
+	 *
+	 * @return string
+	 */
+	public static function currency_filter_after( $formatted, $currency, $price ) {
+		if ( ! function_exists( 'edd_currency_symbol' ) ) {
+			return $formatted;
+		}
+
+		$symbol = edd_currency_symbol( $currency );
+
+		switch ( $currency ) {
+			case 'NLG':
+				$formatted = $price . $symbol;
+
+				break;
+		}
+
+		return $formatted;
+	}
+
+	/**
 	 * Source column
 	 *
 	 * @param string $text
@@ -211,19 +305,25 @@ class Extension {
 	public static function accepted_payment_icons( $icons ) {
 		// iDEAL.
 		$key           = plugins_url( 'images/ideal/icon-64x48.png', Plugin::$file );
-		$icons[ $key ] = __( 'iDEAL', 'pronamic_ideal' );
+		$icons[ $key ] = PaymentMethods::get_name( PaymentMethods::IDEAL );
 
 		// Bancontact.
 		$key           = plugins_url( 'images/bancontact/icon-64x48.png', Plugin::$file );
-		$icons[ $key ] = __( 'Bancontact', 'pronamic_ideal' );
+		$icons[ $key ] = PaymentMethods::get_name( PaymentMethods::BANCONTACT );
 
 		// Bitcoin.
 		$key           = plugins_url( 'images/bitcoin/icon-64x48.png', Plugin::$file );
-		$icons[ $key ] = __( 'Bitcoin', 'pronamic_ideal' );
+		$icons[ $key ] = PaymentMethods::get_name( PaymentMethods::BITCOIN );
 
 		// Sofort.
 		$key           = plugins_url( 'images/sofort/icon-64x48.png', Plugin::$file );
-		$icons[ $key ] = __( 'SOFORT Überweisung', 'pronamic_ideal' );
+		$icons[ $key ] = PaymentMethods::get_name( PaymentMethods::SOFORT );
+
+		if ( PaymentMethods::is_active( PaymentMethods::GULDEN ) ) {
+			// Gulden.
+			$key           = plugins_url( 'images/gulden/icon-64x48.png', Plugin::$file );
+			$icons[ $key ] = PaymentMethods::get_name( PaymentMethods::GULDEN );
+		}
 
 		return $icons;
 	}
