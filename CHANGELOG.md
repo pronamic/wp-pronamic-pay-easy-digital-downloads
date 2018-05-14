@@ -7,6 +7,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [2.0.0] - 2018-05-14
+- Switched to PHP namespaces.
+
 ## [1.2.7] - 2017-09-13
 - Implemented `get_first_name()` and `get_last_name()`.
 
@@ -57,7 +60,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2015-01-20
 - First release.
 
-[unreleased]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/1.2.7...HEAD
+[unreleased]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.0.0...HEAD
+[2.0.0]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/1.2.7...2.0.0
 [1.2.7]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/1.2.6...1.2.7
 [1.2.6]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/1.2.5...1.2.6
 [1.2.5]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/1.2.4...1.2.5

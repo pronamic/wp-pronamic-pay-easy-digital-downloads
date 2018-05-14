@@ -3,7 +3,7 @@
 	"description": "Easy Digital Downloads driver for the WordPress payment processing library.",
 	"keywords": ["wordpress", "wp", "pay", "edd", "easy", "digital", "downlaods", "extension", "pronamic"],
 	"homepage": "http://www.wp-pay.org/extensions/easy-digital-downloads/",
-	"license": "GPL-3.0+",
+	"license": "GPL-3.0-or-later",
 	"authors": [
 		{
 			"name": "Pronamic",
@@ -24,22 +24,25 @@
 		"source": "https://github.com/wp-pay-extensions/easy-digital-downloads"
 	},
 	"autoload": {
-		"classmap": ["src/"]
-	},
-	"repositories":[
-		{
-			"type": "composer",
-			"url": "https://wpackagist.org/"
+		"psr-4": {
+			"Pronamic\\WordPress\\Pay\\Extensions\\EasyDigitalDownloads\\": "src"
 		}
-	],
+	},
+	"config": {
+		"platform": {
+			"php": "5.3.3"
+		}
+	},
 	"require": {
-		"php": ">=5.3",
-		"wpackagist-plugin/easy-digital-downloads": "2.5.9",
-		"wp-pay/core": "^1.3"
+		"php": "^5.3",
+		"wp-pay/core": "^2.0"
 	},
 	"require-dev": {
-		"satooshi/php-coveralls": "dev-master",
+		"php-coveralls/php-coveralls": "^1.0",
+		"phpmd/phpmd": "^2.2.3",
+		"phpunit/phpunit": "^4.5",
 		"squizlabs/php_codesniffer": "^2.7",
-		"wp-coding-standards/wpcs": "^0.10.0"
+		"wp-coding-standards/wpcs": "^0.14.1",
+		"wimg/php-compatibility": "^8.0"
 	}
 }

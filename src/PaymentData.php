@@ -1,16 +1,18 @@
 <?php
 
+namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
+
 /**
  * Title: Easy Digital Downloads payment data
  * Description:
- * Copyright: Copyright (c) 2005 - 2017
+ * Copyright: Copyright (c) 2005 - 2018
  * Company: Pronamic
  *
- * @author Remco Tolsma
- * @version 1.2.7
- * @since 1.0.0
+ * @author  Remco Tolsma
+ * @version 2.0.0
+ * @since   1.0.0
  */
-class Pronamic_WP_Pay_Extensions_EDD_PaymentData extends Pronamic_WP_Pay_PaymentData {
+class PaymentData extends \Pronamic\WordPress\Pay\Payments\PaymentData {
 	/**
 	 * Payment ID
 	 *
@@ -25,7 +27,12 @@ class Pronamic_WP_Pay_Extensions_EDD_PaymentData extends Pronamic_WP_Pay_Payment
 	 */
 	private $payment_data;
 
-	//////////////////////////////////////////////////
+	/**
+	 * Description
+	 *
+	 * @var string
+	 */
+	public $description;
 
 	/**
 	 * Constructs and initializes an Easy Digital Downloads iDEAL data proxy
@@ -39,8 +46,6 @@ class Pronamic_WP_Pay_Extensions_EDD_PaymentData extends Pronamic_WP_Pay_Payment
 		$this->payment_id   = $payment_id;
 		$this->payment_data = $payment_data;
 	}
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * Get source ID
@@ -61,9 +66,8 @@ class Pronamic_WP_Pay_Extensions_EDD_PaymentData extends Pronamic_WP_Pay_Payment
 		return 'easydigitaldownloads';
 	}
 
-	//////////////////////////////////////////////////
-
 	public function get_title() {
+		/* translators: %s: order id */
 		return sprintf( __( 'Easy Digital Downloads order %s', 'pronamic_ideal' ), $this->get_order_id() );
 	}
 
@@ -73,15 +77,27 @@ class Pronamic_WP_Pay_Extensions_EDD_PaymentData extends Pronamic_WP_Pay_Payment
 	 * @return string
 	 */
 	public function get_description() {
-		$description = '';
-
-		if ( count( $this->payment_data['cart_details'] ) > 0 ) {
-			foreach ( $this->payment_data['cart_details'] as $cart_details ) {
-				$description .= $cart_details['name'] . ', ';
-			}
-
-			$description = substr( $description, 0, -2 );
+		if ( empty( $this->description ) ) {
+			$this->description = '{edd_cart_details_name}';
 		}
+
+		// Name.
+		$edd_cart_details_name = '';
+
+		if ( is_array( $this->payment_data['cart_details'] ) ) {
+			$names = wp_list_pluck( $this->payment_data['cart_details'], 'name' );
+
+			$edd_cart_details_name = implode( ', ', $names );
+		}
+
+		// Replacements.
+		$replacements = array(
+			'{edd_cart_details_name}' => $edd_cart_details_name,
+			'{edd_payment_id}'        => $this->get_order_id(),
+		);
+
+		// Replace.
+		$description = strtr( $this->description, $replacements );
 
 		return $description;
 	}
@@ -113,11 +129,11 @@ class Pronamic_WP_Pay_Extensions_EDD_PaymentData extends Pronamic_WP_Pay_Payment
 	 */
 	public function get_items() {
 		// Items
-		$items = new Pronamic_IDeal_Items();
+		$items = new \Pronamic\WordPress\Pay\Payments\Items();
 
 		// Item
 		// We only add one total item, because iDEAL cant work with negative price items (discount)
-		$item = new Pronamic_IDeal_Item();
+		$item = new \Pronamic\WordPress\Pay\Payments\Item();
 		$item->setNumber( $this->payment_id );
 		$item->setDescription( $this->get_description() );
 		$item->setPrice( $this->payment_data['price'] );
@@ -128,8 +144,6 @@ class Pronamic_WP_Pay_Extensions_EDD_PaymentData extends Pronamic_WP_Pay_Payment
 		return $items;
 	}
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Get currency
 	 *
@@ -138,8 +152,6 @@ class Pronamic_WP_Pay_Extensions_EDD_PaymentData extends Pronamic_WP_Pay_Payment
 	public function get_currency_alphabetic_code() {
 		return edd_get_option( 'currency' );
 	}
-
-	//////////////////////////////////////////////////
 
 	public function get_email() {
 		return $this->payment_data['user_email'];
@@ -188,8 +200,6 @@ class Pronamic_WP_Pay_Extensions_EDD_PaymentData extends Pronamic_WP_Pay_Payment
 	public function get_zip() {
 		return '';
 	}
-
-	//////////////////////////////////////////////////
 
 	public function get_normal_return_url() {
 		return home_url();
