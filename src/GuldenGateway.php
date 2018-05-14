@@ -10,9 +10,9 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
  * Copyright: Copyright (c) 2005 - 2018
  * Company: Pronamic
  *
- * @author Reüel van der Steege
- * @version unreleased
- * @since unreleased
+ * @author  Reüel van der Steege
+ * @version 2.0.0
+ * @since  2.0.0
  */
 class GuldenGateway extends Gateway {
 	/**
