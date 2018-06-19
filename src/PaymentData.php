@@ -134,10 +134,10 @@ class PaymentData extends \Pronamic\WordPress\Pay\Payments\PaymentData {
 		// Item
 		// We only add one total item, because iDEAL cant work with negative price items (discount)
 		$item = new \Pronamic\WordPress\Pay\Payments\Item();
-		$item->setNumber( $this->payment_id );
-		$item->setDescription( $this->get_description() );
-		$item->setPrice( $this->payment_data['price'] );
-		$item->setQuantity( 1 );
+		$item->set_number( $this->payment_id );
+		$item->set_description( $this->get_description() );
+		$item->set_price( $this->payment_data['price'] );
+		$item->set_quantity( 1 );
 
 		$items->addItem( $item );
 
