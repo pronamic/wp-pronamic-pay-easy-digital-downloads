@@ -19,7 +19,7 @@ class BankTransferGateway extends Gateway {
 	public function __construct() {
 		parent::__construct( array(
 			'id'             => 'pronamic_pay_bank_transfer',
-			'admin_label'    => __( 'Bank Transfer', 'pronamic_ideal' ),
+			'admin_label'    => __( 'Pronamic - Bank Transfer', 'pronamic_ideal' ),
 			'checkout_label' => __( 'Bank Transfer', 'pronamic_ideal' ),
 			'payment_method' => \Pronamic\WordPress\Pay\Core\PaymentMethods::BANK_TRANSFER,
 		) );

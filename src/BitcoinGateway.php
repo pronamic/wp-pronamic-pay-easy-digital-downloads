@@ -19,7 +19,7 @@ class BitcoinGateway extends Gateway {
 	public function __construct() {
 		parent::__construct( array(
 			'id'             => 'pronamic_pay_bitcoin',
-			'admin_label'    => __( 'Bitcoin', 'pronamic_ideal' ),
+			'admin_label'    => __( 'Pronamic - Bitcoin', 'pronamic_ideal' ),
 			'checkout_label' => __( 'Bitcoin', 'pronamic_ideal' ),
 			'payment_method' => \Pronamic\WordPress\Pay\Core\PaymentMethods::BITCOIN,
 		) );
