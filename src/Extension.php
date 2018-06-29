@@ -264,7 +264,7 @@ class Extension {
 
 		$text .= sprintf(
 			'<a href="%s">%s</a>',
-			get_edit_post_link( $payment->source_id ),
+			EasyDigitalDownloads::get_payment_url( $payment->source_id ),
 			/* translators: %s: source id */
 			sprintf( __( 'Payment %s', 'pronamic_ideal' ), $payment->source_id )
 		);
@@ -293,7 +293,7 @@ class Extension {
 	 * @return string
 	 */
 	public static function source_url( $url, Payment $payment ) {
-		return get_edit_post_link( $payment->source_id );
+		return EasyDigitalDownloads::get_payment_url( $payment->source_id );
 	}
 
 	/**
