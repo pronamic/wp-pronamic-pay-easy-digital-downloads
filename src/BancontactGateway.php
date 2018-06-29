@@ -19,7 +19,7 @@ class BancontactGateway extends Gateway {
 	public function __construct() {
 		parent::__construct( array(
 			'id'             => 'pronamic_pay_mister_cash',
-			'admin_label'    => __( 'Bancontact', 'pronamic_ideal' ),
+			'admin_label'    => __( 'Pronamic - Bancontact', 'pronamic_ideal' ),
 			'checkout_label' => __( 'Bancontact', 'pronamic_ideal' ),
 			'payment_method' => \Pronamic\WordPress\Pay\Core\PaymentMethods::BANCONTACT,
 		) );
