@@ -323,12 +323,6 @@ class Extension {
 		$key           = plugins_url( 'images/sofort/icon-64x48.png', Plugin::$file );
 		$icons[ $key ] = PaymentMethods::get_name( PaymentMethods::SOFORT );
 
-		if ( PaymentMethods::is_active( PaymentMethods::GULDEN ) ) {
-			// Gulden.
-			$key           = plugins_url( 'images/gulden/icon-64x48.png', Plugin::$file );
-			$icons[ $key ] = PaymentMethods::get_name( PaymentMethods::GULDEN );
-		}
-
 		return $icons;
 	}
 }
