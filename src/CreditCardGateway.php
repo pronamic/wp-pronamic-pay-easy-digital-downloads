@@ -9,7 +9,7 @@ namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
  * Company: Pronamic
  *
  * @author  Remco Tolsma
- * @version 2.0.0
+ * @version 2.0.1
  * @since   1.1.0
  */
 class CreditCardGateway extends Gateway {
