@@ -9,7 +9,7 @@ namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
  * Company: Pronamic
  *
  * @author  Remco Tolsma
- * @version 2.0.0
+ * @version 2.0.1
  * @since   1.1.0
  */
 class SofortGateway extends Gateway {
@@ -19,7 +19,7 @@ class SofortGateway extends Gateway {
 	public function __construct() {
 		parent::__construct( array(
 			'id'             => 'pronamic_pay_sofort',
-			'admin_label'    => __( 'SOFORT Banking', 'pronamic_ideal' ),
+			'admin_label'    => __( 'Pronamic - SOFORT Banking', 'pronamic_ideal' ),
 			'checkout_label' => __( 'SOFORT Banking', 'pronamic_ideal' ),
 			'payment_method' => \Pronamic\WordPress\Pay\Core\PaymentMethods::SOFORT,
 		) );

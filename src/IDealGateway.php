@@ -9,7 +9,7 @@ namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.1.0
+ * @version 2.0.1
  * @since 1.1.0
  */
 class IDealGateway extends Gateway {
@@ -19,7 +19,7 @@ class IDealGateway extends Gateway {
 	public function __construct() {
 		parent::__construct( array(
 			'id'             => 'pronamic_pay_ideal',
-			'admin_label'    => __( 'iDEAL', 'pronamic_ideal' ),
+			'admin_label'    => __( 'Pronamic - iDEAL', 'pronamic_ideal' ),
 			'checkout_label' => __( 'iDEAL', 'pronamic_ideal' ),
 			'payment_method' => \Pronamic\WordPress\Pay\Core\PaymentMethods::IDEAL,
 		) );

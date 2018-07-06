@@ -9,7 +9,7 @@ namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
  * Company: Pronamic
  *
  * @author  Remco Tolsma
- * @version 2.0.0
+ * @version 2.0.1
  * @since   1.2.6
  */
 class BankTransferGateway extends Gateway {
@@ -19,7 +19,7 @@ class BankTransferGateway extends Gateway {
 	public function __construct() {
 		parent::__construct( array(
 			'id'             => 'pronamic_pay_bank_transfer',
-			'admin_label'    => __( 'Bank Transfer', 'pronamic_ideal' ),
+			'admin_label'    => __( 'Pronamic - Bank Transfer', 'pronamic_ideal' ),
 			'checkout_label' => __( 'Bank Transfer', 'pronamic_ideal' ),
 			'payment_method' => \Pronamic\WordPress\Pay\Core\PaymentMethods::BANK_TRANSFER,
 		) );

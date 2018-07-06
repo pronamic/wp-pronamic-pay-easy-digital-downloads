@@ -11,7 +11,7 @@ use Pronamic\WordPress\Pay\Plugin;
  * Company: Pronamic
  *
  * @author  Remco Tolsma
- * @version 2.0.0
+ * @version 2.0.1
  * @since   1.1.0
  */
 class Gateway {
@@ -169,13 +169,26 @@ class Gateway {
 	}
 
 	/**
+	 * Get the Pronamic configuration ID for this gateway.
+	 *
+	 * @return string
+	 */
+	private function get_pronamic_config_id() {
+		$config_id = edd_get_option( $this->id . '_config_id' );
+
+		$config_id = empty( $config_id ) ? get_option( 'pronamic_pay_config_id' ) : $config_id;
+
+		return $config_id;
+	}
+
+	/**
 	 * Payment fields for this gateway
 	 *
 	 * @version 1.2.1
 	 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/1.9.4/includes/checkout/template.php#L167
 	 */
 	public function payment_fields() {
-		$gateway = Plugin::get_gateway( edd_get_option( $this->id . '_config_id' ) );
+		$gateway = Plugin::get_gateway( $this->get_pronamic_config_id() );
 
 		if ( $gateway ) {
 			/*
@@ -217,7 +230,7 @@ class Gateway {
 	 * @param array $purchase_data Purchase data.
 	 */
 	public function process_purchase( $purchase_data ) {
-		$config_id = edd_get_option( $this->id . '_config_id' );
+		$config_id = $this->get_pronamic_config_id();
 
 		// Collect payment data.
 		$payment_data = array(
@@ -243,58 +256,64 @@ class Gateway {
 			edd_record_gateway_error( __( 'Payment Error', 'pronamic_ideal' ), sprintf( __( 'Payment creation failed before sending buyer to the payment provider. Payment data: %s', 'pronamic_ideal' ), wp_json_encode( $payment_data ) ), $payment_id );
 
 			edd_send_back_to_checkout( '?payment-mode=' . $purchase_data['post_data']['edd-gateway'] );
-		} else {
-			$data              = new PaymentData( $payment_id, $payment_data );
-			$data->description = edd_get_option( $this->id . '_description' );
 
-			$gateway = Plugin::get_gateway( $config_id );
-
-			if ( $gateway ) {
-				// Start.
-				$payment = Plugin::start( $config_id, $gateway, $data, $this->payment_method );
-
-				$error = $gateway->get_error();
-
-				if ( is_wp_error( $error ) ) {
-					/* translators: %s: payment data JSON */
-					edd_record_gateway_error( __( 'Payment Error', 'pronamic_ideal' ), sprintf( __( 'Payment creation failed before sending buyer to the payment provider. Payment data: %s', 'pronamic_ideal' ), wp_json_encode( $payment_data ) ), $payment_id );
-
-					edd_set_error( 'pronamic_pay_error', Plugin::get_default_error_message() );
-
-					foreach ( $error->get_error_messages() as $i => $message ) {
-						edd_set_error( 'pronamic_pay_error_' . $i, $message );
-					}
-
-					edd_send_back_to_checkout( '?payment-mode=' . $purchase_data['post_data']['edd-gateway'] );
-				} else {
-					// Transaction ID
-					// @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.3/includes/payments/functions.php#L1400-L1416
-					edd_set_payment_transaction_id( $payment_id, $payment->get_transaction_id() );
-
-					// Insert payment note.
-					$payment_link = add_query_arg( array(
-						'post'   => $payment->get_id(),
-						'action' => 'edit',
-					), admin_url( 'post.php' ) );
-
-					$note = sprintf(
-						/* translators: %s: payment id */
-						__( 'Payment %s pending.', 'pronamic_ideal' ),
-						sprintf( '<a href="%s">#%s</a>', $payment_link, $payment->get_id() )
-					);
-
-					edd_insert_payment_note( $payment_id, $note );
-
-					$gateway->redirect( $payment );
-
-					exit;
-				}
-			} else {
-				edd_set_error( 'pronamic_pay_error', Plugin::get_default_error_message() );
-
-				edd_send_back_to_checkout( '?payment-mode=' . $purchase_data['post_data']['edd-gateway'] );
-			}
+			return;
 		}
+
+		$data = new PaymentData( $payment_id, $payment_data );
+
+		$data->description = edd_get_option( $this->id . '_description' );
+
+		// Get gateway.
+		$gateway = Plugin::get_gateway( $config_id );
+
+		if ( ! $gateway ) {
+			edd_set_error( 'pronamic_pay_error', Plugin::get_default_error_message() );
+
+			edd_send_back_to_checkout( '?payment-mode=' . $purchase_data['post_data']['edd-gateway'] );
+		}
+
+		// Start.
+		$payment = Plugin::start( $config_id, $gateway, $data, $this->payment_method );
+
+		$error = $gateway->get_error();
+
+		if ( is_wp_error( $error ) ) {
+			/* translators: %s: payment data JSON */
+			edd_record_gateway_error( __( 'Payment Error', 'pronamic_ideal' ), sprintf( __( 'Payment creation failed before sending buyer to the payment provider. Payment data: %s', 'pronamic_ideal' ), wp_json_encode( $payment_data ) ), $payment_id );
+
+			edd_set_error( 'pronamic_pay_error', Plugin::get_default_error_message() );
+
+			foreach ( $error->get_error_messages() as $i => $message ) {
+				edd_set_error( 'pronamic_pay_error_' . $i, $message );
+			}
+
+			edd_send_back_to_checkout( '?payment-mode=' . $purchase_data['post_data']['edd-gateway'] );
+
+			return;
+		}
+
+		// Transaction ID
+		// @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.3/includes/payments/functions.php#L1400-L1416
+		edd_set_payment_transaction_id( $payment_id, $payment->get_transaction_id() );
+
+		// Insert payment note.
+		$payment_link = add_query_arg( array(
+			'post'   => $payment->get_id(),
+			'action' => 'edit',
+		), admin_url( 'post.php' ) );
+
+		$note = sprintf(
+			/* translators: %s: payment id */
+			__( 'Payment %s pending.', 'pronamic_ideal' ),
+			sprintf( '<a href="%s">#%s</a>', $payment_link, $payment->get_id() )
+		);
+
+		edd_insert_payment_note( $payment_id, $note );
+
+		$gateway->redirect( $payment );
+
+		exit;
 	}
 
 	/**

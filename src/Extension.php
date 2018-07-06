@@ -14,7 +14,7 @@ use Pronamic\WordPress\Pay\Plugin;
  * Company: Pronamic
  *
  * @author  Remco Tolsma
- * @version 2.0.0
+ * @version 2.0.1
  * @since   1.0.0
  */
 class Extension {
@@ -264,7 +264,7 @@ class Extension {
 
 		$text .= sprintf(
 			'<a href="%s">%s</a>',
-			get_edit_post_link( $payment->source_id ),
+			EasyDigitalDownloads::get_payment_url( $payment->source_id ),
 			/* translators: %s: source id */
 			sprintf( __( 'Payment %s', 'pronamic_ideal' ), $payment->source_id )
 		);
@@ -293,7 +293,7 @@ class Extension {
 	 * @return string
 	 */
 	public static function source_url( $url, Payment $payment ) {
-		return get_edit_post_link( $payment->source_id );
+		return EasyDigitalDownloads::get_payment_url( $payment->source_id );
 	}
 
 	/**
@@ -322,12 +322,6 @@ class Extension {
 		// Sofort.
 		$key           = plugins_url( 'images/sofort/icon-64x48.png', Plugin::$file );
 		$icons[ $key ] = PaymentMethods::get_name( PaymentMethods::SOFORT );
-
-		if ( PaymentMethods::is_active( PaymentMethods::GULDEN ) ) {
-			// Gulden.
-			$key           = plugins_url( 'images/gulden/icon-64x48.png', Plugin::$file );
-			$icons[ $key ] = PaymentMethods::get_name( PaymentMethods::GULDEN );
-		}
 
 		return $icons;
 	}
