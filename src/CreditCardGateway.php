@@ -19,7 +19,12 @@ class CreditCardGateway extends Gateway {
 	public function __construct() {
 		parent::__construct( array(
 			'id'             => 'pronamic_pay_credit_card',
-			'admin_label'    => __( 'Pronamic - Credit Card', 'pronamic_ideal' ),
+			'admin_label'    => sprintf(
+				/* translators: 1: Gateway admin label prefix, 2: Gateway admin label */
+				__( '%1$s - %2$s', 'pronamic_ideal' ),
+				__( 'Pronamic', 'pronamic_ideal' ),
+				__( 'Credit Card', 'pronamic_ideal' )
+			),
 			'checkout_label' => __( 'Credit Card', 'pronamic_ideal' ),
 			'payment_method' => \Pronamic\WordPress\Pay\Core\PaymentMethods::CREDIT_CARD,
 		) );

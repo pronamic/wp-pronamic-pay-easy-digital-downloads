@@ -21,7 +21,12 @@ class GuldenGateway extends Gateway {
 	public function __construct() {
 		parent::__construct( array(
 			'id'             => 'pronamic_pay_gulden',
-			'admin_label'    => __( 'Pronamic - Gulden', 'pronamic_ideal' ),
+			'admin_label'    => sprintf(
+				/* translators: 1: Gateway admin label prefix, 2: Gateway admin label */
+				__( '%1$s - %2$s', 'pronamic_ideal' ),
+				__( 'Pronamic', 'pronamic_ideal' ),
+				__( 'Gulden', 'pronamic_ideal' )
+			),
 			'checkout_label' => __( 'Gulden', 'pronamic_ideal' ),
 			'payment_method' => PaymentMethods::GULDEN,
 		) );

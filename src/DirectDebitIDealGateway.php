@@ -19,7 +19,16 @@ class DirectDebitIDealGateway extends Gateway {
 	public function __construct() {
 		parent::__construct( array(
 			'id'             => 'pronamic_pay_direct_debit_ideal',
-			'admin_label'    => __( 'Pronamic - Direct Debit (mandate via iDEAL)', 'pronamic_ideal' ),
+			'admin_label'    => sprintf(
+				/* translators: 1: Gateway admin label prefix, 2: Gateway admin label */
+				__( '%1$s - %2$s', 'pronamic_ideal' ),
+				__( 'Pronamic', 'pronamic_ideal' ),
+				sprintf(
+					/* translators: %s: payment method */
+					__( 'Direct Debit (mandate via %s)', 'pronamic_ideal' ),
+					__( 'iDEAL', 'pronamic_ideal' )
+				)
+			),
 			'checkout_label' => __( 'Direct Debit (mandate via iDEAL)', 'pronamic_ideal' ),
 			'payment_method' => \Pronamic\WordPress\Pay\Core\PaymentMethods::DIRECT_DEBIT_IDEAL,
 		) );
