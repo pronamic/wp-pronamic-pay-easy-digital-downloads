@@ -374,6 +374,7 @@ class Gateway {
 				$line->set_unit_price( new Money( $detail['item_price'], edd_get_option( 'currency' ) ) );
 				$line->set_total_amount( new Money( $detail['price'], edd_get_option( 'currency' ) ) );
 				$line->set_total_tax( new Money( $detail['tax'], edd_get_option( 'currency' ) ) );
+				$line->set_total_discount( new Money( $detail['discount'], edd_get_option( 'currency' ) ) );
 				$line->set_quantity( $detail['quantity'] );
 			}
 		}
