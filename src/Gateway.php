@@ -2,7 +2,13 @@
 
 namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
 
+use Pronamic\WordPress\Money\Money;
+use Pronamic\WordPress\Pay\Address;
+use Pronamic\WordPress\Pay\ContactName;
+use Pronamic\WordPress\Pay\Customer;
 use Pronamic\WordPress\Pay\Plugin;
+use Pronamic\WordPress\Pay\Payments\Payment;
+use Pronamic\WordPress\Pay\Payments\PaymentLines;
 
 /**
  * Title: Easy Digital Downloads gateway
@@ -277,51 +283,107 @@ class Gateway {
 		}
 
 		// Start.
+		$payment = new Payment();
+
+		// User Info.
+		$email      = null;
+		$first_name = null;
+		$last_name  = null;
+		$address    = null;
+
+		$user_info = array();
+
+		if ( array_key_exists( 'user_info', $purchase_data ) ) {
+			$user_info = $purchase_data['user_info'];
+		}
+
+		if ( is_array( $user_info ) ) {
+			if ( array_key_exists( 'email', $user_info ) ) {
+				$email = $user_info['email'];
+			}
+
+			if ( array_key_exists( 'first_name', $user_info ) ) {
+				$first_name = $user_info['first_name'];
+			}
+
+			if ( array_key_exists( 'last_name', $user_info ) ) {
+				$last_name = $user_info['last_name'];
+			}
+
+			if ( array_key_exists( 'address', $user_info ) ) {
+				$address_array = wp_parse_args( $user_info['address'], array(
+					'line1'   => null,
+					'line2'   => null,
+					'city'    => null,
+					'state'   => null,
+					'country' => null,
+					'zip'     => null,
+				) );
+
+				$address = new Address();
+
+				$address->set_line_1( $address_array['line1'] );
+				$address->set_line_2( $address_array['line2'] );
+				$address->set_city( $address_array['city'] );
+				$address->set_region( $address_array['state'] );
+				$address->set_country_code( $address_array['country'] );
+				$address->set_postal_code( $address_array['zip'] );
+			}
+		}
 
 		// Name.
 		$name = new ContactName();
 
-		$name->set_first_name( $data->get_first_name() );
-		$name->set_last_name( $data->get_last_name() );
+		$name->set_first_name( $first_name );
+		$name->set_last_name( $last_name );
 
 		// Customer.
 		$customer = new Customer();
 
 		$customer->set_name( $name );
-		$customer->set_email( $data->get_email() );
+		$customer->set_email( $email );
 		$customer->set_phone( null );
 
-		// Billing address.
-		$billing_address = new Address();
+		// Lines.
+		$cart_details = null;
 
-		$billing_address->set_name( $name );
-		$billing_address->set_company_name( null );
-		$billing_address->set_line_1( null );
-		$billing_address->set_line_2( null );
-		$billing_address->set_postal_code( null );
-		$billing_address->set_city( null );
-		$billing_address->set_region( null );
-		$billing_address->set_country( null );
-		$billing_address->set_email( null );
-		$billing_address->set_phone( null );
+		if ( array_key_exists( 'cart_details', $purchase_data ) ) {
+			$cart_details = $purchase_data['cart_details'];
+		}
 
-		// Shipping address.
-		$shipping_address = new Address();
+		if ( is_array( $cart_details ) ) {
+			$payment_lines = new PaymentLines();
 
-		$shipping_address->set_name( null );
-		$shipping_address->set_company_name( null );
-		$shipping_address->set_line_1( null );
-		$shipping_address->set_line_2( null );
-		$shipping_address->set_postal_code( null );
-		$shipping_address->set_city( null );
-		$shipping_address->set_region( null );
-		$shipping_address->set_country( null );
-		$shipping_address->set_email( null );
-		$shipping_address->set_phone( null );
+			$cart_detail_defaults = array(
+				'name'        => null,
+				'id'          => null,
+				'item_number' => null,
+				'item_price'  => null,
+				'quantity'    => null,
+				'discount'    => null,
+				'subtotal'    => null,
+				'tax'         => null,
+				'fees'        => null,
+				'price'       => null,
+			);
 
-		// Payment
-		$payment = new Payment();
+			foreach ( $cart_details as $cart_detail ) {
+				$detail = wp_parse_args( $cart_detail, $cart_detail_defaults );
 
+				$line = $payment_lines->new_line();
+
+				$line->set_name( $detail['name'] );
+				$line->set_id( $detail['id'] );
+				$line->set_unit_price( new Money( $detail['item_price'], edd_get_option( 'currency' ) ) );
+				$line->set_total_amount( new Money( $detail['price'], edd_get_option( 'currency' ) ) );
+				$line->set_total_tax( new Money( $detail['tax'], edd_get_option( 'currency' ) ) );
+				$line->set_quantity( $detail['quantity'] );
+			}
+
+			$payment->lines = $payment_lines;
+		}
+
+		// Payment.
 		$payment->order_id    = $payment_id;
 		$payment->title       = $data->get_title();
 		$payment->description = $data->get_description();
@@ -332,8 +394,8 @@ class Gateway {
 		$payment->issuer      = $data->get_issuer();
 
 		$payment->set_customer( $customer );
-		$payment->set_billing_address( $billing_address );
-		$payment->set_shipping_address( $shipping_address );
+		$payment->set_billing_address( $address );
+		$payment->set_shipping_address( $address );
 
 		$payment = Plugin::start_payment( $payment );
 
