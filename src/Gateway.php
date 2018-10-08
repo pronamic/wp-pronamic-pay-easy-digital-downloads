@@ -285,29 +285,39 @@ class Gateway {
 		// Start.
 		$payment = new Payment();
 
-		// User Info.
-		$email      = null;
-		$first_name = null;
-		$last_name  = null;
-		$address    = null;
+		$payment->order_id    = $payment_id;
+		$payment->title       = $data->get_title();
+		$payment->description = $data->get_description();
+		$payment->config_id   = $config_id;
+		$payment->source      = $data->get_source();
+		$payment->source_id   = $data->get_source_id();
+		$payment->method      = $this->payment_method;
+		$payment->issuer      = $data->get_issuer();
 
-		$user_info = array();
+		// Name.
+		$name = new ContactName();
 
-		if ( array_key_exists( 'user_info', $purchase_data ) ) {
+		// Customer.
+		$customer = new Customer();
+
+		$customer->set_name( $name );
+		$customer->set_phone( null );
+
+		$payment->set_customer( $customer );
+
+		if ( array_key_exists( 'user_info', $purchase_data ) && is_array( $purchase_data['user_info'] ) ) {
 			$user_info = $purchase_data['user_info'];
-		}
 
-		if ( is_array( $user_info ) ) {
 			if ( array_key_exists( 'email', $user_info ) ) {
-				$email = $user_info['email'];
+				$customer->set_email( $user_info['email'] );
 			}
 
 			if ( array_key_exists( 'first_name', $user_info ) ) {
-				$first_name = $user_info['first_name'];
+				$name->set_first_name( $user_info['first_name'] );
 			}
 
 			if ( array_key_exists( 'last_name', $user_info ) ) {
-				$last_name = $user_info['last_name'];
+				$name->set_last_name( $user_info['last_name'] );
 			}
 
 			if ( array_key_exists( 'address', $user_info ) ) {
@@ -322,37 +332,24 @@ class Gateway {
 
 				$address = new Address();
 
+				$address->set_name( $name );
 				$address->set_line_1( $address_array['line1'] );
 				$address->set_line_2( $address_array['line2'] );
 				$address->set_city( $address_array['city'] );
 				$address->set_region( $address_array['state'] );
 				$address->set_country_code( $address_array['country'] );
 				$address->set_postal_code( $address_array['zip'] );
+
+				$payment->set_billing_address( $address );
+				$payment->set_shipping_address( $address );
 			}
 		}
 
-		// Name.
-		$name = new ContactName();
-
-		$name->set_first_name( $first_name );
-		$name->set_last_name( $last_name );
-
-		// Customer.
-		$customer = new Customer();
-
-		$customer->set_name( $name );
-		$customer->set_email( $email );
-		$customer->set_phone( null );
-
 		// Lines.
-		$cart_details = null;
-
-		if ( array_key_exists( 'cart_details', $purchase_data ) ) {
+		if ( array_key_exists( 'cart_details', $purchase_data ) && is_array( $purchase_data['cart_details'] ) ) {
 			$cart_details = $purchase_data['cart_details'];
-		}
 
-		if ( is_array( $cart_details ) ) {
-			$payment_lines = new PaymentLines();
+			$payment->lines = new PaymentLines();
 
 			$cart_detail_defaults = array(
 				'name'        => null,
@@ -370,7 +367,7 @@ class Gateway {
 			foreach ( $cart_details as $cart_detail ) {
 				$detail = wp_parse_args( $cart_detail, $cart_detail_defaults );
 
-				$line = $payment_lines->new_line();
+				$line = $payment->lines->new_line();
 
 				$line->set_name( $detail['name'] );
 				$line->set_id( $detail['id'] );
@@ -379,23 +376,7 @@ class Gateway {
 				$line->set_total_tax( new Money( $detail['tax'], edd_get_option( 'currency' ) ) );
 				$line->set_quantity( $detail['quantity'] );
 			}
-
-			$payment->lines = $payment_lines;
 		}
-
-		// Payment.
-		$payment->order_id    = $payment_id;
-		$payment->title       = $data->get_title();
-		$payment->description = $data->get_description();
-		$payment->config_id   = $config_id;
-		$payment->source      = $data->get_source();
-		$payment->source_id   = $data->get_source_id();
-		$payment->method      = $this->payment_method;
-		$payment->issuer      = $data->get_issuer();
-
-		$payment->set_customer( $customer );
-		$payment->set_billing_address( $address );
-		$payment->set_shipping_address( $address );
 
 		$payment = Plugin::start_payment( $payment );
 
