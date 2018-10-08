@@ -47,13 +47,16 @@ class Gateway {
 	 * Bootstrap
 	 */
 	public function __construct( $args ) {
-		$args = wp_parse_args( $args, array(
-			'id'             => '',
-			'admin_label'    => '',
-			'checkout_label' => '',
-			'supports'       => array(),
-			'payment_method' => null,
-		) );
+		$args = wp_parse_args(
+			$args,
+			array(
+				'id'             => '',
+				'admin_label'    => '',
+				'checkout_label' => '',
+				'supports'       => array(),
+				'payment_method' => null,
+			)
+		);
 
 		$this->id             = $args['id'];
 		$this->admin_label    = $args['admin_label'];
@@ -298,10 +301,13 @@ class Gateway {
 		edd_set_payment_transaction_id( $payment_id, $payment->get_transaction_id() );
 
 		// Insert payment note.
-		$payment_link = add_query_arg( array(
-			'post'   => $payment->get_id(),
-			'action' => 'edit',
-		), admin_url( 'post.php' ) );
+		$payment_link = add_query_arg(
+			array(
+				'post'   => $payment->get_id(),
+				'action' => 'edit',
+			),
+			admin_url( 'post.php' )
+		);
 
 		$note = sprintf(
 			/* translators: %s: payment id */

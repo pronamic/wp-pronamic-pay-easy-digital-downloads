@@ -35,11 +35,13 @@ class Extension {
 			 * Gateways
 			 * @since 1.1.0
 			 */
-			new Gateway( array(
-				'id'             => 'pronamic_ideal',
-				'admin_label'    => __( 'Pronamic', 'pronamic_ideal' ),
-				'checkout_label' => __( 'iDEAL', 'pronamic_ideal' ),
-			) );
+			new Gateway(
+				array(
+					'id'             => 'pronamic_ideal',
+					'admin_label'    => __( 'Pronamic', 'pronamic_ideal' ),
+					'checkout_label' => __( 'iDEAL', 'pronamic_ideal' ),
+				)
+			);
 
 			new BankTransferGateway();
 			new BitcoinGateway();

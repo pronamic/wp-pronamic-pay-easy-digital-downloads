@@ -77,11 +77,14 @@ class EasyDigitalDownloads {
 			return get_edit_post_link( $payment_id );
 		}
 
-		return add_query_arg( array(
-			'id'        => $payment_id,
-			'post_type' => 'download',
-			'page'      => 'edd-payment-history',
-			'view'      => 'view-order-details',
-		), admin_url( 'edit.php' ) );
+		return add_query_arg(
+			array(
+				'id'        => $payment_id,
+				'post_type' => 'download',
+				'page'      => 'edd-payment-history',
+				'view'      => 'view-order-details',
+			),
+			admin_url( 'edit.php' )
+		);
 	}
 }
