@@ -277,7 +277,65 @@ class Gateway {
 		}
 
 		// Start.
-		$payment = Plugin::start( $config_id, $gateway, $data, $this->payment_method );
+
+		// Name.
+		$name = new ContactName();
+
+		$name->set_first_name( $data->get_first_name() );
+		$name->set_last_name( $data->get_last_name() );
+
+		// Customer.
+		$customer = new Customer();
+
+		$customer->set_name( $name );
+		$customer->set_email( $data->get_email() );
+		$customer->set_phone( null );
+
+		// Billing address.
+		$billing_address = new Address();
+
+		$billing_address->set_name( $name );
+		$billing_address->set_company_name( null );
+		$billing_address->set_line_1( null );
+		$billing_address->set_line_2( null );
+		$billing_address->set_postal_code( null );
+		$billing_address->set_city( null );
+		$billing_address->set_region( null );
+		$billing_address->set_country( null );
+		$billing_address->set_email( null );
+		$billing_address->set_phone( null );
+
+		// Shipping address.
+		$shipping_address = new Address();
+
+		$shipping_address->set_name( null );
+		$shipping_address->set_company_name( null );
+		$shipping_address->set_line_1( null );
+		$shipping_address->set_line_2( null );
+		$shipping_address->set_postal_code( null );
+		$shipping_address->set_city( null );
+		$shipping_address->set_region( null );
+		$shipping_address->set_country( null );
+		$shipping_address->set_email( null );
+		$shipping_address->set_phone( null );
+
+		// Payment
+		$payment = new Payment();
+
+		$payment->order_id    = $payment_id;
+		$payment->title       = $data->get_title();
+		$payment->description = $data->get_description();
+		$payment->config_id   = $config_id;
+		$payment->source      = $data->get_source();
+		$payment->source_id   = $data->get_source_id();
+		$payment->method      = $this->payment_method;
+		$payment->issuer      = $data->get_issuer();
+
+		$payment->set_customer( $customer );
+		$payment->set_billing_address( $billing_address );
+		$payment->set_shipping_address( $shipping_address );
+
+		$payment = Plugin::start_payment( $payment );
 
 		$error = $gateway->get_error();
 
