@@ -22,11 +22,11 @@ class DirectDebitIDealGateway extends Gateway {
 				'id'             => 'pronamic_pay_direct_debit_ideal',
 				'admin_label'    => sprintf(
 					/* translators: 1: Gateway admin label prefix, 2: Gateway admin label */
-					 __( '%1$s - %2$s', 'pronamic_ideal' ),
+					__( '%1$s - %2$s', 'pronamic_ideal' ),
 					__( 'Pronamic', 'pronamic_ideal' ),
 					sprintf(
 						/* translators: %s: payment method */
-						 __( 'Direct Debit (mandate via %s)', 'pronamic_ideal' ),
+						__( 'Direct Debit (mandate via %s)', 'pronamic_ideal' ),
 						__( 'iDEAL', 'pronamic_ideal' )
 					)
 				),
