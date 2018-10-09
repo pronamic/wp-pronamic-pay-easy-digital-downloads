@@ -384,12 +384,12 @@ class Gateway {
 
 				$unit_price = $detail['item_price'];
 
+				if ( ! edd_prices_include_tax() ) {
+					$unit_price = $unit_price + ( $unit_price * $edd_payment->tax_rate );
+				}
+
 				if ( edd_use_taxes() ) {
 					$line->set_tax_percentage( $edd_payment->tax_rate * 100 );
-
-					if ( ! edd_prices_include_tax() ) {
-						$unit_price = $unit_price + ( $unit_price * $edd_payment->tax_rate );
-					}
 				}
 
 				$line->set_name( $detail['name'] );
