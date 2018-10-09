@@ -2,6 +2,7 @@
 
 namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
 
+use Pronamic\WordPress\Money\Currency;
 use Pronamic\WordPress\Money\Money;
 use Pronamic\WordPress\Pay\Address;
 use Pronamic\WordPress\Pay\ContactName;
@@ -9,6 +10,7 @@ use Pronamic\WordPress\Pay\Customer;
 use Pronamic\WordPress\Pay\Plugin;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Payments\PaymentLines;
+use Pronamic\WordPress\Pay\Payments\PaymentLineType;
 
 /**
  * Title: Easy Digital Downloads gateway
@@ -284,7 +286,10 @@ class Gateway {
 			edd_send_back_to_checkout( '?payment-mode=' . $purchase_data['post_data']['edd-gateway'] );
 		}
 
-		// Start.
+		// Currency.
+		$currency = Currency::get_instance( edd_get_option( 'currency' ) );
+
+		// Payment.
 		$payment = new Payment();
 
 		$payment->order_id    = $edd_payment_id;
@@ -295,6 +300,10 @@ class Gateway {
 		$payment->source_id   = $data->get_source_id();
 		$payment->method      = $this->payment_method;
 		$payment->issuer      = $data->get_issuer();
+
+		if ( array_key_exists( 'price', $purchase_data ) ) {
+			$payment->set_amount( new Money( $purchase_data['price'], $currency ) );
+		}
 
 		// Name.
 		$name = new ContactName();
@@ -392,13 +401,14 @@ class Gateway {
 					$line->set_tax_percentage( $edd_payment->tax_rate * 100 );
 				}
 
+				$line->set_type( PaymentLineType::DIGITAL );
 				$line->set_name( $detail['name'] );
 				$line->set_id( $detail['id'] );
 				$line->set_quantity( $detail['quantity'] );
-				$line->set_unit_price( new Money( $unit_price, edd_get_option( 'currency' ) ) );
-				$line->set_tax_amount( new Money( $detail['tax'], edd_get_option( 'currency' ) ) );
-				$line->set_discount_amount( new Money( $detail['discount'], edd_get_option( 'currency' ) ) );
-				$line->set_total_amount( new Money( $detail['price'], edd_get_option( 'currency' ) ) );
+				$line->set_unit_price( new Money( $unit_price, $currency ) );
+				$line->set_tax_amount( new Money( $detail['tax'], $currency ) );
+				$line->set_discount_amount( new Money( $detail['discount'], $currency ) );
+				$line->set_total_amount( new Money( $detail['price'], $currency ) );
 				$line->set_product_url( get_permalink( $detail['id'] ) );
 				$line->set_image_url( wp_get_attachment_url( get_post_thumbnail_id( $detail['id'] ) ) );
 			}
