@@ -401,8 +401,6 @@ class Gateway {
 				$line->set_total_amount( new Money( $detail['price'], edd_get_option( 'currency' ) ) );
 				$line->set_product_url( get_permalink( $detail['id'] ) );
 				$line->set_image_url( wp_get_attachment_url( get_post_thumbnail_id( $detail['id'] ) ) );
-
-
 			}
 		}
 
