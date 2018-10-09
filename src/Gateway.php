@@ -256,20 +256,22 @@ class Gateway {
 		);
 
 		// Record the pending payment.
-		$payment_id = edd_insert_payment( $payment_data );
+		$edd_payment_id = edd_insert_payment( $payment_data );
 
 		// Check payment.
-		if ( ! $payment_id ) {
+		if ( ! $edd_payment_id ) {
 			// Log error
 			/* translators: %s: payment data JSON */
-			edd_record_gateway_error( __( 'Payment Error', 'pronamic_ideal' ), sprintf( __( 'Payment creation failed before sending buyer to the payment provider. Payment data: %s', 'pronamic_ideal' ), wp_json_encode( $payment_data ) ), $payment_id );
+			edd_record_gateway_error( __( 'Payment Error', 'pronamic_ideal' ), sprintf( __( 'Payment creation failed before sending buyer to the payment provider. Payment data: %s', 'pronamic_ideal' ), wp_json_encode( $payment_data ) ), $edd_payment_id );
 
 			edd_send_back_to_checkout( '?payment-mode=' . $purchase_data['post_data']['edd-gateway'] );
 
 			return;
 		}
 
-		$data = new PaymentData( $payment_id, $payment_data );
+		$edd_payment = edd_get_payment( $edd_payment_id );
+
+		$data = new PaymentData( $edd_payment_id, $payment_data );
 
 		$data->description = edd_get_option( $this->id . '_description' );
 
@@ -285,7 +287,7 @@ class Gateway {
 		// Start.
 		$payment = new Payment();
 
-		$payment->order_id    = $payment_id;
+		$payment->order_id    = $edd_payment_id;
 		$payment->title       = $data->get_title();
 		$payment->description = $data->get_description();
 		$payment->config_id   = $config_id;
@@ -374,6 +376,7 @@ class Gateway {
 				$line->set_quantity( $detail['quantity'] );
 				$line->set_unit_price( new Money( $detail['item_price'], edd_get_option( 'currency' ) ) );
 				$line->set_tax_amount( new Money( $detail['tax'], edd_get_option( 'currency' ) ) );
+				$line->set_tax_percentage( $edd_payment->tax_rate * 100 );
 				$line->set_discount_amount( new Money( $detail['discount'], edd_get_option( 'currency' ) ) );
 				$line->set_total_amount( new Money( $detail['price'], edd_get_option( 'currency' ) ) );
 			}
@@ -385,7 +388,7 @@ class Gateway {
 
 		if ( is_wp_error( $error ) ) {
 			/* translators: %s: payment data JSON */
-			edd_record_gateway_error( __( 'Payment Error', 'pronamic_ideal' ), sprintf( __( 'Payment creation failed before sending buyer to the payment provider. Payment data: %s', 'pronamic_ideal' ), wp_json_encode( $payment_data ) ), $payment_id );
+			edd_record_gateway_error( __( 'Payment Error', 'pronamic_ideal' ), sprintf( __( 'Payment creation failed before sending buyer to the payment provider. Payment data: %s', 'pronamic_ideal' ), wp_json_encode( $payment_data ) ), $edd_payment_id );
 
 			edd_set_error( 'pronamic_pay_error', Plugin::get_default_error_message() );
 
@@ -400,7 +403,7 @@ class Gateway {
 
 		// Transaction ID
 		// @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.3/includes/payments/functions.php#L1400-L1416
-		edd_set_payment_transaction_id( $payment_id, $payment->get_transaction_id() );
+		edd_set_payment_transaction_id( $edd_payment_id, $payment->get_transaction_id() );
 
 		// Insert payment note.
 		$payment_link = add_query_arg(
@@ -417,7 +420,7 @@ class Gateway {
 			sprintf( '<a href="%s">#%s</a>', $payment_link, $payment->get_id() )
 		);
 
-		edd_insert_payment_note( $payment_id, $note );
+		edd_insert_payment_note( $edd_payment_id, $note );
 
 		$gateway->redirect( $payment );
 
