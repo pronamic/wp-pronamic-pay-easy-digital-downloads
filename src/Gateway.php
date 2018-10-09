@@ -322,25 +322,36 @@ class Gateway {
 				$name->set_last_name( $user_info['last_name'] );
 			}
 
-			if ( array_key_exists( 'address', $user_info ) ) {
-				$address_array = wp_parse_args( $user_info['address'], array(
-					'line1'   => null,
-					'line2'   => null,
-					'city'    => null,
-					'state'   => null,
-					'country' => null,
-					'zip'     => null,
-				) );
+			if ( array_key_exists( 'address', $user_info ) && is_array( $user_info['address'] ) && ! empty( $user_info['address'] ) ) {
+				$address_array = $user_info['address'];
 
 				$address = new Address();
 
 				$address->set_name( $name );
-				$address->set_line_1( $address_array['line1'] );
-				$address->set_line_2( $address_array['line2'] );
-				$address->set_city( $address_array['city'] );
-				$address->set_region( $address_array['state'] );
-				$address->set_country_code( $address_array['country'] );
-				$address->set_postal_code( $address_array['zip'] );
+
+				if ( array_key_exists( 'line1', $address_array ) ) {
+					$address->set_line_1( $address_array['line1'] );
+				}
+
+				if ( array_key_exists( 'line2', $address_array ) ) {
+					$address->set_line_2( $address_array['line2'] );
+				}
+
+				if ( array_key_exists( 'city', $address_array ) ) {
+					$address->set_city( $address_array['city'] );
+				}
+
+				if ( array_key_exists( 'state', $address_array ) ) {
+					$address->set_region( $address_array['state'] );
+				}
+
+				if ( array_key_exists( 'country', $address_array ) ) {
+					$address->set_country_code( $address_array['country'] );
+				}
+
+				if ( array_key_exists( 'zip', $address_array ) ) {
+					$address->set_postal_code( $address_array['zip'] );
+				}
 
 				$payment->set_billing_address( $address );
 				$payment->set_shipping_address( $address );
@@ -371,14 +382,27 @@ class Gateway {
 
 				$line = $payment->lines->new_line();
 
+				$unit_price = $detail['item_price'];
+
+				if ( edd_use_taxes() ) {
+					$line->set_tax_percentage( $edd_payment->tax_rate * 100 );
+
+					if ( ! edd_prices_include_tax() ) {
+						$unit_price = $unit_price + ( $unit_price * $edd_payment->tax_rate );
+					}
+				}
+
 				$line->set_name( $detail['name'] );
 				$line->set_id( $detail['id'] );
 				$line->set_quantity( $detail['quantity'] );
-				$line->set_unit_price( new Money( $detail['item_price'], edd_get_option( 'currency' ) ) );
+				$line->set_unit_price( new Money( $unit_price, edd_get_option( 'currency' ) ) );
 				$line->set_tax_amount( new Money( $detail['tax'], edd_get_option( 'currency' ) ) );
-				$line->set_tax_percentage( $edd_payment->tax_rate * 100 );
 				$line->set_discount_amount( new Money( $detail['discount'], edd_get_option( 'currency' ) ) );
 				$line->set_total_amount( new Money( $detail['price'], edd_get_option( 'currency' ) ) );
+				$line->set_product_url( get_permalink( $detail['id'] ) );
+				$line->set_image_url( wp_get_attachment_url( get_post_thumbnail_id( $detail['id'] ) ) );
+
+
 			}
 		}
 
