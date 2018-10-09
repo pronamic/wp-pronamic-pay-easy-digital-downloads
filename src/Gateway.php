@@ -371,11 +371,11 @@ class Gateway {
 
 				$line->set_name( $detail['name'] );
 				$line->set_id( $detail['id'] );
-				$line->set_unit_price( new Money( $detail['item_price'], edd_get_option( 'currency' ) ) );
-				$line->set_total_amount( new Money( $detail['price'], edd_get_option( 'currency' ) ) );
-				$line->set_total_tax( new Money( $detail['tax'], edd_get_option( 'currency' ) ) );
-				$line->set_total_discount( new Money( $detail['discount'], edd_get_option( 'currency' ) ) );
 				$line->set_quantity( $detail['quantity'] );
+				$line->set_unit_price( new Money( $detail['item_price'], edd_get_option( 'currency' ) ) );
+				$line->set_tax_amount( new Money( $detail['tax'], edd_get_option( 'currency' ) ) );
+				$line->set_discount_amount( new Money( $detail['discount'], edd_get_option( 'currency' ) ) );
+				$line->set_total_amount( new Money( $detail['price'], edd_get_option( 'currency' ) ) );
 			}
 		}
 
