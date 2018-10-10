@@ -107,12 +107,36 @@ class Extension {
 				)
 			);
 
-			if ( PaymentMethods::is_active( PaymentMethods::GULDEN ) ) {
+			$data = array(
+				'pronamic_pay_afterpay'                => PaymentMethods::AFTERPAY,
+				'pronamic_pay_alipay'                  => PaymentMethods::ALIPAY,
+				'pronamic_pay_belfius'                 => PaymentMethods::BELFIUS,
+				'pronamic_pay_bunq'                    => PaymentMethods::BUNQ,
+				'pronamic_pay_direct_debit_bancontact' => PaymentMethods::DIRECT_DEBIT_BANCONTACT,
+				'pronamic_pay_direct_debit_ideal'      => PaymentMethods::DIRECT_DEBIT_IDEAL,
+				'pronamic_pay_direct_debit_sofort'     => PaymentMethods::DIRECT_DEBIT_SOFORT,
+				'pronamic_pay_focum'                   => PaymentMethods::FOCUM,
+				'pronamic_pay_giropay'                 => PaymentMethods::GIROPAY,
+				'pronamic_pay_gulden'                  => PaymentMethods::GULDEN,
+				'pronamic_pay_idealqr'                 => PaymentMethods::IDEALQR,
+				'pronamic_pay_in3'                     => PaymentMethods::IN3,
+				'pronamic_pay_kbc'                     => PaymentMethods::KBC,
+				'pronamic_pay_klarna_pay_later'        => PaymentMethods::KLARNA_PAY_LATER,
+				'pronamic_pay_maestro'                 => PaymentMethods::MAESTRO,
+				'pronamic_pay_payconiq'                => PaymentMethods::PAYCONIQ,
+				'pronamic_pay_paypal'                  => PaymentMethods::PAYPAL,
+			);
+
+			$data = array_filter( $data, function( $payment_method ) {
+				return PaymentMethods::is_active( $payment_method );
+			} );
+
+			foreach ( $data as $id => $payment_method ) {
 				new Gateway(
 					array(
-						'id'             => 'pronamic_pay_gulden',
-						'checkout_label' => __( 'Gulden', 'pronamic_ideal' ),
-						'payment_method' => PaymentMethods::GULDEN,
+						'id'             => $id,
+						'checkout_label' => PaymentMethods::get_name( $payment_method ),
+						'payment_method' => $payment_method,
 					)
 				);
 			}
