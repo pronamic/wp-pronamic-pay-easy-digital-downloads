@@ -58,13 +58,22 @@ class Gateway {
 		$args = wp_parse_args(
 			$args,
 			array(
-				'id'             => '',
-				'admin_label'    => '',
-				'checkout_label' => '',
+				'id'             => null,
+				'admin_label'    => null,
+				'checkout_label' => null,
 				'supports'       => array(),
 				'payment_method' => null,
 			)
 		);
+
+		if ( null === $args['admin_label'] ) {
+			 $args['admin_label'] = sprintf(
+				/* translators: 1: Gateway admin label prefix, 2: Gateway admin label */
+				__( '%1$s - %2$s', 'pronamic_ideal' ),
+				__( 'Pronamic', 'pronamic_ideal' ),
+				$args['checkout_label']
+			);
+		}
 
 		$this->id             = $args['id'];
 		$this->admin_label    = $args['admin_label'];

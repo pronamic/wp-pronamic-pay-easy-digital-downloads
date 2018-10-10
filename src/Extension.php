@@ -43,16 +43,78 @@ class Extension {
 				)
 			);
 
-			new BankTransferGateway();
-			new BitcoinGateway();
-			new CreditCardGateway();
-			new DirectDebitGateway();
-			new IDealGateway();
-			new BancontactGateway();
-			new SofortGateway();
+			new Gateway(
+				array(
+					'id'             => 'pronamic_pay_mister_cash',
+					'checkout_label' => __( 'Bancontact', 'pronamic_ideal' ),
+					'payment_method' => PaymentMethods::BANCONTACT,
+				)
+			);
+
+			new Gateway(
+				array(
+					'id'             => 'pronamic_pay_bank_transfer',
+					'checkout_label' => __( 'Bank Transfer', 'pronamic_ideal' ),
+					'payment_method' => PaymentMethods::BANK_TRANSFER,
+				)
+			);
+
+			new Gateway(
+				array(
+					'id'             => 'pronamic_pay_bitcoin',
+					'checkout_label' => __( 'Bitcoin', 'pronamic_ideal' ),
+					'payment_method' => PaymentMethods::BITCOIN,
+				)
+			);
+
+			new Gateway(
+				array(
+					'id'             => 'pronamic_pay_credit_card',
+					'checkout_label' => __( 'Credit Card', 'pronamic_ideal' ),
+					'payment_method' => PaymentMethods::CREDIT_CARD,
+				)
+			);
+
+			new Gateway(
+				array(
+					'id'             => 'pronamic_pay_direct_debit',
+					'checkout_label' => __( 'Direct Debit', 'pronamic_ideal' ),
+					'payment_method' => PaymentMethods::DIRECT_DEBIT,
+				)
+			);
+
+			new Gateway(
+				array(
+					'id'             => 'pronamic_pay_direct_debit_ideal',
+					'checkout_label' => __( 'Direct Debit (mandate via iDEAL)', 'pronamic_ideal' ),
+					'payment_method' => PaymentMethods::DIRECT_DEBIT_IDEAL,
+				)
+			);
+
+			new Gateway(
+				array(
+					'id'             => 'pronamic_pay_ideal',
+					'checkout_label' => __( 'iDEAL', 'pronamic_ideal' ),
+					'payment_method' => PaymentMethods::IDEAL,
+				)
+			);
+
+			new Gateway(
+				array(
+					'id'             => 'pronamic_pay_sofort',
+					'checkout_label' => __( 'SOFORT Banking', 'pronamic_ideal' ),
+					'payment_method' => PaymentMethods::SOFORT,
+				)
+			);
 
 			if ( PaymentMethods::is_active( PaymentMethods::GULDEN ) ) {
-				new GuldenGateway();
+				new Gateway(
+					array(
+						'id'             => 'pronamic_pay_gulden',
+						'checkout_label' => __( 'Gulden', 'pronamic_ideal' ),
+						'payment_method' => PaymentMethods::GULDEN,
+					)
+				);
 			}
 
 			add_filter( 'pronamic_payment_redirect_url_easydigitaldownloads', array( __CLASS__, 'redirect_url' ), 10, 2 );
