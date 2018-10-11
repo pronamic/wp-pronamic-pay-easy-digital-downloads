@@ -400,10 +400,10 @@ class Gateway {
 
 				$line = $payment->lines->new_line();
 
-				$unit_price = $detail['item_price'];
-
-				if ( ! edd_prices_include_tax() ) {
-					$unit_price = $unit_price + ( $unit_price * $edd_payment->tax_rate );
+				if ( edd_prices_include_tax() ) {
+					$line->set_unit_price_including_tax( new Money( $detail['item_price'], $currency ) );
+				} else {
+					$line->set_unit_price_excluding_tax( new Money( $detail['item_price'], $currency ) );
 				}
 
 				if ( edd_use_taxes() ) {
@@ -411,13 +411,12 @@ class Gateway {
 				}
 
 				$line->set_type( PaymentLineType::DIGITAL );
-				$line->set_name( $detail['name'] );
+				$line->set_name( edd_get_cart_item_name( $detail ) );
 				$line->set_id( $detail['id'] );
 				$line->set_quantity( $detail['quantity'] );
-				$line->set_unit_price( new Money( $unit_price, $currency ) );
 				$line->set_tax_amount( new Money( $detail['tax'], $currency ) );
 				$line->set_discount_amount( new Money( $detail['discount'], $currency ) );
-				$line->set_total_amount( new Money( $detail['price'], $currency ) );
+				$line->set_total_amount_including_tax( new Money( $detail['price'], $currency ) );
 				$line->set_product_url( get_permalink( $detail['id'] ) );
 				$line->set_image_url( wp_get_attachment_url( get_post_thumbnail_id( $detail['id'] ) ) );
 			}
