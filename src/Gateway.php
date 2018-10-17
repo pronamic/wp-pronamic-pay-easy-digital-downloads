@@ -284,8 +284,6 @@ class Gateway {
 
 		$data = new PaymentData( $edd_payment_id, $payment_data );
 
-		$data->description = edd_get_option( $this->id . '_description' );
-
 		// Get gateway.
 		$gateway = Plugin::get_gateway( $config_id );
 
@@ -301,12 +299,20 @@ class Gateway {
 		// Payment.
 		$payment = new Payment();
 
-		$payment->order_id    = $edd_payment_id;
-		$payment->title       = $data->get_title();
-		$payment->description = $data->get_description();
+		$payment->order_id    = EasyDigitalDownloads::get_payment_number( $edd_payment_id );
+		$payment->title       = sprintf(
+			/* translators: %s: order id */
+			__( 'Easy Digital Downloads order %s', 'pronamic_ideal' ),
+			$payment->order_id
+		);
+		$payment->description = EasyDigitalDownloads::get_description(
+			edd_get_option( $this->id . '_description' ),
+			$edd_payment_id,
+			$purchase_data
+		);
 		$payment->config_id   = $config_id;
-		$payment->source      = $data->get_source();
-		$payment->source_id   = $data->get_source_id();
+		$payment->source      = 'easydigitaldownloads';
+		$payment->source_id   = $edd_payment_id;
 		$payment->method      = $this->payment_method;
 		$payment->issuer      = $data->get_issuer();
 
@@ -419,6 +425,7 @@ class Gateway {
 				$line->set_total_amount_including_tax( new Money( $detail['price'], $currency ) );
 				$line->set_product_url( get_permalink( $detail['id'] ) );
 				$line->set_image_url( wp_get_attachment_url( get_post_thumbnail_id( $detail['id'] ) ) );
+				$line->set_product_category( EasyDigitalDownloads::get_download_category( $detail['id'] ) );
 			}
 		}
 
