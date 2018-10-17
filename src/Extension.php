@@ -167,33 +167,15 @@ class Extension {
 	 * @return string
 	 */
 	public static function redirect_url( $url, $payment ) {
-		$source_id = $payment->get_source_id();
-
-		$data = new PaymentData( $source_id, array() );
-
-		$url = $data->get_normal_return_url();
-
 		switch ( $payment->get_status() ) {
 			case Core_Statuses::CANCELLED:
-				$url = $data->get_cancel_url();
-
-				break;
 			case Core_Statuses::EXPIRED:
-				$url = $data->get_error_url();
-
-				break;
 			case Core_Statuses::FAILURE:
-				$url = $data->get_error_url();
-
-				break;
+				return EasyDigitalDownloads::get_option_page_url( 'failure_page' );
 			case Core_Statuses::SUCCESS:
-				$url = $data->get_success_url();
-
-				break;
+				return EasyDigitalDownloads::get_option_page_url( 'success_page' );
 			case Core_Statuses::OPEN:
-				// Nothing to do?
-
-				break;
+				return home_url( '/' );
 		}
 
 		return $url;
@@ -206,8 +188,6 @@ class Extension {
 	 */
 	public static function status_update( Payment $payment ) {
 		$source_id = $payment->get_source_id();
-
-		$data = new PaymentData( $source_id, array() );
 
 		// Only update if order is not completed
 		$should_update = edd_get_payment_status( $source_id ) !== EasyDigitalDownloads::ORDER_STATUS_PUBLISH;

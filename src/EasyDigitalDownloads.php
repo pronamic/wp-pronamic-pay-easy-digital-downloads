@@ -184,4 +184,25 @@ class EasyDigitalDownloads {
 
 		return $description;
 	}
+
+	/**
+	 * Get page URL by option.
+	 *
+	 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.9.8/includes/admin/settings/register-settings.php#L16-L30
+	 * @param string $key Option key, for example: 'failure_page' or 'success_page'.
+	 * @return string
+	 */
+	public static function get_option_page_url( $key ) {
+		$post_id = edd_get_option( $key );
+
+		if ( empty( $post_id ) ) {
+			return home_url( '/' );
+		}
+
+		if ( 'publish' !== get_post_status( $post_id ) ) {
+			return home_url( '/' );
+		}
+
+		return get_permalink( $post_id );
+	}
 }

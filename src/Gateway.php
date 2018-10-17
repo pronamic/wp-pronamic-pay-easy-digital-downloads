@@ -282,8 +282,6 @@ class Gateway {
 
 		$edd_payment = edd_get_payment( $edd_payment_id );
 
-		$data = new PaymentData( $edd_payment_id, $payment_data );
-
 		// Get gateway.
 		$gateway = Plugin::get_gateway( $config_id );
 
@@ -314,7 +312,6 @@ class Gateway {
 		$payment->source      = 'easydigitaldownloads';
 		$payment->source_id   = $edd_payment_id;
 		$payment->method      = $this->payment_method;
-		$payment->issuer      = $data->get_issuer();
 
 		if ( array_key_exists( 'price', $purchase_data ) ) {
 			$payment->set_amount( new Money( $purchase_data['price'], $currency ) );
