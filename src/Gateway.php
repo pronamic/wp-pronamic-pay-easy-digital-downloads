@@ -374,6 +374,10 @@ class Gateway {
 					$address->set_postal_code( $address_array['zip'] );
 				}
 
+				if ( array_key_exists( 'email', $user_info ) ) {
+					$address->set_email( $user_info['email'] );
+				}
+
 				$payment->set_billing_address( $address );
 				$payment->set_shipping_address( $address );
 			}
