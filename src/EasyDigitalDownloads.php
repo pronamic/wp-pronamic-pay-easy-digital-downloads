@@ -141,7 +141,7 @@ class EasyDigitalDownloads {
 		 * Check if the 'edd_get_payment_number' function exists, it was added in Easy Digital Downloads version 2.0.
 		 *
 		 * @since 1.2.0
-		 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.4.3/includes/payments/functions.php#L1178-L1204
+		 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.4.3/includes/payments/functions.php#L1178-L1204
 		 */
 		if ( function_exists( 'edd_get_payment_number' ) ) {
 			return edd_get_payment_number( $payment_id );

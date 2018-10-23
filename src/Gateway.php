@@ -90,8 +90,8 @@ class Gateway {
 		// Actions
 
 		// Pronamic iDEAL Remove CC Form
-		// @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/1.9.4/includes/checkout/template.php#L97
-		// @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/1.9.4/includes/gateways/paypal-standard.php#L12
+		// @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/1.9.4/includes/checkout/template.php#L97
+		// @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/1.9.4/includes/gateways/paypal-standard.php#L12
 		add_action( 'edd_' . $this->id . '_cc_form', array( $this, 'payment_fields' ) );
 
 		add_action( 'edd_gateway_' . $this->id, array( $this, 'process_purchase' ) );
@@ -124,7 +124,7 @@ class Gateway {
 	/**
 	 * Register gateway section.
 	 *
-	 * @see https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.8.17/includes/admin/settings/register-settings.php#L1272-L1275
+	 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.8.17/includes/admin/settings/register-settings.php#L1272-L1275
 	 * @param array $gateway_sections
 	 * @return array
 	 */
@@ -137,9 +137,9 @@ class Gateway {
 	/**
 	 * Add the iDEAL configuration settings to the Easy Digital Downloads payment gateways settings page.
 	 *
-	 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.8/includes/admin/settings/register-settings.php#L126
-	 * @see https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.8.17/includes/admin/settings/register-settings.php#L408-L409
-	 * @see https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.8.17/includes/gateways/amazon-payments.php#L344-L424
+	 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.8/includes/admin/settings/register-settings.php#L126
+	 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.8.17/includes/admin/settings/register-settings.php#L408-L409
+	 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.8.17/includes/gateways/amazon-payments.php#L344-L424
 	 *
 	 * @param mixed $settings_gateways
 	 * @return mixed $settings_gateways
@@ -165,16 +165,16 @@ class Gateway {
 				'id'   => $this->id . '_checkout_label',
 				'name' => __( 'Checkout Label', 'pronamic_ideal' ),
 				'type' => 'text',
-				// @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.5.9/includes/admin/settings/register-settings.php#L1537-L1541
-				// @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.5.9/includes/gateways/amazon-payments.php#L330
+				// @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.5.9/includes/admin/settings/register-settings.php#L1537-L1541
+				// @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.5.9/includes/gateways/amazon-payments.php#L330
 				'std'  => $this->checkout_label,
 			),
 			$this->id . '_description'    => array(
 				'id'   => $this->id . '_description',
 				'name' => __( 'Description', 'pronamic_ideal' ),
 				'type' => 'text',
-				// @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.5.9/includes/admin/settings/register-settings.php#L1537-L1541
-				// @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.5.9/includes/gateways/amazon-payments.php#L330
+				// @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.5.9/includes/admin/settings/register-settings.php#L1537-L1541
+				// @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.5.9/includes/gateways/amazon-payments.php#L330
 				'std'  => '{edd_cart_details_name}',
 				/* translators: %s: <code>{edd_cart_details_name}</code> */
 				'desc' => '<br />' . sprintf( __( 'Default: %s', 'pronamic_ideal' ), '<code>{edd_cart_details_name}</code>' ) .
@@ -205,7 +205,7 @@ class Gateway {
 	 * Payment fields for this gateway
 	 *
 	 * @version 1.2.1
-	 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/1.9.4/includes/checkout/template.php#L167
+	 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/1.9.4/includes/checkout/template.php#L167
 	 */
 	public function payment_fields() {
 		$gateway = Plugin::get_gateway( $this->get_pronamic_config_id() );
@@ -450,7 +450,7 @@ class Gateway {
 		}
 
 		// Transaction ID
-		// @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.3/includes/payments/functions.php#L1400-L1416
+		// @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.3/includes/payments/functions.php#L1400-L1416
 		edd_set_payment_transaction_id( $edd_payment_id, $payment->get_transaction_id() );
 
 		// Insert payment note.
@@ -478,7 +478,7 @@ class Gateway {
 	/**
 	 * Get payment transaction ID
 	 *
-	 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.3/includes/payments/functions.php#L1378-L1398
+	 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.3/includes/payments/functions.php#L1378-L1398
 	 *
 	 * @param string $payment_id Payment ID.
 	 *
