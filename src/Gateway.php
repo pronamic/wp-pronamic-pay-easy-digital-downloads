@@ -314,7 +314,7 @@ class Gateway {
 		$payment->method      = $this->payment_method;
 
 		if ( array_key_exists( 'price', $purchase_data ) ) {
-			$payment->set_amount( new Money( $purchase_data['price'], $currency ) );
+			$payment->set_total_amount( new Money( $purchase_data['price'], $currency ) );
 		}
 
 		// Name.
