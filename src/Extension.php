@@ -22,7 +22,7 @@ class Extension {
 	 * Bootstrap
 	 */
 	public static function bootstrap() {
-		// The "plugins_loaded" is one of the earliest hooks after EDD is set up
+		// The `plugins_loaded` is one of the earliest hooks after EDD is set up.
 		add_action( 'plugins_loaded', array( __CLASS__, 'plugins_loaded' ) );
 	}
 
@@ -127,9 +127,12 @@ class Extension {
 				'pronamic_pay_paypal'                  => PaymentMethods::PAYPAL,
 			);
 
-			$data = array_filter( $data, function( $payment_method ) {
-				return PaymentMethods::is_active( $payment_method );
-			} );
+			$data = array_filter(
+				$data,
+				function ( $payment_method ) {
+					return PaymentMethods::is_active( $payment_method );
+				}
+			);
 
 			foreach ( $data as $id => $payment_method ) {
 				new Gateway(
@@ -145,7 +148,7 @@ class Extension {
 			add_action( 'pronamic_payment_status_update_easydigitaldownloads', array( __CLASS__, 'status_update' ), 10, 1 );
 			add_filter( 'pronamic_payment_source_text_easydigitaldownloads', array( __CLASS__, 'source_text' ), 10, 2 );
 
-			// Icons
+			// Icons.
 			add_filter( 'edd_accepted_payment_icons', array( __CLASS__, 'accepted_payment_icons' ) );
 
 			// Currencies.
@@ -162,8 +165,9 @@ class Extension {
 	/**
 	 * Payment redirect URL filter.
 	 *
-	 * @param string                  $url
-	 * @param Payment $payment
+	 * @param string  $url     Redirect URL.
+	 * @param Payment $payment Payment.
+	 *
 	 * @return string
 	 */
 	public static function redirect_url( $url, $payment ) {
@@ -172,8 +176,10 @@ class Extension {
 			case Core_Statuses::EXPIRED:
 			case Core_Statuses::FAILURE:
 				return EasyDigitalDownloads::get_option_page_url( 'failure_page' );
+
 			case Core_Statuses::SUCCESS:
 				return EasyDigitalDownloads::get_option_page_url( 'success_page' );
+
 			case Core_Statuses::OPEN:
 				return home_url( '/' );
 		}
@@ -184,19 +190,18 @@ class Extension {
 	/**
 	 * Update the status of the specified payment
 	 *
-	 * @param Payment $payment
+	 * @param Payment $payment Payment.
 	 */
 	public static function status_update( Payment $payment ) {
 		$source_id = $payment->get_source_id();
 
-		// Only update if order is not completed
+		// Only update if order is not completed.
 		$should_update = edd_get_payment_status( $source_id ) !== EasyDigitalDownloads::ORDER_STATUS_PUBLISH;
 
 		if ( $should_update ) {
 			switch ( $payment->get_status() ) {
 				case Core_Statuses::CANCELLED:
 					// Nothing to do?
-
 					break;
 				case Core_Statuses::EXPIRED:
 					edd_update_payment_status( $source_id, EasyDigitalDownloads::ORDER_STATUS_ABANDONED );
@@ -322,8 +327,8 @@ class Extension {
 	/**
 	 * Source column
 	 *
-	 * @param string $text
-	 * @param Payment $payment
+	 * @param string  $text    Source text.
+	 * @param Payment $payment Payment.
 	 *
 	 * @return string $text
 	 */

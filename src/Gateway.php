@@ -53,6 +53,8 @@ class Gateway {
 
 	/**
 	 * Bootstrap
+	 *
+	 * @param array $args Gateway properties.
 	 */
 	public function __construct( $args ) {
 		$args = wp_parse_args(
@@ -67,7 +69,7 @@ class Gateway {
 		);
 
 		if ( null === $args['admin_label'] ) {
-			 $args['admin_label'] = sprintf(
+			$args['admin_label'] = sprintf(
 				/* translators: 1: Gateway admin label prefix, 2: Gateway admin label */
 				__( '%1$s - %2$s', 'pronamic_ideal' ),
 				__( 'Pronamic', 'pronamic_ideal' ),
@@ -81,22 +83,24 @@ class Gateway {
 		$this->supports       = $args['supports'];
 		$this->payment_method = $args['payment_method'];
 
-		// Settings
+		// Settings.
 		$checkout_label = edd_get_option( $this->id . '_checkout_label' );
 		if ( ! empty( $checkout_label ) ) {
 			$this->checkout_label = $checkout_label;
 		}
 
-		// Actions
-
-		// Pronamic iDEAL Remove CC Form
-		// @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/1.9.4/includes/checkout/template.php#L97
-		// @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/1.9.4/includes/gateways/paypal-standard.php#L12
-		add_action( 'edd_' . $this->id . '_cc_form', array( $this, 'payment_fields' ) );
-
+		// Actions.
 		add_action( 'edd_gateway_' . $this->id, array( $this, 'process_purchase' ) );
 
-		// Filters
+		/*
+		 * Remove CC Form
+		 *
+		 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/1.9.4/includes/checkout/template.php#L97
+		 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/1.9.4/includes/gateways/paypal-standard.php#L12
+		 */
+		add_action( 'edd_' . $this->id . '_cc_form', array( $this, 'payment_fields' ) );
+
+		// Filters.
 		add_filter( 'edd_settings_sections_gateways', array( $this, 'register_gateway_section' ) );
 		add_filter( 'edd_settings_gateways', array( $this, 'settings_gateways' ) );
 		add_filter( 'edd_payment_gateways', array( $this, 'payment_gateways' ) );
@@ -107,7 +111,7 @@ class Gateway {
 	/**
 	 * Add the gateway to Easy Digital Downloads
 	 *
-	 * @param mixed $gateways
+	 * @param mixed $gateways Gateways.
 	 *
 	 * @return mixed $gateways
 	 */
@@ -125,7 +129,9 @@ class Gateway {
 	 * Register gateway section.
 	 *
 	 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.8.17/includes/admin/settings/register-settings.php#L1272-L1275
-	 * @param array $gateway_sections
+	 *
+	 * @param array $gateway_sections Gateway sections.
+	 *
 	 * @return array
 	 */
 	public function register_gateway_section( $gateway_sections ) {
@@ -141,7 +147,8 @@ class Gateway {
 	 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.8.17/includes/admin/settings/register-settings.php#L408-L409
 	 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.8.17/includes/gateways/amazon-payments.php#L344-L424
 	 *
-	 * @param mixed $settings_gateways
+	 * @param mixed $settings_gateways Gateway settings.
+	 *
 	 * @return mixed $settings_gateways
 	 */
 	public function settings_gateways( $settings_gateways ) {
@@ -297,8 +304,8 @@ class Gateway {
 		// Payment.
 		$payment = new Payment();
 
-		$payment->order_id    = EasyDigitalDownloads::get_payment_number( $edd_payment_id );
-		$payment->title       = sprintf(
+		$payment->order_id = EasyDigitalDownloads::get_payment_number( $edd_payment_id );
+		$payment->title    = sprintf(
 			/* translators: %s: order id */
 			__( 'Easy Digital Downloads order %s', 'pronamic_ideal' ),
 			$payment->order_id
@@ -449,8 +456,11 @@ class Gateway {
 			return;
 		}
 
-		// Transaction ID
-		// @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.3/includes/payments/functions.php#L1400-L1416
+		/*
+		 * Transaction ID
+		 *
+		 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.3/includes/payments/functions.php#L1400-L1416
+		 */
 		edd_set_payment_transaction_id( $edd_payment_id, $payment->get_transaction_id() );
 
 		// Insert payment note.

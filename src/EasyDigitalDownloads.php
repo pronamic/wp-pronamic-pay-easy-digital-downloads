@@ -111,11 +111,15 @@ class EasyDigitalDownloads {
 		 * WordPress core.
 		 * @link https://developer.wordpress.org/reference/functions/wp_get_post_terms/
 		 */
-		$term_names = wp_get_post_terms( $post_id, 'download_category', array( 
-			'fields'  => 'names',
-			'orderby' => 'count',
-			'order'   => 'DESC',
-		) );
+		$term_names = wp_get_post_terms(
+			$post_id,
+			'download_category',
+			array(
+				'fields'  => 'names',
+				'orderby' => 'count',
+				'order'   => 'DESC',
+			)
+		);
 
 		if ( $term_names instanceof WP_Error ) {
 			return null;
@@ -155,7 +159,8 @@ class EasyDigitalDownloads {
 	 *
 	 * @param string $description   Description.
 	 * @param int    $payment_id    Payment ID.
-	 * @param array  $purchase_date Purchase data.
+	 * @param array  $purchase_data Purchase data.
+	 *
 	 * @return string
 	 */
 	public static function get_description( $description, $payment_id, $purchase_data ) {
