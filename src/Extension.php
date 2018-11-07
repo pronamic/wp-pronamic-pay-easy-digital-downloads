@@ -22,7 +22,7 @@ class Extension {
 	 * Bootstrap
 	 */
 	public static function bootstrap() {
-		// The "plugins_loaded" is one of the earliest hooks after EDD is set up
+		// The `plugins_loaded` is one of the earliest hooks after EDD is set up.
 		add_action( 'plugins_loaded', array( __CLASS__, 'plugins_loaded' ) );
 	}
 
@@ -35,29 +35,120 @@ class Extension {
 			 * Gateways
 			 * @since 1.1.0
 			 */
-			new Gateway( array(
-				'id'             => 'pronamic_ideal',
-				'admin_label'    => __( 'Pronamic', 'pronamic_ideal' ),
-				'checkout_label' => __( 'iDEAL', 'pronamic_ideal' ),
-			) );
+			new Gateway(
+				array(
+					'id'             => 'pronamic_ideal',
+					'admin_label'    => __( 'Pronamic', 'pronamic_ideal' ),
+					'checkout_label' => __( 'iDEAL', 'pronamic_ideal' ),
+				)
+			);
 
-			new BankTransferGateway();
-			new BitcoinGateway();
-			new CreditCardGateway();
-			new DirectDebitGateway();
-			new IDealGateway();
-			new BancontactGateway();
-			new SofortGateway();
+			new Gateway(
+				array(
+					'id'             => 'pronamic_pay_mister_cash',
+					'checkout_label' => __( 'Bancontact', 'pronamic_ideal' ),
+					'payment_method' => PaymentMethods::BANCONTACT,
+				)
+			);
 
-			if ( PaymentMethods::is_active( PaymentMethods::GULDEN ) ) {
-				new GuldenGateway();
+			new Gateway(
+				array(
+					'id'             => 'pronamic_pay_bank_transfer',
+					'checkout_label' => __( 'Bank Transfer', 'pronamic_ideal' ),
+					'payment_method' => PaymentMethods::BANK_TRANSFER,
+				)
+			);
+
+			new Gateway(
+				array(
+					'id'             => 'pronamic_pay_bitcoin',
+					'checkout_label' => __( 'Bitcoin', 'pronamic_ideal' ),
+					'payment_method' => PaymentMethods::BITCOIN,
+				)
+			);
+
+			new Gateway(
+				array(
+					'id'             => 'pronamic_pay_credit_card',
+					'checkout_label' => __( 'Credit Card', 'pronamic_ideal' ),
+					'payment_method' => PaymentMethods::CREDIT_CARD,
+				)
+			);
+
+			new Gateway(
+				array(
+					'id'             => 'pronamic_pay_direct_debit',
+					'checkout_label' => __( 'Direct Debit', 'pronamic_ideal' ),
+					'payment_method' => PaymentMethods::DIRECT_DEBIT,
+				)
+			);
+
+			new Gateway(
+				array(
+					'id'             => 'pronamic_pay_direct_debit_ideal',
+					'checkout_label' => __( 'Direct Debit (mandate via iDEAL)', 'pronamic_ideal' ),
+					'payment_method' => PaymentMethods::DIRECT_DEBIT_IDEAL,
+				)
+			);
+
+			new Gateway(
+				array(
+					'id'             => 'pronamic_pay_ideal',
+					'checkout_label' => __( 'iDEAL', 'pronamic_ideal' ),
+					'payment_method' => PaymentMethods::IDEAL,
+				)
+			);
+
+			new Gateway(
+				array(
+					'id'             => 'pronamic_pay_sofort',
+					'checkout_label' => __( 'SOFORT Banking', 'pronamic_ideal' ),
+					'payment_method' => PaymentMethods::SOFORT,
+				)
+			);
+
+			$data = array(
+				'pronamic_pay_afterpay'                => PaymentMethods::AFTERPAY,
+				'pronamic_pay_alipay'                  => PaymentMethods::ALIPAY,
+				'pronamic_pay_belfius'                 => PaymentMethods::BELFIUS,
+				'pronamic_pay_bunq'                    => PaymentMethods::BUNQ,
+				'pronamic_pay_direct_debit_bancontact' => PaymentMethods::DIRECT_DEBIT_BANCONTACT,
+				'pronamic_pay_direct_debit_ideal'      => PaymentMethods::DIRECT_DEBIT_IDEAL,
+				'pronamic_pay_direct_debit_sofort'     => PaymentMethods::DIRECT_DEBIT_SOFORT,
+				'pronamic_pay_focum'                   => PaymentMethods::FOCUM,
+				'pronamic_pay_giropay'                 => PaymentMethods::GIROPAY,
+				'pronamic_pay_gulden'                  => PaymentMethods::GULDEN,
+				'pronamic_pay_idealqr'                 => PaymentMethods::IDEALQR,
+				'pronamic_pay_in3'                     => PaymentMethods::IN3,
+				'pronamic_pay_kbc'                     => PaymentMethods::KBC,
+				'pronamic_pay_klarna_pay_later'        => PaymentMethods::KLARNA_PAY_LATER,
+				'pronamic_pay_maestro'                 => PaymentMethods::MAESTRO,
+				'pronamic_pay_payconiq'                => PaymentMethods::PAYCONIQ,
+				'pronamic_pay_paypal'                  => PaymentMethods::PAYPAL,
+			);
+
+			$data = array_filter(
+				$data,
+				function ( $payment_method ) {
+					return PaymentMethods::is_active( $payment_method );
+				}
+			);
+
+			foreach ( $data as $id => $payment_method ) {
+				new Gateway(
+					array(
+						'id'             => $id,
+						'checkout_label' => PaymentMethods::get_name( $payment_method ),
+						'payment_method' => $payment_method,
+					)
+				);
 			}
 
 			add_filter( 'pronamic_payment_redirect_url_easydigitaldownloads', array( __CLASS__, 'redirect_url' ), 10, 2 );
 			add_action( 'pronamic_payment_status_update_easydigitaldownloads', array( __CLASS__, 'status_update' ), 10, 1 );
 			add_filter( 'pronamic_payment_source_text_easydigitaldownloads', array( __CLASS__, 'source_text' ), 10, 2 );
 
-			// Icons
+			// Icons.
 			add_filter( 'edd_accepted_payment_icons', array( __CLASS__, 'accepted_payment_icons' ) );
 
 			// Currencies.
@@ -74,38 +165,23 @@ class Extension {
 	/**
 	 * Payment redirect URL filter.
 	 *
-	 * @param string                  $url
-	 * @param Payment $payment
+	 * @param string  $url     Redirect URL.
+	 * @param Payment $payment Payment.
+	 *
 	 * @return string
 	 */
 	public static function redirect_url( $url, $payment ) {
-		$source_id = $payment->get_source_id();
-
-		$data = new PaymentData( $source_id, array() );
-
-		$url = $data->get_normal_return_url();
-
 		switch ( $payment->get_status() ) {
 			case Core_Statuses::CANCELLED:
-				$url = $data->get_cancel_url();
-
-				break;
 			case Core_Statuses::EXPIRED:
-				$url = $data->get_error_url();
-
-				break;
 			case Core_Statuses::FAILURE:
-				$url = $data->get_error_url();
+				return EasyDigitalDownloads::get_option_page_url( 'failure_page' );
 
-				break;
 			case Core_Statuses::SUCCESS:
-				$url = $data->get_success_url();
+				return EasyDigitalDownloads::get_option_page_url( 'success_page' );
 
-				break;
 			case Core_Statuses::OPEN:
-				// Nothing to do?
-
-				break;
+				return home_url( '/' );
 		}
 
 		return $url;
@@ -114,21 +190,18 @@ class Extension {
 	/**
 	 * Update the status of the specified payment
 	 *
-	 * @param Payment $payment
+	 * @param Payment $payment Payment.
 	 */
 	public static function status_update( Payment $payment ) {
 		$source_id = $payment->get_source_id();
 
-		$data = new PaymentData( $source_id, array() );
-
-		// Only update if order is not completed
+		// Only update if order is not completed.
 		$should_update = edd_get_payment_status( $source_id ) !== EasyDigitalDownloads::ORDER_STATUS_PUBLISH;
 
 		if ( $should_update ) {
 			switch ( $payment->get_status() ) {
 				case Core_Statuses::CANCELLED:
 					// Nothing to do?
-
 					break;
 				case Core_Statuses::EXPIRED:
 					edd_update_payment_status( $source_id, EasyDigitalDownloads::ORDER_STATUS_ABANDONED );
@@ -142,10 +215,10 @@ class Extension {
 					edd_insert_payment_note( $source_id, __( 'Payment completed.', 'pronamic_ideal' ) );
 
 					/*
-					 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.8/includes/admin/payments/view-order-details.php#L36
-					 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.8/includes/admin/payments/view-order-details.php#L199-L206
-					 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.8/includes/payments/functions.php#L1312-L1332
-					 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.8/includes/gateways/paypal-standard.php#L555-L576
+					 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.8/includes/admin/payments/view-order-details.php#L36
+					 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.8/includes/admin/payments/view-order-details.php#L199-L206
+					 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.8/includes/payments/functions.php#L1312-L1332
+					 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.8/includes/gateways/paypal-standard.php#L555-L576
 					 */
 					edd_update_payment_status( $source_id, EasyDigitalDownloads::ORDER_STATUS_PUBLISH );
 
@@ -254,8 +327,8 @@ class Extension {
 	/**
 	 * Source column
 	 *
-	 * @param string $text
-	 * @param Payment $payment
+	 * @param string  $text    Source text.
+	 * @param Payment $payment Payment.
 	 *
 	 * @return string $text
 	 */
@@ -299,8 +372,8 @@ class Extension {
 	/**
 	 * Accepted payment icons
 	 *
-	 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.1.3/includes/admin/settings/register-settings.php#L261-L268
-	 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.1.3/includes/checkout/template.php#L573-L609
+	 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.1.3/includes/admin/settings/register-settings.php#L261-L268
+	 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.1.3/includes/checkout/template.php#L573-L609
 	 *
 	 * @param array $icons Icons.
 	 *

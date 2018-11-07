@@ -2,6 +2,8 @@
 
 namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
 
+use WP_Error;
+
 /**
  * Title: Easy Digital Downloads
  * Description:
@@ -77,11 +79,135 @@ class EasyDigitalDownloads {
 			return get_edit_post_link( $payment_id );
 		}
 
-		return add_query_arg( array(
-			'id'        => $payment_id,
-			'post_type' => 'download',
-			'page'      => 'edd-payment-history',
-			'view'      => 'view-order-details',
-		), admin_url( 'edit.php' ) );
+		return add_query_arg(
+			array(
+				'id'        => $payment_id,
+				'post_type' => 'download',
+				'page'      => 'edd-payment-history',
+				'view'      => 'view-order-details',
+			),
+			admin_url( 'edit.php' )
+		);
+	}
+
+	/**
+	 * Get download category.
+	 *
+	 * @param int $post_id Post ID.
+	 * @return string|null
+	 */
+	public static function get_download_category( $post_id ) {
+		/*
+		 * Yoast SEO primary term support.
+		 * @link https://github.com/Yoast/wordpress-seo/blob/8.4/inc/wpseo-functions.php#L62-L81
+		 */
+		if ( function_exists( 'yoast_get_primary_term' ) ) {
+			$name = yoast_get_primary_term( 'download_category', $post_id );
+
+			return empty( $name ) ? null : $name;
+		}
+
+		/*
+		 * WordPress core.
+		 * @link https://developer.wordpress.org/reference/functions/wp_get_post_terms/
+		 */
+		$term_names = wp_get_post_terms(
+			$post_id,
+			'download_category',
+			array(
+				'fields'  => 'names',
+				'orderby' => 'count',
+				'order'   => 'DESC',
+			)
+		);
+
+		if ( $term_names instanceof WP_Error ) {
+			return null;
+		}
+
+		$term_name = reset( $term_names );
+
+		if ( false === $term_name ) {
+			return null;
+		}
+
+		return $term_name;
+	}
+
+	/**
+	 * Get payment number.
+	 *
+	 * @param int $payment_id Payment ID.
+	 * @return string
+	 */
+	public static function get_payment_number( $payment_id ) {
+		/*
+		 * Check if the 'edd_get_payment_number' function exists, it was added in Easy Digital Downloads version 2.0.
+		 *
+		 * @since 1.2.0
+		 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.4.3/includes/payments/functions.php#L1178-L1204
+		 */
+		if ( function_exists( 'edd_get_payment_number' ) ) {
+			return edd_get_payment_number( $payment_id );
+		}
+
+		return $payment_id;
+	}
+
+	/**
+	 * Get description.
+	 *
+	 * @param string $description   Description.
+	 * @param int    $payment_id    Payment ID.
+	 * @param array  $purchase_data Purchase data.
+	 *
+	 * @return string
+	 */
+	public static function get_description( $description, $payment_id, $purchase_data ) {
+		if ( empty( $description ) ) {
+			$description = '{edd_cart_details_name}';
+		}
+
+		// Name.
+		$edd_cart_details_name = '';
+
+		if ( is_array( $purchase_data['cart_details'] ) ) {
+			$names = wp_list_pluck( $purchase_data['cart_details'], 'name' );
+
+			$edd_cart_details_name = implode( ', ', $names );
+		}
+
+		// Replacements.
+		$replacements = array(
+			'{edd_cart_details_name}' => $edd_cart_details_name,
+			'{edd_payment_id}'        => $payment_id,
+			'{edd_payment_number}'    => self::get_payment_number( $payment_id ),
+		);
+
+		// Replace.
+		$description = strtr( $description, $replacements );
+
+		return $description;
+	}
+
+	/**
+	 * Get page URL by option.
+	 *
+	 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.9.8/includes/admin/settings/register-settings.php#L16-L30
+	 * @param string $key Option key, for example: 'failure_page' or 'success_page'.
+	 * @return string
+	 */
+	public static function get_option_page_url( $key ) {
+		$post_id = edd_get_option( $key );
+
+		if ( empty( $post_id ) ) {
+			return home_url( '/' );
+		}
+
+		if ( 'publish' !== get_post_status( $post_id ) ) {
+			return home_url( '/' );
+		}
+
+		return get_permalink( $post_id );
 	}
 }
