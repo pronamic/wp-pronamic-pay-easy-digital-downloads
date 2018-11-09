@@ -4,6 +4,7 @@ namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
 
 use Pronamic\WordPress\Money\Currency;
 use Pronamic\WordPress\Money\Money;
+use Pronamic\WordPress\Money\TaxedMoney;
 use Pronamic\WordPress\Pay\Address;
 use Pronamic\WordPress\Pay\ContactName;
 use Pronamic\WordPress\Pay\Customer;
@@ -414,23 +415,25 @@ class Gateway {
 
 				$line = $payment->lines->new_line();
 
+				$tax_percentage = ( edd_use_taxes() ? $edd_payment->tax_rate * 100 : null );
+
 				if ( edd_prices_include_tax() ) {
-					$line->set_unit_price_including_tax( new Money( $detail['item_price'], $currency ) );
+					$line->set_unit_price( new TaxedMoney( $detail[ 'item_price'], $currency, null, $tax_percentage ) );
+				} elseif ( null !== $tax_percentage ) {
+					$unit_price_inclusive = $detail[ 'item_price' ] * ( 1 + $edd_payment->tax_rate );
+
+					$line->set_unit_price( new TaxedMoney( $unit_price_inclusive, $currency, $detail['item_price'], $tax_percentage ) );
 				} else {
-					$line->set_unit_price_excluding_tax( new Money( $detail['item_price'], $currency ) );
+					$line->set_unit_price( new TaxedMoney( $detail['item_price'], $currency ) );
 				}
 
-				if ( edd_use_taxes() ) {
-					$line->set_tax_percentage( $edd_payment->tax_rate * 100 );
-				}
+				$line->set_total_amount( new TaxedMoney( $detail[ 'price' ], $currency, $detail[ 'tax' ], $tax_percentage ) );
 
 				$line->set_type( PaymentLineType::DIGITAL );
 				$line->set_name( edd_get_cart_item_name( $detail ) );
 				$line->set_id( $detail['id'] );
 				$line->set_quantity( $detail['quantity'] );
-				$line->set_tax_amount( new Money( $detail['tax'], $currency ) );
 				$line->set_discount_amount( new Money( $detail['discount'], $currency ) );
-				$line->set_total_amount_including_tax( new Money( $detail['price'], $currency ) );
 				$line->set_product_url( get_permalink( $detail['id'] ) );
 				$line->set_image_url( wp_get_attachment_url( get_post_thumbnail_id( $detail['id'] ) ) );
 				$line->set_product_category( EasyDigitalDownloads::get_download_category( $detail['id'] ) );
