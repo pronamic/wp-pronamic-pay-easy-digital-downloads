@@ -33,11 +33,36 @@
 			"php": "5.3.3"
 		}
 	},
+	"repositories": [
+		{
+			"type": "package",
+			"package": {
+				"name": "easydigitaldownloads/easy-digital-downloads",
+				"version": "2.9.8",
+				"dist": {
+					"url": "https://github.com/easydigitaldownloads/easy-digital-downloads/archive/2.9.8.zip",
+					"type": "zip"
+				},
+				"source": {
+					"url": "https://github.com/easydigitaldownloads/easy-digital-downloads",
+					"type": "github",
+					"reference": "tags/2.9.8"
+				},
+				"autoload": {
+					"classmap": [
+						"."
+					]
+				}
+			}
+		}
+	],
 	"require": {
 		"php": "^5.3",
 		"wp-pay/core": "^2.0"
 	},
 	"require-dev": {
+		"easydigitaldownloads/easy-digital-downloads": "^2.9",
+		"johnpbloch/wordpress": "^4.9",
 		"php-coveralls/php-coveralls": "^1.0",
 		"phpmd/phpmd": "^2.2.3",
 		"phpunit/phpunit": "^4.5",
