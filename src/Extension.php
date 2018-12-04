@@ -182,6 +182,7 @@ class Extension {
 			case Core_Statuses::SUCCESS:
 				return EasyDigitalDownloads::get_option_page_url( 'success_page' );
 
+			case Core_Statuses::RESERVED:
 			case Core_Statuses::OPEN:
 				return home_url( '/' );
 		}
@@ -211,6 +212,48 @@ class Extension {
 					break;
 				case Core_Statuses::FAILURE:
 					edd_update_payment_status( $source_id, EasyDigitalDownloads::ORDER_STATUS_FAILED );
+
+					break;
+				case Core_Statuses::RESERVED:
+					$note = array(
+						sprintf(
+							'%s %s.',
+							PaymentMethods::get_name( $payment->get_method() ),
+							__( 'payment reserved at gateway', 'pronamic_ideal' )
+						),
+					);
+
+					$gateway = Plugin::get_gateway( $payment->get_config_id() );
+
+					if ( $gateway->supports( 'reservation_payments' ) ) {
+						$payment_edit_link = add_query_arg(
+							array(
+								'post'   => $payment->get_id(),
+								'action' => 'edit',
+							),
+							admin_url( 'post.php' )
+						);
+
+						$payment_link = sprintf(
+							'<a href="%1$s">%2$s</a>',
+							$payment_edit_link,
+							sprintf(
+								/* translators: %s: payment id */
+								esc_html( __( 'payment #%s', 'pronamic_ideal' ) ),
+								$payment->get_id()
+							)
+						);
+
+						$note[] = sprintf(
+							/* translators: %s: payment edit link */
+							__( 'Create an invoice at payment gateway for %1$s after processing the order.', 'pronamic_ideal' ),
+							$payment_link // WPCS: xss ok.
+						);
+					}
+
+					$note = implode( ' ', $note );
+
+					edd_insert_payment_note( $source_id, $note );
 
 					break;
 				case Core_Statuses::SUCCESS:
