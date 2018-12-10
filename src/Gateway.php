@@ -322,7 +322,7 @@ class Gateway {
 		$payment->method      = $this->payment_method;
 
 		if ( array_key_exists( 'price', $purchase_data ) ) {
-			$payment->set_total_amount( new Money( $purchase_data['price'], $currency ) );
+			$payment->set_total_amount( new TaxedMoney( $purchase_data['price'], $currency, $purchase_data['tax'] ) );
 		}
 
 		// Name.
@@ -417,16 +417,10 @@ class Gateway {
 
 				$tax_percentage = ( edd_use_taxes() ? $edd_payment->tax_rate * 100 : null );
 
-				if ( edd_prices_include_tax() ) {
-					$line->set_unit_price( new TaxedMoney( $detail['item_price'], $currency, null, $tax_percentage ) );
-				} elseif ( null !== $tax_percentage ) {
-					$unit_price_inclusive = $detail['item_price'] * ( 1 + $edd_payment->tax_rate );
+				$unit_price = $detail['price'] / $detail['quantity'];
+				$unit_tax   = $detail['tax'] / $detail['quantity'];
 
-					$line->set_unit_price( new TaxedMoney( $unit_price_inclusive, $currency, $detail['item_price'], $tax_percentage ) );
-				} else {
-					$line->set_unit_price( new TaxedMoney( $detail['item_price'], $currency ) );
-				}
-
+				$line->set_unit_price( new TaxedMoney( $unit_price, $currency, $unit_tax, $tax_percentage ) );
 				$line->set_total_amount( new TaxedMoney( $detail['price'], $currency, $detail['tax'], $tax_percentage ) );
 
 				$line->set_type( PaymentLineType::DIGITAL );
