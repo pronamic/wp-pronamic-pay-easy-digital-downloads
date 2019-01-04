@@ -7,7 +7,7 @@ use WP_Error;
 /**
  * Title: Easy Digital Downloads
  * Description:
- * Copyright: Copyright (c) 2005 - 2018
+ * Copyright: 2005-2019 Pronamic
  * Company: Pronamic
  *
  * @author  Remco Tolsma
