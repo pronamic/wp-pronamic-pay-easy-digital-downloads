@@ -61,13 +61,16 @@
 		"wp-pay/core": "^2.0"
 	},
 	"require-dev": {
+		"dealerdirect/phpcodesniffer-composer-installer": "^0.5.0",
 		"easydigitaldownloads/easy-digital-downloads": "^2.9",
-		"johnpbloch/wordpress": "^5.0",
 		"php-coveralls/php-coveralls": "^1.0",
-		"phpmd/phpmd": "^2.2.3",
-		"phpunit/phpunit": "^4.5",
+		"phpcompatibility/php-compatibility": "^9.0",
+		"phpcompatibility/phpcompatibility-wp": "^2.0",
+		"phpmd/phpmd": "^2.4",
+		"phpunit/phpunit": "^4.8",
+		"roots/wordpress": "^5.0",
 		"squizlabs/php_codesniffer": "^2.7",
 		"wp-coding-standards/wpcs": "^1.2",
-		"wimg/php-compatibility": "^9.0"
+		"wp-phpunit/wp-phpunit": "^5.0"
 	}
 }
