@@ -25,28 +25,35 @@ use Pronamic\WordPress\Pay\Payments\PaymentLineType;
  */
 class Gateway {
 	/**
-	 * ID
+	 * ID.
 	 *
 	 * @var string
 	 */
 	private $id;
 
 	/**
-	 * Admin label
+	 * Admin label.
 	 *
 	 * @var string
 	 */
 	private $admin_label;
 
 	/**
-	 * Checkout label
+	 * Checkout label.
 	 *
 	 * @var string
 	 */
 	private $checkout_label;
 
 	/**
-	 * Supports
+	 * Payment method.
+	 *
+	 * @var string
+	 */
+	private $payment_method;
+
+	/**
+	 * Supports.
 	 *
 	 * @var array
 	 */
@@ -199,12 +206,16 @@ class Gateway {
 	/**
 	 * Get the Pronamic configuration ID for this gateway.
 	 *
-	 * @return string
+	 * @return null|string
 	 */
 	private function get_pronamic_config_id() {
 		$config_id = edd_get_option( $this->id . '_config_id' );
 
 		$config_id = empty( $config_id ) ? get_option( 'pronamic_pay_config_id' ) : $config_id;
+
+		if ( empty( $config_id ) ) {
+			return null;
+		}
 
 		return $config_id;
 	}
@@ -279,28 +290,45 @@ class Gateway {
 
 		// Check payment.
 		if ( ! $edd_payment_id ) {
-			// Log error
-			/* translators: %s: payment data JSON */
-			edd_record_gateway_error( __( 'Payment Error', 'pronamic_ideal' ), sprintf( __( 'Payment creation failed before sending buyer to the payment provider. Payment data: %s', 'pronamic_ideal' ), wp_json_encode( $payment_data ) ), $edd_payment_id );
+			// Log error.
+			edd_record_gateway_error(
+				__( 'Payment Error', 'pronamic_ideal' ),
+				sprintf(
+					/* translators: %s: payment data JSON */
+					__( 'Payment creation failed before sending buyer to the payment provider. Payment data: %s', 'pronamic_ideal' )
+				),
+				strval( wp_json_encode( $payment_data ) ),
+				intval( $edd_payment_id )
+			);
 
-			edd_send_back_to_checkout( '?payment-mode=' . $purchase_data['post_data']['edd-gateway'] );
+			edd_send_back_to_checkout(
+				array(
+					'payment-mode' => $purchase_data['post_data']['edd-gateway'],
+				)
+			);
 
 			return;
 		}
 
 		$edd_payment = edd_get_payment( $edd_payment_id );
 
-		// Get gateway.
+		// Get gateway and currency.
 		$gateway = Plugin::get_gateway( $config_id );
 
-		if ( ! $gateway ) {
+		$edd_currency = edd_get_option( 'currency' );
+
+		if ( ! $gateway || ! is_string( $edd_currency ) ) {
 			edd_set_error( 'pronamic_pay_error', Plugin::get_default_error_message() );
 
-			edd_send_back_to_checkout( '?payment-mode=' . $purchase_data['post_data']['edd-gateway'] );
+			edd_send_back_to_checkout(
+				array(
+					'payment-mode=' => $purchase_data['post_data']['edd-gateway'],
+				)
+			);
 		}
 
 		// Currency.
-		$currency = Currency::get_instance( edd_get_option( 'currency' ) );
+		$currency = Currency::get_instance( $edd_currency );
 
 		// Payment.
 		$payment = new Payment();
@@ -316,7 +344,7 @@ class Gateway {
 			$edd_payment_id,
 			$purchase_data
 		);
-		$payment->config_id   = $config_id;
+		$payment->config_id   = (int) $config_id;
 		$payment->source      = 'easydigitaldownloads';
 		$payment->source_id   = $edd_payment_id;
 		$payment->method      = $this->payment_method;

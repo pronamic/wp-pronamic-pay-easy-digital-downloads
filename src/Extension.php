@@ -196,7 +196,7 @@ class Extension {
 	 * @param Payment $payment Payment.
 	 */
 	public static function status_update( Payment $payment ) {
-		$source_id = $payment->get_source_id();
+		$source_id = (int) $payment->get_source_id();
 
 		// Only update if order is not completed.
 		$should_update = edd_get_payment_status( $source_id ) !== EasyDigitalDownloads::ORDER_STATUS_PUBLISH;
