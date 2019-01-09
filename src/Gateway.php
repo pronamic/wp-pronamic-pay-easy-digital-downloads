@@ -295,9 +295,9 @@ class Gateway {
 				__( 'Payment Error', 'pronamic_ideal' ),
 				sprintf(
 					/* translators: %s: payment data JSON */
-					__( 'Payment creation failed before sending buyer to the payment provider. Payment data: %s', 'pronamic_ideal' )
+					__( 'Payment creation failed before sending buyer to the payment provider. Payment data: %s', 'pronamic_ideal' ),
+					strval( wp_json_encode( $payment_data ) )
 				),
-				strval( wp_json_encode( $payment_data ) ),
 				intval( $edd_payment_id )
 			);
 
