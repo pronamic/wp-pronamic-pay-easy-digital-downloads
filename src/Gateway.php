@@ -272,12 +272,14 @@ class Gateway {
 		$config_id = $this->get_pronamic_config_id();
 
 		// Collect payment data.
+		$edd_currency = edd_get_currency();
+
 		$payment_data = array(
 			'price'        => $purchase_data['price'],
 			'date'         => $purchase_data['date'],
 			'user_email'   => $purchase_data['user_email'],
 			'purchase_key' => $purchase_data['purchase_key'],
-			'currency'     => edd_get_currency(),
+			'currency'     => $edd_currency,
 			'downloads'    => $purchase_data['downloads'],
 			'user_info'    => $purchase_data['user_info'],
 			'cart_details' => $purchase_data['cart_details'],
@@ -315,9 +317,7 @@ class Gateway {
 		// Get gateway and currency.
 		$gateway = Plugin::get_gateway( $config_id );
 
-		$edd_currency = edd_get_option( 'currency' );
-
-		if ( ! $gateway || ! is_string( $edd_currency ) ) {
+		if ( ! $gateway ) {
 			edd_set_error( 'pronamic_pay_error', Plugin::get_default_error_message() );
 
 			edd_send_back_to_checkout(
@@ -329,6 +329,9 @@ class Gateway {
 
 		// Currency.
 		$currency = Currency::get_instance( $edd_currency );
+
+		// Tax.
+		$tax_percentage = ( edd_use_taxes() ? $edd_payment->tax_rate * 100 : null );
 
 		// Payment.
 		$payment = new Payment();
@@ -350,7 +353,7 @@ class Gateway {
 		$payment->method      = $this->payment_method;
 
 		if ( array_key_exists( 'price', $purchase_data ) ) {
-			$payment->set_total_amount( new TaxedMoney( $purchase_data['price'], $currency, $purchase_data['tax'] ) );
+			$payment->set_total_amount( new TaxedMoney( $purchase_data['price'], $currency, $purchase_data['tax'], $tax_percentage ) );
 		}
 
 		// Name.
@@ -420,10 +423,10 @@ class Gateway {
 		}
 
 		// Lines.
+		$payment->lines = new PaymentLines();
+
 		if ( array_key_exists( 'cart_details', $purchase_data ) && is_array( $purchase_data['cart_details'] ) ) {
 			$cart_details = $purchase_data['cart_details'];
-
-			$payment->lines = new PaymentLines();
 
 			$cart_detail_defaults = array(
 				'name'        => null,
@@ -443,8 +446,6 @@ class Gateway {
 
 				$line = $payment->lines->new_line();
 
-				$tax_percentage = ( edd_use_taxes() ? $edd_payment->tax_rate * 100 : null );
-
 				$unit_price = $detail['price'] / $detail['quantity'];
 				$unit_tax   = $detail['tax'] / $detail['quantity'];
 
@@ -462,6 +463,35 @@ class Gateway {
 			}
 		}
 
+		// Fees.
+		$fees = $edd_payment->get_fees();
+
+		$fee_defaults = array(
+			'amount'      => null,
+			'label'       => null,
+			'type'        => null,
+			'no_tax'      => null,
+			'download_id' => null,
+			'price_id'    => null,
+		);
+
+		foreach ( $fees as $id => $fee ) {
+			$fee = wp_parse_args( $fee, $fee_defaults );
+
+			$line = $payment->lines->new_line();
+
+			$fee_tax_percentage = $fee['no_tax'] ? null : $tax_percentage;
+
+			$line->set_unit_price( new TaxedMoney( $fee['amount'], $currency, null, $fee_tax_percentage ) );
+			$line->set_total_amount( new TaxedMoney( $fee['amount'], $currency, null, $fee_tax_percentage ) );
+
+			$line->set_type( PaymentLineType::FEE );
+			$line->set_name( $fee['label'] );
+			$line->set_id( $fee['id'] );
+			$line->set_quantity( 1 );
+		}
+
+		// Start.
 		$payment = Plugin::start_payment( $payment );
 
 		$error = $gateway->get_error();

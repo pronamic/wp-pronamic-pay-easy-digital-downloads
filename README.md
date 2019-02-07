@@ -12,7 +12,34 @@ As far as we know there are no free/open-source Easy Digital Downloads fees plug
 <?php
 
 add_action( 'init', function() {
-	EDD()->fees->add_fee( 10, 'test', 'Test' );
+	if ( ! function_exists( 'EDD' ) ) {
+		return;
+	}
+
+	EDD()->fees->add_fee( 10, 'Test Backwards Compatibility', 'test-compat' );
+
+	EDD()->fees->add_fee( array(
+		'amount' => 20,
+		'label'  => 'Test',
+		'id'     => 'test',
+		'no_tax' => false,
+		'type'   => 'item',
+	) );
+
+	EDD()->fees->add_fee( array(
+		'amount' => -5.95,
+		'label'  => 'Discount',
+		'id'     => 'discount',
+		'type'   => 'fee',
+	) );
+
+	EDD()->fees->add_fee( array(
+		'amount'      => 30.75,
+		'label'       => 'Arbitrary Item',
+		'download_id' => 8,
+		'id'          => 'arbitrary_fee',
+		'type'        => 'item',
+	) );
 } );
 
 ```
