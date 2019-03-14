@@ -166,6 +166,11 @@ class Extension {
 		// Only update if order is not completed.
 		$should_update = edd_get_payment_status( $source_id ) !== EasyDigitalDownloads::ORDER_STATUS_PUBLISH;
 
+		// Always empty cart for completed payments.
+		if ( $payment->get_status() === Core_Statuses::SUCCESS ) {
+			edd_empty_cart();
+		}
+
 		if ( $should_update ) {
 			switch ( $payment->get_status() ) {
 				case Core_Statuses::CANCELLED:
@@ -231,8 +236,6 @@ class Extension {
 					 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.8/includes/gateways/paypal-standard.php#L555-L576
 					 */
 					edd_update_payment_status( $source_id, EasyDigitalDownloads::ORDER_STATUS_PUBLISH );
-
-					edd_empty_cart();
 
 					break;
 				case Core_Statuses::OPEN:
