@@ -119,7 +119,7 @@ class Extension {
 
 		$payment_methods = array_merge( $default, $optional );
 
-		usort(
+		uasort(
 			$payment_methods,
 			function ( $a, $b ) {
 				return strnatcasecmp( PaymentMethods::get_name( $a ), PaymentMethods::get_name( $b ) );
