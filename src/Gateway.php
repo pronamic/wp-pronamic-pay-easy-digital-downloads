@@ -16,37 +16,44 @@ use Pronamic\WordPress\Pay\Payments\PaymentLineType;
 /**
  * Title: Easy Digital Downloads gateway
  * Description:
- * Copyright: Copyright (c) 2005 - 2018
+ * Copyright: 2005-2019 Pronamic
  * Company: Pronamic
  *
  * @author  Remco Tolsma
- * @version 2.0.2
+ * @version 2.0.3
  * @since   1.1.0
  */
 class Gateway {
 	/**
-	 * ID
+	 * ID.
 	 *
 	 * @var string
 	 */
 	private $id;
 
 	/**
-	 * Admin label
+	 * Admin label.
 	 *
 	 * @var string
 	 */
 	private $admin_label;
 
 	/**
-	 * Checkout label
+	 * Checkout label.
 	 *
 	 * @var string
 	 */
 	private $checkout_label;
 
 	/**
-	 * Supports
+	 * Payment method.
+	 *
+	 * @var string
+	 */
+	private $payment_method;
+
+	/**
+	 * Supports.
 	 *
 	 * @var array
 	 */
@@ -199,12 +206,16 @@ class Gateway {
 	/**
 	 * Get the Pronamic configuration ID for this gateway.
 	 *
-	 * @return string
+	 * @return null|string
 	 */
 	private function get_pronamic_config_id() {
 		$config_id = edd_get_option( $this->id . '_config_id' );
 
 		$config_id = empty( $config_id ) ? get_option( 'pronamic_pay_config_id' ) : $config_id;
+
+		if ( empty( $config_id ) ) {
+			return null;
+		}
 
 		return $config_id;
 	}
@@ -261,12 +272,14 @@ class Gateway {
 		$config_id = $this->get_pronamic_config_id();
 
 		// Collect payment data.
+		$edd_currency = edd_get_currency();
+
 		$payment_data = array(
 			'price'        => $purchase_data['price'],
 			'date'         => $purchase_data['date'],
 			'user_email'   => $purchase_data['user_email'],
 			'purchase_key' => $purchase_data['purchase_key'],
-			'currency'     => edd_get_currency(),
+			'currency'     => $edd_currency,
 			'downloads'    => $purchase_data['downloads'],
 			'user_info'    => $purchase_data['user_info'],
 			'cart_details' => $purchase_data['cart_details'],
@@ -279,28 +292,46 @@ class Gateway {
 
 		// Check payment.
 		if ( ! $edd_payment_id ) {
-			// Log error
-			/* translators: %s: payment data JSON */
-			edd_record_gateway_error( __( 'Payment Error', 'pronamic_ideal' ), sprintf( __( 'Payment creation failed before sending buyer to the payment provider. Payment data: %s', 'pronamic_ideal' ), wp_json_encode( $payment_data ) ), $edd_payment_id );
+			// Log error.
+			edd_record_gateway_error(
+				__( 'Payment Error', 'pronamic_ideal' ),
+				sprintf(
+					/* translators: %s: payment data JSON */
+					__( 'Payment creation failed before sending buyer to the payment provider. Payment data: %s', 'pronamic_ideal' ),
+					strval( wp_json_encode( $payment_data ) )
+				),
+				intval( $edd_payment_id )
+			);
 
-			edd_send_back_to_checkout( '?payment-mode=' . $purchase_data['post_data']['edd-gateway'] );
+			edd_send_back_to_checkout(
+				array(
+					'payment-mode' => $purchase_data['post_data']['edd-gateway'],
+				)
+			);
 
 			return;
 		}
 
 		$edd_payment = edd_get_payment( $edd_payment_id );
 
-		// Get gateway.
+		// Get gateway and currency.
 		$gateway = Plugin::get_gateway( $config_id );
 
 		if ( ! $gateway ) {
 			edd_set_error( 'pronamic_pay_error', Plugin::get_default_error_message() );
 
-			edd_send_back_to_checkout( '?payment-mode=' . $purchase_data['post_data']['edd-gateway'] );
+			edd_send_back_to_checkout(
+				array(
+					'payment-mode=' => $purchase_data['post_data']['edd-gateway'],
+				)
+			);
 		}
 
 		// Currency.
-		$currency = Currency::get_instance( edd_get_option( 'currency' ) );
+		$currency = Currency::get_instance( $edd_currency );
+
+		// Tax.
+		$tax_percentage = ( edd_use_taxes() ? $edd_payment->tax_rate * 100 : null );
 
 		// Payment.
 		$payment = new Payment();
@@ -316,13 +347,13 @@ class Gateway {
 			$edd_payment_id,
 			$purchase_data
 		);
-		$payment->config_id   = $config_id;
+		$payment->config_id   = (int) $config_id;
 		$payment->source      = 'easydigitaldownloads';
 		$payment->source_id   = $edd_payment_id;
 		$payment->method      = $this->payment_method;
 
 		if ( array_key_exists( 'price', $purchase_data ) ) {
-			$payment->set_total_amount( new TaxedMoney( $purchase_data['price'], $currency, $purchase_data['tax'] ) );
+			$payment->set_total_amount( new TaxedMoney( $purchase_data['price'], $currency, $purchase_data['tax'], $tax_percentage ) );
 		}
 
 		// Name.
@@ -392,10 +423,10 @@ class Gateway {
 		}
 
 		// Lines.
+		$payment->lines = new PaymentLines();
+
 		if ( array_key_exists( 'cart_details', $purchase_data ) && is_array( $purchase_data['cart_details'] ) ) {
 			$cart_details = $purchase_data['cart_details'];
-
-			$payment->lines = new PaymentLines();
 
 			$cart_detail_defaults = array(
 				'name'        => null,
@@ -415,8 +446,6 @@ class Gateway {
 
 				$line = $payment->lines->new_line();
 
-				$tax_percentage = ( edd_use_taxes() ? $edd_payment->tax_rate * 100 : null );
-
 				$unit_price = $detail['price'] / $detail['quantity'];
 				$unit_tax   = $detail['tax'] / $detail['quantity'];
 
@@ -434,6 +463,35 @@ class Gateway {
 			}
 		}
 
+		// Fees.
+		$fees = $edd_payment->get_fees();
+
+		$fee_defaults = array(
+			'amount'      => null,
+			'label'       => null,
+			'type'        => null,
+			'no_tax'      => null,
+			'download_id' => null,
+			'price_id'    => null,
+		);
+
+		foreach ( $fees as $id => $fee ) {
+			$fee = wp_parse_args( $fee, $fee_defaults );
+
+			$line = $payment->lines->new_line();
+
+			$fee_tax_percentage = $fee['no_tax'] ? null : $tax_percentage;
+
+			$line->set_unit_price( new TaxedMoney( $fee['amount'], $currency, null, $fee_tax_percentage ) );
+			$line->set_total_amount( new TaxedMoney( $fee['amount'], $currency, null, $fee_tax_percentage ) );
+
+			$line->set_type( PaymentLineType::FEE );
+			$line->set_name( $fee['label'] );
+			$line->set_id( $fee['id'] );
+			$line->set_quantity( 1 );
+		}
+
+		// Start.
 		$payment = Plugin::start_payment( $payment );
 
 		$error = $gateway->get_error();

@@ -10,11 +10,11 @@ use Pronamic\WordPress\Pay\Plugin;
 /**
  * Title: Easy Digital Downloads iDEAL Add-On
  * Description:
- * Copyright: Copyright (c) 2005 - 2018
+ * Copyright: 2005-2019 Pronamic
  * Company: Pronamic
  *
  * @author  Remco Tolsma
- * @version 2.0.2
+ * @version 2.0.3
  * @since   1.0.0
  */
 class Extension {
@@ -43,100 +43,7 @@ class Extension {
 				)
 			);
 
-			new Gateway(
-				array(
-					'id'             => 'pronamic_pay_mister_cash',
-					'checkout_label' => __( 'Bancontact', 'pronamic_ideal' ),
-					'payment_method' => PaymentMethods::BANCONTACT,
-				)
-			);
-
-			new Gateway(
-				array(
-					'id'             => 'pronamic_pay_bank_transfer',
-					'checkout_label' => __( 'Bank Transfer', 'pronamic_ideal' ),
-					'payment_method' => PaymentMethods::BANK_TRANSFER,
-				)
-			);
-
-			new Gateway(
-				array(
-					'id'             => 'pronamic_pay_bitcoin',
-					'checkout_label' => __( 'Bitcoin', 'pronamic_ideal' ),
-					'payment_method' => PaymentMethods::BITCOIN,
-				)
-			);
-
-			new Gateway(
-				array(
-					'id'             => 'pronamic_pay_credit_card',
-					'checkout_label' => __( 'Credit Card', 'pronamic_ideal' ),
-					'payment_method' => PaymentMethods::CREDIT_CARD,
-				)
-			);
-
-			new Gateway(
-				array(
-					'id'             => 'pronamic_pay_direct_debit',
-					'checkout_label' => __( 'Direct Debit', 'pronamic_ideal' ),
-					'payment_method' => PaymentMethods::DIRECT_DEBIT,
-				)
-			);
-
-			new Gateway(
-				array(
-					'id'             => 'pronamic_pay_direct_debit_ideal',
-					'checkout_label' => __( 'Direct Debit (mandate via iDEAL)', 'pronamic_ideal' ),
-					'payment_method' => PaymentMethods::DIRECT_DEBIT_IDEAL,
-				)
-			);
-
-			new Gateway(
-				array(
-					'id'             => 'pronamic_pay_ideal',
-					'checkout_label' => __( 'iDEAL', 'pronamic_ideal' ),
-					'payment_method' => PaymentMethods::IDEAL,
-				)
-			);
-
-			new Gateway(
-				array(
-					'id'             => 'pronamic_pay_sofort',
-					'checkout_label' => __( 'SOFORT Banking', 'pronamic_ideal' ),
-					'payment_method' => PaymentMethods::SOFORT,
-				)
-			);
-
-			$data = array(
-				'pronamic_pay_afterpay'                => PaymentMethods::AFTERPAY,
-				'pronamic_pay_alipay'                  => PaymentMethods::ALIPAY,
-				'pronamic_pay_belfius'                 => PaymentMethods::BELFIUS,
-				'pronamic_pay_billink'                 => PaymentMethods::BILLINK,
-				'pronamic_pay_bunq'                    => PaymentMethods::BUNQ,
-				'pronamic_pay_capayable'               => PaymentMethods::CAPAYABLE,
-				'pronamic_pay_direct_debit_bancontact' => PaymentMethods::DIRECT_DEBIT_BANCONTACT,
-				'pronamic_pay_direct_debit_ideal'      => PaymentMethods::DIRECT_DEBIT_IDEAL,
-				'pronamic_pay_direct_debit_sofort'     => PaymentMethods::DIRECT_DEBIT_SOFORT,
-				'pronamic_pay_focum'                   => PaymentMethods::FOCUM,
-				'pronamic_pay_giropay'                 => PaymentMethods::GIROPAY,
-				'pronamic_pay_gulden'                  => PaymentMethods::GULDEN,
-				'pronamic_pay_idealqr'                 => PaymentMethods::IDEALQR,
-				'pronamic_pay_in3'                     => PaymentMethods::IN3,
-				'pronamic_pay_kbc'                     => PaymentMethods::KBC,
-				'pronamic_pay_klarna_pay_later'        => PaymentMethods::KLARNA_PAY_LATER,
-				'pronamic_pay_maestro'                 => PaymentMethods::MAESTRO,
-				'pronamic_pay_payconiq'                => PaymentMethods::PAYCONIQ,
-				'pronamic_pay_paypal'                  => PaymentMethods::PAYPAL,
-			);
-
-			$data = array_filter(
-				$data,
-				function ( $payment_method ) {
-					return PaymentMethods::is_active( $payment_method );
-				}
-			);
-
-			foreach ( $data as $id => $payment_method ) {
+			foreach ( self::get_payment_methods() as $id => $payment_method ) {
 				new Gateway(
 					array(
 						'id'             => $id,
@@ -162,6 +69,64 @@ class Extension {
 
 		add_filter( 'pronamic_payment_source_description_easydigitaldownloads', array( __CLASS__, 'source_description' ), 10, 2 );
 		add_filter( 'pronamic_payment_source_url_easydigitaldownloads', array( __CLASS__, 'source_url' ), 10, 2 );
+	}
+
+	/**
+	 * Get payment methods.
+	 *
+	 * @return array
+	 */
+	private static function get_payment_methods() {
+		$default = array(
+			'pronamic_pay_mister_cash'        => PaymentMethods::BANCONTACT,
+			'pronamic_pay_bank_transfer'      => PaymentMethods::BANK_TRANSFER,
+			'pronamic_pay_bitcoin'            => PaymentMethods::BITCOIN,
+			'pronamic_pay_credit_card'        => PaymentMethods::CREDIT_CARD,
+			'pronamic_pay_direct_debit'       => PaymentMethods::DIRECT_DEBIT,
+			'pronamic_pay_direct_debit_ideal' => PaymentMethods::DIRECT_DEBIT_IDEAL,
+			'pronamic_pay_ideal'              => PaymentMethods::IDEAL,
+			'pronamic_pay_sofort'             => PaymentMethods::SOFORT,
+		);
+
+		$optional = array(
+			'pronamic_pay_afterpay'                => PaymentMethods::AFTERPAY,
+			'pronamic_pay_alipay'                  => PaymentMethods::ALIPAY,
+			'pronamic_pay_belfius'                 => PaymentMethods::BELFIUS,
+			'pronamic_pay_billink'                 => PaymentMethods::BILLINK,
+			'pronamic_pay_bunq'                    => PaymentMethods::BUNQ,
+			'pronamic_pay_capayable'               => PaymentMethods::CAPAYABLE,
+			'pronamic_pay_direct_debit_bancontact' => PaymentMethods::DIRECT_DEBIT_BANCONTACT,
+			'pronamic_pay_direct_debit_ideal'      => PaymentMethods::DIRECT_DEBIT_IDEAL,
+			'pronamic_pay_direct_debit_sofort'     => PaymentMethods::DIRECT_DEBIT_SOFORT,
+			'pronamic_pay_focum'                   => PaymentMethods::FOCUM,
+			'pronamic_pay_giropay'                 => PaymentMethods::GIROPAY,
+			'pronamic_pay_gulden'                  => PaymentMethods::GULDEN,
+			'pronamic_pay_idealqr'                 => PaymentMethods::IDEALQR,
+			'pronamic_pay_in3'                     => PaymentMethods::IN3,
+			'pronamic_pay_kbc'                     => PaymentMethods::KBC,
+			'pronamic_pay_klarna_pay_later'        => PaymentMethods::KLARNA_PAY_LATER,
+			'pronamic_pay_maestro'                 => PaymentMethods::MAESTRO,
+			'pronamic_pay_payconiq'                => PaymentMethods::PAYCONIQ,
+			'pronamic_pay_paypal'                  => PaymentMethods::PAYPAL,
+		);
+
+		$optional = array_filter(
+			$optional,
+			function ( $payment_method ) {
+				return PaymentMethods::is_active( $payment_method );
+			}
+		);
+
+		$payment_methods = array_merge( $default, $optional );
+
+		uasort(
+			$payment_methods,
+			function ( $a, $b ) {
+				return strnatcasecmp( PaymentMethods::get_name( $a ), PaymentMethods::get_name( $b ) );
+			}
+		);
+
+		return $payment_methods;
 	}
 
 	/**
@@ -196,10 +161,15 @@ class Extension {
 	 * @param Payment $payment Payment.
 	 */
 	public static function status_update( Payment $payment ) {
-		$source_id = $payment->get_source_id();
+		$source_id = (int) $payment->get_source_id();
 
 		// Only update if order is not completed.
 		$should_update = edd_get_payment_status( $source_id ) !== EasyDigitalDownloads::ORDER_STATUS_PUBLISH;
+
+		// Always empty cart for completed payments.
+		if ( $payment->get_status() === Core_Statuses::SUCCESS ) {
+			edd_empty_cart();
+		}
 
 		if ( $should_update ) {
 			switch ( $payment->get_status() ) {
@@ -266,8 +236,6 @@ class Extension {
 					 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.8/includes/gateways/paypal-standard.php#L555-L576
 					 */
 					edd_update_payment_status( $source_id, EasyDigitalDownloads::ORDER_STATUS_PUBLISH );
-
-					edd_empty_cart();
 
 					break;
 				case Core_Statuses::OPEN:
@@ -425,21 +393,24 @@ class Extension {
 	 * @return array
 	 */
 	public static function accepted_payment_icons( $icons ) {
-		// iDEAL.
-		$key           = plugins_url( 'images/ideal/icon-64x48.png', Plugin::$file );
-		$icons[ $key ] = PaymentMethods::get_name( PaymentMethods::IDEAL );
+		$payment_methods = self::get_payment_methods();
 
-		// Bancontact.
-		$key           = plugins_url( 'images/bancontact/icon-64x48.png', Plugin::$file );
-		$icons[ $key ] = PaymentMethods::get_name( PaymentMethods::BANCONTACT );
+		foreach ( $payment_methods as $id => $payment_method ) {
+			$icon = sprintf(
+				'/images/%s/icon-64x48.png',
+				str_replace( '_', '-', $payment_method )
+			);
 
-		// Bitcoin.
-		$key           = plugins_url( 'images/bitcoin/icon-64x48.png', Plugin::$file );
-		$icons[ $key ] = PaymentMethods::get_name( PaymentMethods::BITCOIN );
+			// Check if file exists.
+			if ( ! is_readable( plugin_dir_path( Plugin::$file ) . $icon ) ) {
+				continue;
+			}
 
-		// Sofort.
-		$key           = plugins_url( 'images/sofort/icon-64x48.png', Plugin::$file );
-		$icons[ $key ] = PaymentMethods::get_name( PaymentMethods::SOFORT );
+			// Add icon URL.
+			$url = plugins_url( $icon, Plugin::$file );
+
+			$icons[ $url ] = PaymentMethods::get_name( $payment_method );
+		}
 
 		return $icons;
 	}
