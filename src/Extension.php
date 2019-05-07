@@ -58,8 +58,8 @@ class Extension {
 			add_action( 'pronamic_payment_status_update_easydigitaldownloads', array( __CLASS__, 'status_update' ), 10, 1 );
 			add_filter( 'pronamic_payment_source_text_easydigitaldownloads', array( __CLASS__, 'source_text' ), 10, 2 );
 
-			// Maybe empty cart for completed payment.
-			add_filter( 'pronamic_payment_redirect_url_easydigitaldownloads', array( __CLASS__, 'maybe_empty_cart' ), 9, 2 );
+			// Maybe empty cart for completed payment when handling returns.
+			add_action( 'save_post_pronamic_payment', array( __CLASS__, 'maybe_empty_cart' ), 10, 1 );
 
 			// Icons.
 			add_filter( 'edd_accepted_payment_icons', array( __CLASS__, 'accepted_payment_icons' ) );
@@ -162,19 +162,20 @@ class Extension {
 	/**
 	 * Maybe empty cart for succesful payment.
 	 *
-	 * @param string  $url     Redirect URL.
-	 * @param Payment $payment Payment.
+	 * @param int $post_id Post ID.
 	 *
 	 * @return void
 	 */
-	public static function maybe_empty_cart( $url, $payment ) {
-		// Only empty when handling returns.
+	public function maybe_empty_cart( $post_id ) {
+		// Only empty cart when handling returns.
 		if ( ! Util::input_has_vars( INPUT_GET, array( 'payment', 'key' ) ) ) {
 			return;
 		}
 
+		$payment = get_pronamic_payment( $post_id );
+
 		// Only empty for completed payments.
-		if ( $payment->get_status() !== Core_Statuses::SUCCESS ) {
+		if ( ! $payment || $payment->get_status() !== Core_Statuses::SUCCESS ) {
 			return;
 		}
 
