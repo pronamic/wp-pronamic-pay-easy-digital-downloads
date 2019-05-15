@@ -4,6 +4,7 @@ namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
 
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Core\Statuses as Core_Statuses;
+use Pronamic\WordPress\Pay\Core\Util;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Plugin;
 
@@ -56,6 +57,9 @@ class Extension {
 			add_filter( 'pronamic_payment_redirect_url_easydigitaldownloads', array( __CLASS__, 'redirect_url' ), 10, 2 );
 			add_action( 'pronamic_payment_status_update_easydigitaldownloads', array( __CLASS__, 'status_update' ), 10, 1 );
 			add_filter( 'pronamic_payment_source_text_easydigitaldownloads', array( __CLASS__, 'source_text' ), 10, 2 );
+
+			// Maybe empty cart for completed payment when handling returns.
+			add_action( 'save_post_pronamic_payment', array( __CLASS__, 'maybe_empty_cart' ), 10, 1 );
 
 			// Icons.
 			add_filter( 'edd_accepted_payment_icons', array( __CLASS__, 'accepted_payment_icons' ) );
@@ -153,6 +157,29 @@ class Extension {
 		}
 
 		return $url;
+	}
+
+	/**
+	 * Maybe empty cart for succesful payment.
+	 *
+	 * @param int $post_id Post ID.
+	 *
+	 * @return void
+	 */
+	public function maybe_empty_cart( $post_id ) {
+		// Only empty cart when handling returns.
+		if ( ! Util::input_has_vars( INPUT_GET, array( 'payment', 'key' ) ) ) {
+			return;
+		}
+
+		$payment = get_pronamic_payment( $post_id );
+
+		// Only empty for completed payments.
+		if ( ! $payment || $payment->get_status() !== Core_Statuses::SUCCESS ) {
+			return;
+		}
+
+		edd_empty_cart();
 	}
 
 	/**
