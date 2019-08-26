@@ -166,7 +166,7 @@ class Extension {
 	 *
 	 * @return void
 	 */
-	public function maybe_empty_cart( $post_id ) {
+	public static function maybe_empty_cart( $post_id ) {
 		// Only empty cart when handling returns.
 		if ( ! Util::input_has_vars( INPUT_GET, array( 'payment', 'key' ) ) ) {
 			return;
