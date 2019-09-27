@@ -2,8 +2,6 @@
 
 namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
 
-use WP_Error;
-
 /**
  * Title: Easy Digital Downloads
  * Description:
@@ -121,7 +119,7 @@ class EasyDigitalDownloads {
 			)
 		);
 
-		if ( $term_names instanceof WP_Error ) {
+		if ( $term_names instanceof \WP_Error ) {
 			return null;
 		}
 
