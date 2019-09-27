@@ -3,7 +3,7 @@
 namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
 
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
-use Pronamic\WordPress\Pay\Core\Statuses as Core_Statuses;
+use Pronamic\WordPress\Pay\Payments\PaymentStatus as Core_Statuses;
 use Pronamic\WordPress\Pay\Core\Util;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Plugin;
