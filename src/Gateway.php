@@ -231,7 +231,7 @@ class Gateway {
 
 		if ( $gateway ) {
 			/*
-			 * Let the gateay no wich payment method to use so it can return the correct inputs.
+			 * Let the gateway no which payment method to use so it can return the correct inputs.
 			 * @since 1.2.1
 			 */
 			$gateway->set_payment_method( $this->payment_method );
@@ -240,7 +240,7 @@ class Gateway {
 
 			if ( $input ) {
 				echo '<fieldset id="edd_cc_fields" class="edd-do-validate">';
-				echo '<span><legend>', esc_html( $this->checkout_label ), '</legend></span>';
+				echo '<legend>', esc_html( $this->checkout_label ), '</legend>';
 				// @codingStandardsIgnoreStart
 				echo $input;
 				// @codingStandardsIgnoreEnd
