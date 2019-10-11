@@ -518,15 +518,19 @@ class Gateway {
 		}
 
 		// Start.
-		try {
-			$payment = Plugin::start_payment( $payment );
-		} catch ( \Pronamic\WordPress\Pay\PayException $e ) {
+		$payment = Plugin::start_payment( $payment );
+
+		$error = $gateway->get_error();
+
+		if ( is_wp_error( $error ) ) {
 			/* translators: %s: payment data JSON */
 			edd_record_gateway_error( __( 'Payment Error', 'pronamic_ideal' ), sprintf( __( 'Payment creation failed before sending buyer to the payment provider. Payment data: %s', 'pronamic_ideal' ), wp_json_encode( $payment_data ) ), $edd_payment_id );
 
 			edd_set_error( 'pronamic_pay_error', Plugin::get_default_error_message() );
 
-			edd_set_error( 'pronamic_pay_error_' . $e->get_error_code(), $e->get_message() );
+			foreach ( $error->get_error_messages() as $i => $message ) {
+				edd_set_error( 'pronamic_pay_error_' . $i, $message );
+			}
 
 			edd_send_back_to_checkout( '?payment-mode=' . $purchase_data['post_data']['edd-gateway'] );
 
