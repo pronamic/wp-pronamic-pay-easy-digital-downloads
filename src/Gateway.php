@@ -447,9 +447,9 @@ class Gateway {
 				$line = $payment->lines->new_line();
 
 				/**
-				 * ID/SKU.
+				 * ID.
 				 *
-				 * We build the ID/SKU from the cart detail ID and the optional cart item price ID.
+				 * We build the ID from the cart detail ID and the optional cart item price ID.
 				 *
 				 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.9.17/includes/gateways/functions.php#L244-L247
 				 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.9.17/includes/cart/functions.php#L220-L230
@@ -464,7 +464,6 @@ class Gateway {
 				}
 
 				$line->set_id( $id );
-				$line->set_sku( $id );
 
 				/**
 				 * Name.
