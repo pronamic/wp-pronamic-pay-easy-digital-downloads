@@ -446,6 +446,34 @@ class Gateway {
 
 				$line = $payment->lines->new_line();
 
+				/**
+				 * ID/SKU.
+				 *
+				 * We build the ID/SKU from the cart detail ID and the optional cart item price ID.
+				 *
+				 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.9.17/includes/gateways/functions.php#L244-L247
+				 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.9.17/includes/cart/functions.php#L220-L230
+				 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.9.17/includes/cart/class-edd-cart.php#L1173-L1189
+				 */
+				$id = $detail['id'];
+
+				$item_price_id = \edd_get_cart_item_price_id( $detail );
+
+				if ( null !== $item_price_id ) {
+					$id = sprintf( '%s-%s', $id, $item_price_id );
+				}
+
+				$line->set_id( $id );
+				$line->set_sku( $id );
+
+				/**
+				 * Name.
+				 *
+				 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.9.17/includes/cart/functions.php#L243-L252
+				 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.9.17/includes/cart/class-edd-cart.php#L1207-L1227
+				 */
+				$line->set_name( \edd_get_cart_item_name( $detail ) );
+
 				$unit_price = $detail['price'] / $detail['quantity'];
 				$unit_tax   = $detail['tax'] / $detail['quantity'];
 
@@ -453,8 +481,6 @@ class Gateway {
 				$line->set_total_amount( new TaxedMoney( $detail['price'], $currency, $detail['tax'], $tax_percentage ) );
 
 				$line->set_type( PaymentLineType::DIGITAL );
-				$line->set_name( edd_get_cart_item_name( $detail ) );
-				$line->set_id( $detail['id'] );
 				$line->set_quantity( $detail['quantity'] );
 				$line->set_discount_amount( new Money( $detail['discount'], $currency ) );
 				$line->set_product_url( get_permalink( $detail['id'] ) );
