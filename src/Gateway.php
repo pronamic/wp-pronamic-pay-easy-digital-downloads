@@ -20,7 +20,7 @@ use Pronamic\WordPress\Pay\Payments\PaymentLineType;
  * Company: Pronamic
  *
  * @author  Remco Tolsma
- * @version 2.0.3
+ * @version 2.0.6
  * @since   1.1.0
  */
 class Gateway {
@@ -231,7 +231,7 @@ class Gateway {
 
 		if ( $gateway ) {
 			/*
-			 * Let the gateay no wich payment method to use so it can return the correct inputs.
+			 * Let the gateway no which payment method to use so it can return the correct inputs.
 			 * @since 1.2.1
 			 */
 			$gateway->set_payment_method( $this->payment_method );
@@ -240,7 +240,7 @@ class Gateway {
 
 			if ( $input ) {
 				echo '<fieldset id="edd_cc_fields" class="edd-do-validate">';
-				echo '<span><legend>', esc_html( $this->checkout_label ), '</legend></span>';
+				echo '<legend>', esc_html( $this->checkout_label ), '</legend>';
 				// @codingStandardsIgnoreStart
 				echo $input;
 				// @codingStandardsIgnoreEnd
@@ -446,6 +446,33 @@ class Gateway {
 
 				$line = $payment->lines->new_line();
 
+				/**
+				 * ID.
+				 *
+				 * We build the ID from the cart detail ID and the optional cart item price ID.
+				 *
+				 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.9.17/includes/gateways/functions.php#L244-L247
+				 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.9.17/includes/cart/functions.php#L220-L230
+				 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.9.17/includes/cart/class-edd-cart.php#L1173-L1189
+				 */
+				$id = $detail['id'];
+
+				$item_price_id = \edd_get_cart_item_price_id( $detail );
+
+				if ( null !== $item_price_id ) {
+					$id = sprintf( '%s-%s', $id, $item_price_id );
+				}
+
+				$line->set_id( $id );
+
+				/**
+				 * Name.
+				 *
+				 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.9.17/includes/cart/functions.php#L243-L252
+				 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.9.17/includes/cart/class-edd-cart.php#L1207-L1227
+				 */
+				$line->set_name( \edd_get_cart_item_name( $detail ) );
+
 				$unit_price = $detail['price'] / $detail['quantity'];
 				$unit_tax   = $detail['tax'] / $detail['quantity'];
 
@@ -453,8 +480,6 @@ class Gateway {
 				$line->set_total_amount( new TaxedMoney( $detail['price'], $currency, $detail['tax'], $tax_percentage ) );
 
 				$line->set_type( PaymentLineType::DIGITAL );
-				$line->set_name( edd_get_cart_item_name( $detail ) );
-				$line->set_id( $detail['id'] );
 				$line->set_quantity( $detail['quantity'] );
 				$line->set_discount_amount( new Money( $detail['discount'], $currency ) );
 				$line->set_product_url( get_permalink( $detail['id'] ) );
@@ -492,19 +517,21 @@ class Gateway {
 		}
 
 		// Start.
-		$payment = Plugin::start_payment( $payment );
-
-		$error = $gateway->get_error();
-
-		if ( is_wp_error( $error ) ) {
-			/* translators: %s: payment data JSON */
-			edd_record_gateway_error( __( 'Payment Error', 'pronamic_ideal' ), sprintf( __( 'Payment creation failed before sending buyer to the payment provider. Payment data: %s', 'pronamic_ideal' ), wp_json_encode( $payment_data ) ), $edd_payment_id );
+		try {
+			$payment = Plugin::start_payment( $payment );
+		} catch ( \Exception $e ) {
+			edd_record_gateway_error(
+				__( 'Payment Error', 'pronamic_ideal' ),
+				sprintf(
+					/* translators: %s: payment data JSON */
+					__( 'Payment creation failed before sending buyer to the payment provider. Payment data: %s', 'pronamic_ideal' ),
+					wp_json_encode( $payment_data )
+				),
+				$edd_payment_id
+			);
 
 			edd_set_error( 'pronamic_pay_error', Plugin::get_default_error_message() );
-
-			foreach ( $error->get_error_messages() as $i => $message ) {
-				edd_set_error( 'pronamic_pay_error_' . $i, $message );
-			}
+			edd_set_error( 'pronamic_pay_error_' . $e->getCode(), $e->getMessage() );
 
 			edd_send_back_to_checkout( '?payment-mode=' . $purchase_data['post_data']['edd-gateway'] );
 
