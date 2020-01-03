@@ -291,7 +291,7 @@ class Gateway {
 		$edd_payment_id = edd_insert_payment( $payment_data );
 
 		// Check payment.
-		if ( ! $edd_payment_id ) {
+		if ( false === $edd_payment_id ) {
 			// Log error.
 			edd_record_gateway_error(
 				__( 'Payment Error', 'pronamic_ideal' ),
@@ -299,8 +299,7 @@ class Gateway {
 					/* translators: %s: payment data JSON */
 					__( 'Payment creation failed before sending buyer to the payment provider. Payment data: %s', 'pronamic_ideal' ),
 					strval( wp_json_encode( $payment_data ) )
-				),
-				intval( $edd_payment_id )
+				)
 			);
 
 			edd_send_back_to_checkout(
@@ -525,9 +524,9 @@ class Gateway {
 				sprintf(
 					/* translators: %s: payment data JSON */
 					__( 'Payment creation failed before sending buyer to the payment provider. Payment data: %s', 'pronamic_ideal' ),
-					wp_json_encode( $payment_data )
+					(string) wp_json_encode( $payment_data )
 				),
-				$edd_payment_id
+				(int) $edd_payment_id
 			);
 
 			edd_set_error( 'pronamic_pay_error', Plugin::get_default_error_message() );
