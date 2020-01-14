@@ -7,6 +7,7 @@ use Pronamic\WordPress\Money\Money;
 use Pronamic\WordPress\Money\TaxedMoney;
 use Pronamic\WordPress\Pay\Address;
 use Pronamic\WordPress\Pay\ContactName;
+use Pronamic\WordPress\Pay\Core\Util;
 use Pronamic\WordPress\Pay\Customer;
 use Pronamic\WordPress\Pay\Plugin;
 use Pronamic\WordPress\Pay\Payments\Payment;
@@ -239,18 +240,24 @@ class Gateway {
 		 */
 		$gateway->set_payment_method( $this->payment_method );
 
-		$input = $gateway->get_input_html();
+		$fields = $gateway->get_input_fields();
 
-		if ( '' === $input ) {
+		// Check if there are fields to display.
+		if ( empty( $fields ) ) {
 			return;
 		}
 
 		echo '<fieldset id="edd_cc_fields" class="edd-do-validate">';
 		echo '<legend>', esc_html( $this->checkout_label ), '</legend>';
-		// @codingStandardsIgnoreStart
-		echo \str_replace( '<label', '<p><label', $input );
-		// @codingStandardsIgnoreEnd
-		echo '</p>';
+
+		foreach ( $fields as $field ) {
+			$field['required'] = true;
+
+			// @codingStandardsIgnoreStart
+			printf( '<p>%s</p>', Util::input_fields_html( array( $field ) ) );
+			// @codingStandardsIgnoreEnd
+		}
+
 		echo '</fieldset>';
 	}
 
