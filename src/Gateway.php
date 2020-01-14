@@ -251,6 +251,8 @@ class Gateway {
 		echo '<legend>', esc_html( $this->checkout_label ), '</legend>';
 
 		foreach ( $fields as $field ) {
+			// Make field required.
+			$field['label']    .= ' <span class="edd-required-indicator">*</span>';
 			$field['required'] = true;
 
 			// @codingStandardsIgnoreStart
