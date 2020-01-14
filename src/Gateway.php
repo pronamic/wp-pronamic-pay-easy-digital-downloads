@@ -229,24 +229,29 @@ class Gateway {
 	public function payment_fields() {
 		$gateway = Plugin::get_gateway( $this->get_pronamic_config_id() );
 
-		if ( $gateway ) {
-			/*
-			 * Let the gateway no which payment method to use so it can return the correct inputs.
-			 * @since 1.2.1
-			 */
-			$gateway->set_payment_method( $this->payment_method );
-
-			$input = $gateway->get_input_html();
-
-			if ( $input ) {
-				echo '<fieldset id="edd_cc_fields" class="edd-do-validate">';
-				echo '<legend>', esc_html( $this->checkout_label ), '</legend>';
-				// @codingStandardsIgnoreStart
-				echo $input;
-				// @codingStandardsIgnoreEnd
-				echo '</fieldset>';
-			}
+		if ( null === $gateway ) {
+			return;
 		}
+
+		/*
+		 * Let the gateway know which payment method to use so it can return the correct inputs.
+		 * @since 1.2.1
+		 */
+		$gateway->set_payment_method( $this->payment_method );
+
+		$input = $gateway->get_input_html();
+
+		if ( '' === $input ) {
+			return;
+		}
+
+		echo '<fieldset id="edd_cc_fields" class="edd-do-validate">';
+		echo '<legend>', esc_html( $this->checkout_label ), '</legend>';
+		// @codingStandardsIgnoreStart
+		echo \str_replace( '<label', '<p><label', $input );
+		// @codingStandardsIgnoreEnd
+		echo '</p>';
+		echo '</fieldset>';
 	}
 
 	/**
