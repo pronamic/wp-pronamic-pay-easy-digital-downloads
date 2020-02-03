@@ -252,7 +252,7 @@ class Gateway {
 
 		foreach ( $fields as $field ) {
 			// Make field required.
-			$field['label']    .= ' <span class="edd-required-indicator">*</span>';
+			$field['label']   .= ' <span class="edd-required-indicator">*</span>';
 			$field['required'] = true;
 
 			// @codingStandardsIgnoreStart
