@@ -7,6 +7,7 @@ use Pronamic\WordPress\Money\Money;
 use Pronamic\WordPress\Money\TaxedMoney;
 use Pronamic\WordPress\Pay\Address;
 use Pronamic\WordPress\Pay\ContactName;
+use Pronamic\WordPress\Pay\Core\Util;
 use Pronamic\WordPress\Pay\Customer;
 use Pronamic\WordPress\Pay\Plugin;
 use Pronamic\WordPress\Pay\Payments\Payment;
@@ -16,7 +17,7 @@ use Pronamic\WordPress\Pay\Payments\PaymentLineType;
 /**
  * Title: Easy Digital Downloads gateway
  * Description:
- * Copyright: 2005-2019 Pronamic
+ * Copyright: 2005-2020 Pronamic
  * Company: Pronamic
  *
  * @author  Remco Tolsma
@@ -229,24 +230,37 @@ class Gateway {
 	public function payment_fields() {
 		$gateway = Plugin::get_gateway( $this->get_pronamic_config_id() );
 
-		if ( $gateway ) {
-			/*
-			 * Let the gateway no which payment method to use so it can return the correct inputs.
-			 * @since 1.2.1
-			 */
-			$gateway->set_payment_method( $this->payment_method );
-
-			$input = $gateway->get_input_html();
-
-			if ( $input ) {
-				echo '<fieldset id="edd_cc_fields" class="edd-do-validate">';
-				echo '<legend>', esc_html( $this->checkout_label ), '</legend>';
-				// @codingStandardsIgnoreStart
-				echo $input;
-				// @codingStandardsIgnoreEnd
-				echo '</fieldset>';
-			}
+		if ( null === $gateway ) {
+			return;
 		}
+
+		/*
+		 * Let the gateway know which payment method to use so it can return the correct inputs.
+		 * @since 1.2.1
+		 */
+		$gateway->set_payment_method( $this->payment_method );
+
+		$fields = $gateway->get_input_fields();
+
+		// Check if there are fields to display.
+		if ( empty( $fields ) ) {
+			return;
+		}
+
+		echo '<fieldset id="edd_cc_fields" class="edd-do-validate">';
+		echo '<legend>', esc_html( $this->checkout_label ), '</legend>';
+
+		foreach ( $fields as $field ) {
+			// Make field required.
+			$field['label']   .= ' <span class="edd-required-indicator">*</span>';
+			$field['required'] = true;
+
+			// @codingStandardsIgnoreStart
+			printf( '<p>%s</p>', Util::input_fields_html( array( $field ) ) );
+			// @codingStandardsIgnoreEnd
+		}
+
+		echo '</fieldset>';
 	}
 
 	/**
@@ -291,7 +305,7 @@ class Gateway {
 		$edd_payment_id = edd_insert_payment( $payment_data );
 
 		// Check payment.
-		if ( ! $edd_payment_id ) {
+		if ( false === $edd_payment_id ) {
 			// Log error.
 			edd_record_gateway_error(
 				__( 'Payment Error', 'pronamic_ideal' ),
@@ -299,8 +313,7 @@ class Gateway {
 					/* translators: %s: payment data JSON */
 					__( 'Payment creation failed before sending buyer to the payment provider. Payment data: %s', 'pronamic_ideal' ),
 					strval( wp_json_encode( $payment_data ) )
-				),
-				intval( $edd_payment_id )
+				)
 			);
 
 			edd_send_back_to_checkout(
@@ -525,9 +538,9 @@ class Gateway {
 				sprintf(
 					/* translators: %s: payment data JSON */
 					__( 'Payment creation failed before sending buyer to the payment provider. Payment data: %s', 'pronamic_ideal' ),
-					wp_json_encode( $payment_data )
+					(string) wp_json_encode( $payment_data )
 				),
-				$edd_payment_id
+				(int) $edd_payment_id
 			);
 
 			edd_set_error( 'pronamic_pay_error', Plugin::get_default_error_message() );
