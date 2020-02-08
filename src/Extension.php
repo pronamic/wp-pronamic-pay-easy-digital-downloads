@@ -18,7 +18,7 @@ use Pronamic\WordPress\Pay\Plugin;
  * @version 2.0.6
  * @since   1.0.0
  */
-class Extension {
+class Extension extends \Pronamic\WordPress\Pay\AbstractPluginIntegration {
 	/**
 	 * Bootstrap
 	 */
