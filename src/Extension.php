@@ -21,6 +21,8 @@ use Pronamic\WordPress\Pay\Plugin;
 class Extension extends \Pronamic\WordPress\Pay\AbstractPluginIntegration {
 	/**
 	 * Construct Easy Digital Downlaods extension.
+	 *
+	 * @param array $args Arguments.
 	 */
 	public function __construct( $args = array() ) {
 		parent::__construct( $args );
