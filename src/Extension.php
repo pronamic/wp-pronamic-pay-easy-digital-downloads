@@ -20,6 +20,15 @@ use Pronamic\WordPress\Pay\Plugin;
  */
 class Extension extends \Pronamic\WordPress\Pay\AbstractPluginIntegration {
 	/**
+	 * Construct Easy Digital Downlaods extension.
+	 */
+	public function __construct( $args = array() ) {
+		parent::__construct( $args );
+
+		self::bootstrap();
+	}
+
+	/**
 	 * Bootstrap
 	 */
 	public static function bootstrap() {
