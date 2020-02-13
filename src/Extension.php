@@ -80,6 +80,9 @@ class Extension extends \Pronamic\WordPress\Pay\AbstractPluginIntegration {
 			add_filter( 'edd_currency_symbol', array( __CLASS__, 'currency_symbol' ), 10, 2 );
 			add_filter( 'edd_nlg_currency_filter_before', array( __CLASS__, 'currency_filter_before' ), 10, 3 );
 			add_filter( 'edd_nlg_currency_filter_after', array( __CLASS__, 'currency_filter_after' ), 10, 3 );
+
+			// Statuses.
+			add_filter( 'edd_payment_statuses', array( __CLASS__, 'edd_payment_statuses' ) ) ;
 		}
 
 		add_filter( 'pronamic_payment_source_description_easydigitaldownloads', array( __CLASS__, 'source_description' ), 10, 2 );
@@ -212,7 +215,8 @@ class Extension extends \Pronamic\WordPress\Pay\AbstractPluginIntegration {
 		if ( $should_update ) {
 			switch ( $payment->get_status() ) {
 				case Core_Statuses::CANCELLED:
-					// Nothing to do?
+					edd_update_payment_status( $source_id, EasyDigitalDownloads::ORDER_STATUS_CANCELLED );
+
 					break;
 				case Core_Statuses::EXPIRED:
 					edd_update_payment_status( $source_id, EasyDigitalDownloads::ORDER_STATUS_ABANDONED );
@@ -451,5 +455,28 @@ class Extension extends \Pronamic\WordPress\Pay\AbstractPluginIntegration {
 		}
 
 		return $icons;
+	}
+
+	/**
+	 * Easy Digital Downloads payment statuses.
+	 *
+	 * The Easy Digital Downloads plugin is equipped with a "Set To Cancelled" bulk action.
+	 * This bulk action will set the status of payments to 'cancelled', this is however not
+	 * a registered payment status. Therefor we will register 'cancelled' as an payment
+	 * status.
+	 *
+	 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.9.20/includes/admin/payments/class-payments-table.php#L427-L517
+	 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.9.20/includes/payments/functions.php#L761-L779
+	 * @param array $payment_statuses Easy Digital Downloads payment statuses.
+	 * @return array
+	 */
+	public static function edd_payment_statuses( $payment_statuses ) {
+		if ( array_key_exists( 'cancelled', $payment_statuses ) ) {
+			return $payment_statuses;
+		}
+
+		$payment_statuses['cancelled'] = __( 'Cancelled', 'pronamic_ideal' );
+
+		return $payment_statuses;
 	}
 }

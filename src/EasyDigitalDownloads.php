@@ -58,6 +58,14 @@ class EasyDigitalDownloads {
 	const ORDER_STATUS_REVOKED = 'revoked';
 
 	/**
+	 * Order status cancelled
+	 *
+	 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.9.20/includes/admin/payments/class-payments-table.php#L506-L508
+	 * @var string
+	 */
+	const ORDER_STATUS_CANCELLED = 'cancelled';
+
+	/**
 	 * Check if Easy Digital Downloads is active
 	 *
 	 * @return boolean
