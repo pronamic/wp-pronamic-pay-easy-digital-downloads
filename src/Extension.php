@@ -2,6 +2,7 @@
 
 namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
 
+use Pronamic\WordPress\Pay\AbstractPluginIntegration;
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Payments\PaymentStatus as Core_Statuses;
 use Pronamic\WordPress\Pay\Core\Util;
@@ -9,84 +10,82 @@ use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Plugin;
 
 /**
- * Title: Easy Digital Downloads iDEAL Add-On
+ * Title: Easy Digital Downloads extension
  * Description:
  * Copyright: 2005-2020 Pronamic
  * Company: Pronamic
  *
  * @author  Remco Tolsma
- * @version 2.0.6
+ * @version 2.1.0
  * @since   1.0.0
  */
-class Extension extends \Pronamic\WordPress\Pay\AbstractPluginIntegration {
+class Extension extends AbstractPluginIntegration {
 	/**
-	 * Construct Easy Digital Downlaods extension.
+	 * Constructs and initialize Easy Digital Downloads extension.
+	 */
+	public function __construct() {
+		parent::__construct();
+
+		// Dependencies.
+		$dependencies = $this->get_dependencies();
+
+		$dependencies->add( new EasyDigitalDownloadsDependency() );
+	}
+
+	/**
+	 * Setup plugin integration.
 	 *
-	 * @param array $args Arguments.
+	 * @return void
 	 */
-	public function __construct( $args = array() ) {
-		parent::__construct( $args );
+	public function setup() {
+		add_filter( 'pronamic_payment_source_text_easydigitaldownloads', array( $this, 'source_text' ), 10, 2 );
+		add_filter( 'pronamic_payment_source_description_easydigitaldownloads', array( $this, 'source_description' ), 10, 2 );
 
-		self::bootstrap();
-	}
-
-	/**
-	 * Bootstrap
-	 */
-	public static function bootstrap() {
-		// The `plugins_loaded` is one of the earliest hooks after EDD is set up.
-		add_action( 'plugins_loaded', array( __CLASS__, 'plugins_loaded' ) );
-	}
-
-	/**
-	 * Test to see if the Easy Digital Downloads plugin is active, then add all actions.
-	 */
-	public static function plugins_loaded() {
-		if ( EasyDigitalDownloads::is_active() ) {
-			/*
-			 * Gateways
-			 * @since 1.1.0
-			 */
-			new Gateway(
-				array(
-					'id'             => 'pronamic_ideal',
-					'admin_label'    => __( 'Pronamic', 'pronamic_ideal' ),
-					'checkout_label' => __( 'iDEAL', 'pronamic_ideal' ),
-				)
-			);
-
-			foreach ( self::get_payment_methods() as $id => $payment_method ) {
-				new Gateway(
-					array(
-						'id'             => $id,
-						'checkout_label' => PaymentMethods::get_name( $payment_method ),
-						'payment_method' => $payment_method,
-					)
-				);
-			}
-
-			add_filter( 'pronamic_payment_redirect_url_easydigitaldownloads', array( __CLASS__, 'redirect_url' ), 10, 2 );
-			add_action( 'pronamic_payment_status_update_easydigitaldownloads', array( __CLASS__, 'status_update' ), 10, 1 );
-			add_filter( 'pronamic_payment_source_text_easydigitaldownloads', array( __CLASS__, 'source_text' ), 10, 2 );
-
-			// Maybe empty cart for completed payment when handling returns.
-			add_action( 'save_post_pronamic_payment', array( __CLASS__, 'maybe_empty_cart' ), 10, 1 );
-
-			// Icons.
-			add_filter( 'edd_accepted_payment_icons', array( __CLASS__, 'accepted_payment_icons' ) );
-
-			// Currencies.
-			add_filter( 'edd_currencies', array( __CLASS__, 'currencies' ), 10, 1 );
-			add_filter( 'edd_currency_symbol', array( __CLASS__, 'currency_symbol' ), 10, 2 );
-			add_filter( 'edd_nlg_currency_filter_before', array( __CLASS__, 'currency_filter_before' ), 10, 3 );
-			add_filter( 'edd_nlg_currency_filter_after', array( __CLASS__, 'currency_filter_after' ), 10, 3 );
-
-			// Statuses.
-			add_filter( 'edd_payment_statuses', array( __CLASS__, 'edd_payment_statuses' ) ) ;
+		// Check if dependencies are met and integration is active.
+		if ( ! $this->is_active() ) {
+			return;
 		}
 
-		add_filter( 'pronamic_payment_source_description_easydigitaldownloads', array( __CLASS__, 'source_description' ), 10, 2 );
-		add_filter( 'pronamic_payment_source_url_easydigitaldownloads', array( __CLASS__, 'source_url' ), 10, 2 );
+		/*
+		 * Gateways
+		 * @since 1.1.0
+		 */
+		new Gateway(
+			array(
+				'id'             => 'pronamic_ideal',
+				'admin_label'    => __( 'Pronamic', 'pronamic_ideal' ),
+				'checkout_label' => __( 'iDEAL', 'pronamic_ideal' ),
+			)
+		);
+
+		foreach ( self::get_payment_methods() as $id => $payment_method ) {
+			new Gateway(
+				array(
+					'id'             => $id,
+					'checkout_label' => PaymentMethods::get_name( $payment_method ),
+					'payment_method' => $payment_method,
+				)
+			);
+		}
+
+		add_filter( 'pronamic_payment_source_url_easydigitaldownloads', array( $this, 'source_url' ), 10, 2 );
+		add_filter( 'pronamic_payment_redirect_url_easydigitaldownloads', array( __CLASS__, 'redirect_url' ), 10, 2 );
+		add_action( 'pronamic_payment_status_update_easydigitaldownloads', array( __CLASS__, 'status_update' ), 10, 1 );
+
+		// Maybe empty cart for completed payment when handling returns.
+		add_action( 'save_post_pronamic_payment', array( __CLASS__, 'maybe_empty_cart' ), 10, 1 );
+
+		// Icons.
+		add_filter( 'edd_accepted_payment_icons', array( __CLASS__, 'accepted_payment_icons' ) );
+
+		// Currencies.
+		add_filter( 'edd_currencies', array( __CLASS__, 'currencies' ), 10, 1 );
+		add_filter( 'edd_currency_symbol', array( __CLASS__, 'currency_symbol' ), 10, 2 );
+		add_filter( 'edd_nlg_currency_filter_before', array( __CLASS__, 'currency_filter_before' ), 10, 3 );
+		add_filter( 'edd_nlg_currency_filter_after', array( __CLASS__, 'currency_filter_after' ), 10, 3 );
+
+		// Statuses.
+		add_filter( 'edd_payment_statuses', array( __CLASS__, 'edd_payment_statuses' ) );
 	}
 
 	/**
@@ -387,7 +386,7 @@ class Extension extends \Pronamic\WordPress\Pay\AbstractPluginIntegration {
 	 *
 	 * @return string $text
 	 */
-	public static function source_text( $text, Payment $payment ) {
+	public function source_text( $text, Payment $payment ) {
 		$text = __( 'Easy Digital Downloads', 'pronamic_ideal' ) . '<br />';
 
 		$text .= sprintf(
@@ -408,7 +407,7 @@ class Extension extends \Pronamic\WordPress\Pay\AbstractPluginIntegration {
 	 *
 	 * @return string
 	 */
-	public static function source_description( $description, Payment $payment ) {
+	public function source_description( $description, Payment $payment ) {
 		return __( 'Easy Digital Downloads Order', 'pronamic_ideal' );
 	}
 
@@ -420,7 +419,7 @@ class Extension extends \Pronamic\WordPress\Pay\AbstractPluginIntegration {
 	 *
 	 * @return string
 	 */
-	public static function source_url( $url, Payment $payment ) {
+	public function source_url( $url, Payment $payment ) {
 		return EasyDigitalDownloads::get_payment_url( $payment->source_id );
 	}
 
