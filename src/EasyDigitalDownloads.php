@@ -11,7 +11,7 @@ use WP_Error;
  * Company: Pronamic
  *
  * @author  Remco Tolsma
- * @version 2.0.2
+ * @version 2.1.0
  * @since   1.0.0
  */
 class EasyDigitalDownloads {
@@ -58,13 +58,12 @@ class EasyDigitalDownloads {
 	const ORDER_STATUS_REVOKED = 'revoked';
 
 	/**
-	 * Check if Easy Digital Downloads is active
+	 * Order status cancelled
 	 *
-	 * @return boolean
+	 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.9.20/includes/admin/payments/class-payments-table.php#L506-L508
+	 * @var string
 	 */
-	public static function is_active() {
-		return defined( 'EDD_VERSION' );
-	}
+	const ORDER_STATUS_CANCELLED = 'cancelled';
 
 	/**
 	 * Get payment URL by the specified payment ID.
@@ -75,7 +74,7 @@ class EasyDigitalDownloads {
 	 * @return string
 	 */
 	public static function get_payment_url( $payment_id ) {
-		if ( version_compare( EDD_VERSION, '3', '<' ) ) {
+		if ( \defined( '\EDD_VERSION' ) && version_compare( \EDD_VERSION, '3', '<' ) ) {
 			return get_edit_post_link( (int) $payment_id );
 		}
 
