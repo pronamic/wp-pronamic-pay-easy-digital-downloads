@@ -1,6 +1,6 @@
 {
   "name": "easy-digital-downloads",
-  "version": "2.0.7",
+  "version": "2.1.0",
   "description": "Easy Digital Downloads driver for the WordPress payment processing library.",
   "repository": {
     "type": "git",
