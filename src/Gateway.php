@@ -343,8 +343,23 @@ class Gateway {
 		// Currency.
 		$currency = Currency::get_instance( $edd_currency );
 
-		// Tax.
-		$tax_percentage = ( edd_use_taxes() ? $edd_payment->tax_rate * 100 : null );
+		/**
+		 * Tax.
+		 *
+		 * @todo We have to check how tax is handled in Easy Digial Downloads 3.0.
+		 *
+		 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.9.22/includes/payments/functions.php#L148-L277
+		 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/3.0.0-beta2/includes/payments/functions.php#L141-L200
+		 */
+		$tax_percentage = null;
+
+		if ( edd_use_taxes() ) {
+			if ( array_key_exists( 'tax_rate', $purchase_data ) ) {
+				$tax_rate = $purchase_data['tax_rate'];
+
+				$tax_percentage = $tax_rate * 100;
+			}
+		}
 
 		// Payment.
 		$payment = new Payment();
