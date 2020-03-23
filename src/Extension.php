@@ -24,7 +24,11 @@ class Extension extends AbstractPluginIntegration {
 	 * Constructs and initialize Easy Digital Downloads extension.
 	 */
 	public function __construct() {
-		parent::__construct();
+		parent::__construct(
+			array(
+				'name' => __( 'Easy Digital Downloads', 'pronamic_ideal' ),
+			)
+		);
 
 		// Dependencies.
 		$dependencies = $this->get_dependencies();
