@@ -7,6 +7,10 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [2.1.1] - 2020-04-03
+- Improved tax support for Easy Digital Downloads 3.0.
+- Set plugin integration name.
+
 ## [2.1.0] - 2020-03-19
 - Update integration setup with dependencies support.
 - Set Easy Digital Downloads payment status to 'cancelled' in case of a cancelled payment.
@@ -96,7 +100,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2015-01-20
 - First release.
 
-[unreleased]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.1.0...HEAD
+[unreleased]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.1.1...HEAD
+[2.1.1]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.1.0...2.1.1
 [2.1.0]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.0.7...2.1.0
 [2.0.7]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.0.6...2.0.7
 [2.0.6]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.0.5...2.0.6
