@@ -10,8 +10,6 @@
 
 namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
 
-use Pronamic\WordPress\Pay\Dependencies\Dependency;
-
 /**
  * Easy Digital Downloads purchase data helper
  *
@@ -65,7 +63,7 @@ class PurchaseDataHelper {
 		/**
 		 * Pronamic - Easy Digital Downlaods - Company name.
 		 *
-		 * https://gitlab.com/pronamic-plugins/edd-company-name/-/blob/1.1.0/edd-company-name.php
+		 * @link https://gitlab.com/pronamic-plugins/edd-company-name/-/blob/1.1.0/edd-company-name.php
 		 */
 		return self::get_post_data_value( $purchase_data, 'edd_company' );
 	}
@@ -80,7 +78,7 @@ class PurchaseDataHelper {
 		/**
 		 * Pronamic - Easy Digital Downlaods - VAT.
 		 *
-		 * https://gitlab.com/pronamic-plugins/edd-vat/-/blob/1.0.0/includes/class-purchase-form.php
+		 * @link https://gitlab.com/pronamic-plugins/edd-vat/-/blob/1.0.0/includes/class-purchase-form.php
 		 */
 		return self::get_post_data_value( $purchase_data, 'vat_number' );
 	}
