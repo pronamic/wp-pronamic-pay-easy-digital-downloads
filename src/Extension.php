@@ -16,7 +16,7 @@ use Pronamic\WordPress\Pay\Plugin;
  * Company: Pronamic
  *
  * @author  Remco Tolsma
- * @version 2.1.0
+ * @version 2.1.2
  * @since   1.0.0
  */
 class Extension extends AbstractPluginIntegration {
@@ -90,6 +90,9 @@ class Extension extends AbstractPluginIntegration {
 
 		// Statuses.
 		add_filter( 'edd_payment_statuses', array( __CLASS__, 'edd_payment_statuses' ) );
+		add_filter( 'edd_payments_table_views', array( $this, 'payments_table_views' ) );
+
+		$this->register_cancelled_post_status();
 	}
 
 	/**
@@ -481,5 +484,51 @@ class Extension extends AbstractPluginIntegration {
 		$payment_statuses['cancelled'] = __( 'Cancelled', 'pronamic_ideal' );
 
 		return $payment_statuses;
+	}
+
+	/**
+	 * Register cancelled post status.
+	 *
+	 * @return void
+	 */
+	private function register_cancelled_post_status() {
+		register_post_status(
+			'cancelled',
+			array(
+				'label'                     => _x( 'Cancelled', 'Easy Digital Downloads cancelled payment status', 'pronamic_ideal' ),
+				'public'                    => true,
+				'exclude_from_search'       => false,
+				'show_in_admin_all_list'    => true,
+				'show_in_admin_status_list' => true,
+				/* translators: %s: cancelled payments count */
+				'label_count'               => _n_noop( 'Cancelled <span class="count">(%s)</span>', 'Cancelled <span class="count">(%s)</span>', 'pronamic_ideal' ),
+			)
+		);
+	}
+
+	/**
+	 * Payments table views.
+	 *
+	 * @param array $views Payments table views.
+	 *
+	 * @return array
+	 */
+	public function payments_table_views( $views ) {
+		$count = \wp_count_posts( 'edd_payment' );
+
+		$views['cancelled'] = sprintf(
+			'<a href="%1$s"%2$s>%3$s</a>&nbsp;<span class="count">(%4$s)</span>',
+			add_query_arg(
+				array(
+					'status' => 'cancelled',
+					'paged'  => false,
+				)
+			),
+			\filter_input( \INPUT_GET, 'status' ) === 'cancelled' ? ' class="current"' : '',
+			_x( 'Cancelled', 'Easy Digital Downloads cancelled payment status', 'pronamic_ideal' ),
+			\esc_html( $count->cancelled )
+		);
+
+		return $views;
 	}
 }

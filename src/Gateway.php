@@ -21,7 +21,7 @@ use Pronamic\WordPress\Pay\Payments\PaymentLineType;
  * Company: Pronamic
  *
  * @author  Remco Tolsma
- * @version 2.0.6
+ * @version 2.1.2
  * @since   1.1.0
  */
 class Gateway {
@@ -387,10 +387,18 @@ class Gateway {
 		// Name.
 		$name = new ContactName();
 
+		// Company Name.
+		$company_name = PurchaseDataHelper::get_company_name( $purchase_data );
+
+		// VAT Number.
+		$vat_number = PurchaseDataHelper::get_vat_number( $purchase_data );
+
 		// Customer.
 		$customer = new Customer();
 
 		$customer->set_name( $name );
+		$customer->set_company_name( $company_name );
+		$customer->set_vat_number( $vat_number );
 		$customer->set_phone( null );
 
 		$payment->set_customer( $customer );
@@ -416,6 +424,7 @@ class Gateway {
 				$address = new Address();
 
 				$address->set_name( $name );
+				$address->set_company_name( $company_name );
 
 				if ( array_key_exists( 'line1', $address_array ) ) {
 					$address->set_line_1( $address_array['line1'] );
