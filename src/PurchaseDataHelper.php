@@ -14,8 +14,8 @@ namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
  * Easy Digital Downloads purchase data helper
  *
  * @author  Remco Tolsma
- * @version 2.1.0
- * @since   2.1.0
+ * @version 2.1.2
+ * @since   2.1.2
  */
 class PurchaseDataHelper {
 	/**

@@ -16,7 +16,7 @@ use Pronamic\WordPress\Pay\Plugin;
  * Company: Pronamic
  *
  * @author  Remco Tolsma
- * @version 2.1.0
+ * @version 2.1.2
  * @since   1.0.0
  */
 class Extension extends AbstractPluginIntegration {
