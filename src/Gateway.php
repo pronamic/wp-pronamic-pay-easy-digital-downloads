@@ -164,7 +164,7 @@ class Gateway {
 		$settings = array(
 			$this->id                     => array(
 				'id'   => $this->id,
-				/* translators: %s: gateway admin label */
+				/* translators: %s: admin label */
 				'name' => '<strong>' . sprintf( __( '%s Settings', 'pronamic_ideal' ), $this->admin_label ) . '</strong>',
 				/* translators: %s: gateway admin label */
 				'desc' => sprintf( __( 'Configure the %s settings', 'pronamic_ideal' ), $this->admin_label ),
