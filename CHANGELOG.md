@@ -7,6 +7,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [2.1.3] - 2021-01-14
+- Small improvements.
+
 ## [2.1.2] - 2020-07-08
 - Added support for company name and VAT number from the custom Pronamic EDD plugins.
 - Fixed registering `cancelled` post status for use in EDD payments table view filters.
@@ -104,7 +107,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2015-01-20
 - First release.
 
-[unreleased]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.1.2...HEAD
+[unreleased]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.1.3...HEAD
+[2.1.3]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.1.2...2.1.3
 [2.1.2]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.1.1...2.1.2
 [2.1.1]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.1.0...2.1.1
 [2.1.0]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.0.7...2.1.0
