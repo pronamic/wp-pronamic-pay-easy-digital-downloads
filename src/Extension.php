@@ -399,7 +399,7 @@ class Extension extends AbstractPluginIntegration {
 		$text .= sprintf(
 			'<a href="%s">%s</a>',
 			EasyDigitalDownloads::get_payment_url( $payment->source_id ),
-			/* translators: %s: source id */
+			/* translators: %s: payment number */
 			sprintf( __( 'Payment %s', 'pronamic_ideal' ), $payment->source_id )
 		);
 
@@ -500,7 +500,7 @@ class Extension extends AbstractPluginIntegration {
 				'exclude_from_search'       => false,
 				'show_in_admin_all_list'    => true,
 				'show_in_admin_status_list' => true,
-				/* translators: %s: cancelled payments count */
+				/* translators: %s: count value */
 				'label_count'               => _n_noop( 'Cancelled <span class="count">(%s)</span>', 'Cancelled <span class="count">(%s)</span>', 'pronamic_ideal' ),
 			)
 		);
