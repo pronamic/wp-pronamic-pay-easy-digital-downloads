@@ -12,7 +12,7 @@ use Pronamic\WordPress\Pay\Plugin;
 /**
  * Title: Easy Digital Downloads extension
  * Description:
- * Copyright: 2005-2020 Pronamic
+ * Copyright: 2005-2021 Pronamic
  * Company: Pronamic
  *
  * @author  Remco Tolsma
