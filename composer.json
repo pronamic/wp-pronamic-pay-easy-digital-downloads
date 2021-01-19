@@ -61,7 +61,7 @@
 	"require-dev": {
 		"dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
 		"easydigitaldownloads/easy-digital-downloads": "^2.9",
-		"php-coveralls/php-coveralls": "^2.1",
+		"php-coveralls/php-coveralls": "^2.4",
 		"phpcompatibility/php-compatibility": "^9.1",
 		"phpcompatibility/phpcompatibility-wp": "^2.0",
 		"phpmd/phpmd": "^2.7",
@@ -72,7 +72,7 @@
 		"wp-phpunit/wp-phpunit": "^5.6"
 	},
 	"scripts": {
-		"coveralls": "vendor/bin/coveralls -v",
+		"coveralls": "vendor/bin/php-coveralls -v",
 		"phpcbf": "vendor/bin/phpcbf",
 		"phpcs": "vendor/bin/phpcs -s -v",
 		"phplint": "find src tests -name '*.php' | xargs -n 1 -P 4 php -l",
