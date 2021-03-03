@@ -61,7 +61,7 @@ class PurchaseDataHelper {
 	 */
 	public static function get_company_name( $purchase_data ) {
 		/**
-		 * Pronamic - Easy Digital Downlaods - Company name.
+		 * Pronamic - Easy Digital Downloads - Company name.
 		 *
 		 * @link https://gitlab.com/pronamic-plugins/edd-company-name/-/blob/1.1.0/edd-company-name.php
 		 */
@@ -76,7 +76,7 @@ class PurchaseDataHelper {
 	 */
 	public static function get_vat_number( $purchase_data ) {
 		/**
-		 * Pronamic - Easy Digital Downlaods - VAT.
+		 * Pronamic - Easy Digital Downloads - VAT.
 		 *
 		 * @link https://gitlab.com/pronamic-plugins/edd-vat/-/blob/1.0.0/includes/class-purchase-form.php
 		 */

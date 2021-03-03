@@ -180,7 +180,7 @@ class Extension extends AbstractPluginIntegration {
 	}
 
 	/**
-	 * Maybe empty cart for succesful payment.
+	 * Maybe empty cart for successful payment.
 	 *
 	 * @param int $post_id Post ID.
 	 *
@@ -468,7 +468,7 @@ class Extension extends AbstractPluginIntegration {
 	 *
 	 * The Easy Digital Downloads plugin is equipped with a "Set To Cancelled" bulk action.
 	 * This bulk action will set the status of payments to 'cancelled', this is however not
-	 * a registered payment status. Therefor we will register 'cancelled' as an payment
+	 * a registered payment status. Therefore we will register 'cancelled' as an payment
 	 * status.
 	 *
 	 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.9.20/includes/admin/payments/class-payments-table.php#L427-L517
