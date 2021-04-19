@@ -162,6 +162,8 @@ class Extension extends AbstractPluginIntegration {
 	 * @return string
 	 */
 	public static function redirect_url( $url, $payment ) {
+		$source_id = (int) $payment->get_source_id();
+
 		switch ( $payment->get_status() ) {
 			case Core_Statuses::CANCELLED:
 			case Core_Statuses::EXPIRED:
@@ -169,7 +171,7 @@ class Extension extends AbstractPluginIntegration {
 				return EasyDigitalDownloads::get_option_page_url( 'failure_page' );
 
 			case Core_Statuses::SUCCESS:
-				return EasyDigitalDownloads::get_option_page_url( 'success_page' );
+				return add_query_arg( 'payment_key', edd_get_payment_key( $source_id ), edd_get_success_page_uri() );
 
 			case Core_Statuses::RESERVED:
 			case Core_Statuses::OPEN:
