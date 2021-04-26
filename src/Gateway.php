@@ -17,7 +17,7 @@ use Pronamic\WordPress\Pay\Payments\PaymentLineType;
 /**
  * Title: Easy Digital Downloads gateway
  * Description:
- * Copyright: 2005-2020 Pronamic
+ * Copyright: 2005-2021 Pronamic
  * Company: Pronamic
  *
  * @author  Remco Tolsma
@@ -346,7 +346,7 @@ class Gateway {
 		/**
 		 * Tax.
 		 *
-		 * @todo We have to check how tax is handled in Easy Digial Downloads 3.0.
+		 * @todo We have to check how tax is handled in Easy Digital Downloads 3.0.
 		 *
 		 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.9.22/includes/payments/functions.php#L148-L277
 		 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/3.0.0-beta2/includes/payments/functions.php#L141-L200

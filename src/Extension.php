@@ -12,7 +12,7 @@ use Pronamic\WordPress\Pay\Plugin;
 /**
  * Title: Easy Digital Downloads extension
  * Description:
- * Copyright: 2005-2020 Pronamic
+ * Copyright: 2005-2021 Pronamic
  * Company: Pronamic
  *
  * @author  Remco Tolsma
@@ -168,21 +168,39 @@ class Extension extends AbstractPluginIntegration {
 			case Core_Statuses::CANCELLED:
 			case Core_Statuses::EXPIRED:
 			case Core_Statuses::FAILURE:
-				return EasyDigitalDownloads::get_option_page_url( 'failure_page' );
-
+				/**
+				 * Failed transaction URI.
+				 *
+				 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.10.3/includes/checkout/functions.php#L184-L199
+				 */
+				return \edd_get_failed_transaction_uri();
 			case Core_Statuses::SUCCESS:
-				return add_query_arg( 'payment_key', edd_get_payment_key( $source_id ), edd_get_success_page_uri() );
-
+				/**
+				 * Success page URI.
+				 *
+				 * The `payment_key` query argument is added so users will also see the receipt
+				 * when the purchase session is no longer available.
+				 *
+				 * @link https://github.com/wp-pay-extensions/easy-digital-downloads/pull/1
+				 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.10.3/includes/shortcodes.php#L657-L689
+				 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.10.3/includes/payments/functions.php#L1158-L1168
+				 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.10.3/includes/checkout/functions.php#L58-L75
+				 */
+				return \add_query_arg(
+					'payment_key',
+					\edd_get_payment_key( $source_id ),
+					\edd_get_success_page_uri()
+				);
 			case Core_Statuses::RESERVED:
 			case Core_Statuses::OPEN:
-				return home_url( '/' );
+				return \home_url( '/' );
 		}
 
 		return $url;
 	}
 
 	/**
-	 * Maybe empty cart for succesful payment.
+	 * Maybe empty cart for successful payment.
 	 *
 	 * @param int $post_id Post ID.
 	 *
@@ -470,7 +488,7 @@ class Extension extends AbstractPluginIntegration {
 	 *
 	 * The Easy Digital Downloads plugin is equipped with a "Set To Cancelled" bulk action.
 	 * This bulk action will set the status of payments to 'cancelled', this is however not
-	 * a registered payment status. Therefor we will register 'cancelled' as an payment
+	 * a registered payment status. Therefore we will register 'cancelled' as an payment
 	 * status.
 	 *
 	 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.9.20/includes/admin/payments/class-payments-table.php#L427-L517
