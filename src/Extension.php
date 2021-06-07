@@ -21,6 +21,13 @@ use Pronamic\WordPress\Pay\Plugin;
  */
 class Extension extends AbstractPluginIntegration {
 	/**
+	 * Refunds manager.
+	 *
+	 * @var RefundsManager
+	 */
+	private $refunds_manager;
+
+	/**
 	 * Constructs and initialize Easy Digital Downloads extension.
 	 */
 	public function __construct() {
@@ -93,6 +100,11 @@ class Extension extends AbstractPluginIntegration {
 		add_filter( 'edd_payments_table_views', array( $this, 'payments_table_views' ) );
 
 		$this->register_cancelled_post_status();
+
+		// Refunds manager.
+		$this->refunds_manager = new RefundsManager();
+
+		$this->refunds_manager->setup();
 	}
 
 	/**

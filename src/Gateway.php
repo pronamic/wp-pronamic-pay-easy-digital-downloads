@@ -205,30 +205,13 @@ class Gateway {
 	}
 
 	/**
-	 * Get the Pronamic configuration ID for this gateway.
-	 *
-	 * @return null|string
-	 */
-	private function get_pronamic_config_id() {
-		$config_id = edd_get_option( $this->id . '_config_id' );
-
-		$config_id = empty( $config_id ) ? get_option( 'pronamic_pay_config_id' ) : $config_id;
-
-		if ( empty( $config_id ) ) {
-			return null;
-		}
-
-		return $config_id;
-	}
-
-	/**
 	 * Payment fields for this gateway
 	 *
 	 * @version 1.2.1
 	 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/1.9.4/includes/checkout/template.php#L167
 	 */
 	public function payment_fields() {
-		$gateway = Plugin::get_gateway( $this->get_pronamic_config_id() );
+		$gateway = Plugin::get_gateway( EasyDigitalDownloads::get_pronamic_config_id( $this->id ) );
 
 		if ( null === $gateway ) {
 			return;
@@ -283,7 +266,7 @@ class Gateway {
 	 * @param array $purchase_data Purchase data.
 	 */
 	public function process_purchase( $purchase_data ) {
-		$config_id = $this->get_pronamic_config_id();
+		$config_id = EasyDigitalDownloads::get_pronamic_config_id( $this->id );
 
 		// Collect payment data.
 		$edd_currency = edd_get_currency();
