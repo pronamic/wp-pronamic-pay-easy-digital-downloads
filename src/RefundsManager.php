@@ -85,8 +85,7 @@ class RefundsManager {
 		}
 
 		// Check payment.
-		// @todo also check payment source.
-		$payment = \get_pronamic_payment_by_meta( '_pronamic_payment_source_id', $edd_payment->ID );
+		$payment = \get_pronamic_payment_by_transaction_id( \edd_get_payment_transaction_id( $edd_payment->ID ) );
 
 		if ( null === $payment ) {
 			return;
@@ -96,8 +95,9 @@ class RefundsManager {
 		try {
 			$this->process_refund( $edd_payment, $payment );
 		} catch ( \Exception $e ) {
-			// @todo add admin notice with error message.
-			// return new \WP_Error( 'pronamic-pay-easy-digital-downloads-refund', $e->getMessage() );
+			wp_die( \esc_html( $e->getMessage() ) );
+
+			exit;
 		}
 	}
 
