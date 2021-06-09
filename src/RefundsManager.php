@@ -28,6 +28,7 @@ class RefundsManager {
 		// Actions.
 		\add_action( 'edd_view_order_details_before', array( $this, 'order_admin_script' ), 100 );
 		\add_action( 'edd_pre_refund_payment', array( $this, 'maybe_refund_payment' ), 999 );
+		\add_action( 'pronamic_pay_update_payment', array( $this, 'maybe_update_refunded_payment' ), 10, 1 );
 	}
 
 	/**
@@ -121,12 +122,108 @@ class RefundsManager {
 		// Transaction ID.
 		$transaction_id = \edd_get_payment_transaction_id( $edd_payment->ID );
 
-		// Refund amount.
-		$payment_amount = $edd_payment->get_meta( '_edd_payment_total', true );
-
-		$amount = new Money( $payment_amount, $payment->get_total_amount()->get_currency() );
-
 		// Create refund.
-		Plugin::create_refund( $transaction_id, $gateway, $amount );
+		$amount = new Money(
+			$edd_payment->get_meta( '_edd_payment_total', true ),
+			$payment->get_total_amount()->get_currency()
+		);
+
+		$refund_reference = Plugin::create_refund( $transaction_id, $gateway, $amount );
+
+		// Update payment amount refunded.
+		$edd_refunded_amount = $edd_payment->get_meta( '_pronamic_pay_amount_refunded', true );
+
+		$refunded_amount = $payment->get_refunded_amount();
+
+		if ( null === $refunded_amount ) {
+			$refunded_amount = new Money( 0, $payment->get_total_amount()->get_currency() );
+		}
+
+		$refunded_amount->add( $amount );
+
+		$edd_payment->update_meta( '_pronamic_pay_amount_refunded', $refunded_amount->get_value(), $edd_refunded_amount );
+
+		// Add refund payment note.
+		$this->add_refund_payment_note( $edd_payment, $payment->get_id(), $amount, $refund_reference );
+	}
+
+
+	/**
+	 * Maybe update refunded payment.
+	 *
+	 * @param Payment $payment Payment.
+	 * @return void
+	 */
+	public function maybe_update_refunded_payment( Payment $payment ) {
+		// Check refunded amount.
+		$refunded_amount = $payment->get_refunded_amount();
+
+		if ( null === $refunded_amount ) {
+			return;
+		}
+
+		$refunded_amount = $payment->get_refunded_amount()->get_value();
+
+		// Check updated refund amount.
+		$edd_payment = \edd_get_payment( $payment->get_transaction_id(), true );
+
+		$edd_refunded_amount = $edd_payment->get_meta( '_pronamic_pay_amount_refunded', true );
+
+		if ( $edd_refunded_amount === $refunded_amount ) {
+			return;
+		}
+
+		$edd_payment->update_meta( '_pronamic_pay_amount_refunded', $refunded_amount, $edd_refunded_amount );
+
+		// Update EDD payment status.
+		$status = $refunded_amount < $payment->get_total_amount()->get_value() ? 'partially_refunded' : 'refunded';
+
+		$edd_payment->update_status( $status );
+
+		// Add refund payment note.
+		$amount_difference = clone $payment->get_refunded_amount();
+
+		$amount_difference->subtract( new Money( $edd_refunded_amount, $amount_difference->get_currency() ) );
+
+		$this->add_refund_payment_note( $edd_payment, $payment->get_id(), $amount_difference );
+	}
+
+	/**
+	 * Add refunded payment note.
+	 *
+	 * @param EDD_Payment $edd_payment Easy Digital Downloads payment.
+	 * @param int         $payment_id  Payment ID.
+	 * @param Money       $amount      Refunded amount.
+	 * @param string      $reference   Gateway refund reference.
+	 */
+	private function add_refund_payment_note( EDD_Payment $edd_payment, $payment_id, Money $amount, $reference = null ) {
+		$payment_link = sprintf(
+			'<a href="%1$s">%2$s</a>',
+			\get_edit_post_link( (int) $payment_id ),
+			sprintf(
+			/* translators: %s: payment id */
+				esc_html( __( 'payment #%s', 'pronamic_ideal' ) ),
+				$payment_id
+			)
+		);
+
+		$note = \sprintf(
+			/* translators: 1: refunded amount, 2: edit payment anchor */
+			__( 'Refunded %1$s for %2$s.', 'pronamic_ideal' ),
+			$amount->format_i18n(),
+			$payment_link
+		);
+
+		if ( null !== $reference ) {
+			$note = \sprintf(
+				/* translators: 1: refunded amount, 2: edit payment anchor, 3: gateway refund reference */
+				__( 'Refunded %1$s for %2$s (gateway reference `%3$s`).', 'pronamic_ideal' ),
+				$amount->format_i18n(),
+				$payment_link,
+				$reference
+			);
+		}
+
+		\edd_insert_payment_note( $edd_payment->ID, $note );
 	}
 }
