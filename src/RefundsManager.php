@@ -28,7 +28,8 @@ class RefundsManager {
 		// Actions.
 		\add_action( 'edd_view_order_details_before', array( $this, 'order_admin_script' ), 100 );
 		\add_action( 'edd_pre_refund_payment', array( $this, 'maybe_refund_payment' ), 999 );
-		\add_action( 'pronamic_pay_update_payment', array( $this, 'maybe_update_refunded_payment' ), 10, 1 );
+		\add_action( 'pronamic_pay_update_payment', array( $this, 'maybe_update_refunded_payment' ), 15, 1 );
+		\add_action( 'edd_view_order_details_payment_meta_after', array( $this, 'order_details_payment_refunded_amount' ) );
 	}
 
 	/**
@@ -225,5 +226,34 @@ class RefundsManager {
 		}
 
 		\edd_insert_payment_note( $edd_payment->ID, $note );
+	}
+
+	/**
+	 * Show refunded amount in order details payments meta box.
+	 *
+	 * @param int $edd_payment_id EDD payment ID.
+	 * @return void
+	 */
+	public function order_details_payment_refunded_amount( $edd_payment_id ) {
+		// Check payment.
+		$payment = \get_pronamic_payment_by_transaction_id( \edd_get_payment_transaction_id( $edd_payment_id ) );
+
+		if ( null === $payment ) {
+			return;
+		}
+
+		// Check refunded amount.
+		$refunded_amount = $payment->get_refunded_amount();
+
+		if ( null === $refunded_amount ) {
+			return;
+		}
+
+		// Print refunded amount.
+		\printf(
+			'<div class="edd-admin-box-inside"><p><span class="label">%1$s:</span> <span>%2$s</span></p></div>',
+			\esc_html__( 'Refunded Amount', 'pronamic_ideal' ),
+			\esc_html( $refunded_amount->format_i18n() )
+		);
 	}
 }
