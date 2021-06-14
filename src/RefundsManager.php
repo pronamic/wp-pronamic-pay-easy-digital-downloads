@@ -24,6 +24,11 @@ use Pronamic\WordPress\Pay\Plugin;
  * @since   2.2.0
  */
 class RefundsManager {
+	/**
+	 * Setup refunds manager.
+	 *
+	 * @return void
+	 */
 	public function setup() {
 		// Actions.
 		\add_action( 'edd_view_order_details_before', array( $this, 'order_admin_script' ), 100 );
@@ -108,6 +113,7 @@ class RefundsManager {
 	 *
 	 * @param EDD_Payment $edd_payment Easy Digital Downloads payment.
 	 * @param Payment     $payment     Pronamic payment.
+	 * @return void
 	 * @throws \Exception Throws exception if original gateway does not exist anymore.
 	 */
 	private function process_refund( EDD_Payment $edd_payment, Payment $payment ) {
@@ -142,12 +148,11 @@ class RefundsManager {
 
 		$refunded_amount->add( $amount );
 
-		$edd_payment->update_meta( '_pronamic_pay_amount_refunded', $refunded_amount->get_value(), $edd_refunded_amount );
+		$edd_payment->update_meta( '_pronamic_pay_amount_refunded', (string) $refunded_amount->get_value(), $edd_refunded_amount );
 
 		// Add refund payment note.
 		$this->add_refund_payment_note( $edd_payment, $payment->get_id(), $amount, $refund_reference );
 	}
-
 
 	/**
 	 * Maybe update refunded payment.
@@ -163,28 +168,29 @@ class RefundsManager {
 			return;
 		}
 
-		$refunded_amount = $payment->get_refunded_amount()->get_value();
-
-		// Check updated refund amount.
+		// Check EDD payment.
 		$edd_payment = \edd_get_payment( $payment->get_transaction_id(), true );
 
-		$edd_refunded_amount = $edd_payment->get_meta( '_pronamic_pay_amount_refunded', true );
-
-		if ( $edd_refunded_amount === $refunded_amount ) {
+		if ( false === $edd_payment ) {
 			return;
 		}
 
-		$edd_payment->update_meta( '_pronamic_pay_amount_refunded', $refunded_amount, $edd_refunded_amount );
+		// Check updated refund amount.
+		$edd_refunded_amount = (float) $edd_payment->get_meta( '_pronamic_pay_amount_refunded', true );
 
-		// Update EDD payment status.
-		$status = $refunded_amount < $payment->get_total_amount()->get_value() ? 'partially_refunded' : 'refunded';
+		$refunded_value = $refunded_amount->get_value();
 
-		$edd_payment->update_status( $status );
+		if ( $edd_refunded_amount === $refunded_value ) {
+			return;
+		}
+
+		// Update EDD payment.
+		$edd_payment->update_meta( '_pronamic_pay_amount_refunded', (string) $refunded_value, (string) $edd_refunded_amount );
+
+		$edd_payment->update_status( $refunded_value < $payment->get_total_amount()->get_value() ? 'partially_refunded' : 'refunded' );
 
 		// Add refund payment note.
-		$amount_difference = clone $payment->get_refunded_amount();
-
-		$amount_difference->subtract( new Money( $edd_refunded_amount, $amount_difference->get_currency() ) );
+		$amount_difference = $refunded_amount->subtract( new Money( $edd_refunded_amount, $refunded_amount->get_currency() ) );
 
 		$this->add_refund_payment_note( $edd_payment, $payment->get_id(), $amount_difference );
 	}
@@ -193,18 +199,19 @@ class RefundsManager {
 	 * Add refunded payment note.
 	 *
 	 * @param EDD_Payment $edd_payment Easy Digital Downloads payment.
-	 * @param int         $payment_id  Payment ID.
+	 * @param int|null    $payment_id  Payment ID.
 	 * @param Money       $amount      Refunded amount.
 	 * @param string      $reference   Gateway refund reference.
+	 * @return void
 	 */
 	private function add_refund_payment_note( EDD_Payment $edd_payment, $payment_id, Money $amount, $reference = null ) {
-		$payment_link = sprintf(
+		$payment_link = \sprintf(
 			'<a href="%1$s">%2$s</a>',
 			\get_edit_post_link( (int) $payment_id ),
-			sprintf(
-			/* translators: %s: payment id */
+			\sprintf(
+				/* translators: %s: payment id */
 				esc_html( __( 'payment #%s', 'pronamic_ideal' ) ),
-				$payment_id
+				esc_html( $payment_id )
 			)
 		);
 
