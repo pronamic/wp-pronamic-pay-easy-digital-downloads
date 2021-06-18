@@ -7,6 +7,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [2.2.0] - 2021-06-18
+- Added initial support for refunds [#129](https://github.com/pronamic/wp-pronamic-pay/issues/129).
+
 ## [2.1.4] - 2021-04-26
 - Improved adding payment details to 'Thank you' page.
 
@@ -110,7 +113,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2015-01-20
 - First release.
 
-[unreleased]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.1.4...HEAD
+[unreleased]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.2.0...HEAD
+[2.2.0]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.1.4...2.2.0
 [2.1.4]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.1.3...2.1.4
 [2.1.3]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.1.2...2.1.3
 [2.1.2]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.1.1...2.1.2

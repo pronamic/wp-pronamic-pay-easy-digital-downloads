@@ -137,6 +137,10 @@ class RefundsManager {
 
 		$refund_reference = Plugin::create_refund( $transaction_id, $gateway, $amount );
 
+		if ( null === $refund_reference ) {
+			throw new \Exception( __( 'Unable to create refund at gateway.', 'pronamic_ideal' ) );
+		}
+
 		// Update payment amount refunded.
 		$edd_refunded_amount = $edd_payment->get_meta( '_pronamic_pay_amount_refunded', true );
 
@@ -165,6 +169,12 @@ class RefundsManager {
 		$refunded_amount = $payment->get_refunded_amount();
 
 		if ( null === $refunded_amount ) {
+			return;
+		}
+
+		$refunded_value = $refunded_amount->get_value();
+
+		if ( empty( $refunded_value ) ) {
 			return;
 		}
 
