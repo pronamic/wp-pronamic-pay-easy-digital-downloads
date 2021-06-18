@@ -215,4 +215,21 @@ class EasyDigitalDownloads {
 
 		return home_url( '/' );
 	}
+
+	/**
+	 * Get the Pronamic configuration ID for this gateway.
+	 *
+	 * @return null|string
+	 */
+	public static function get_pronamic_config_id( $gateway_id ) {
+		$config_id = edd_get_option( $gateway_id . '_config_id' );
+
+		$config_id = empty( $config_id ) ? get_option( 'pronamic_pay_config_id' ) : $config_id;
+
+		if ( empty( $config_id ) ) {
+			return null;
+		}
+
+		return $config_id;
+	}
 }

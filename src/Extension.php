@@ -21,6 +21,13 @@ use Pronamic\WordPress\Pay\Plugin;
  */
 class Extension extends AbstractPluginIntegration {
 	/**
+	 * Refunds manager.
+	 *
+	 * @var RefundsManager
+	 */
+	private $refunds_manager;
+
+	/**
 	 * Constructs and initialize Easy Digital Downloads extension.
 	 */
 	public function __construct() {
@@ -92,7 +99,12 @@ class Extension extends AbstractPluginIntegration {
 		add_filter( 'edd_payment_statuses', array( __CLASS__, 'edd_payment_statuses' ) );
 		add_filter( 'edd_payments_table_views', array( $this, 'payments_table_views' ) );
 
-		$this->register_cancelled_post_status();
+		$this->register_post_statuses();
+
+		// Refunds manager.
+		$this->refunds_manager = new RefundsManager();
+
+		$this->refunds_manager->setup();
 	}
 
 	/**
@@ -497,11 +509,13 @@ class Extension extends AbstractPluginIntegration {
 	 * @return array
 	 */
 	public static function edd_payment_statuses( $payment_statuses ) {
-		if ( array_key_exists( 'cancelled', $payment_statuses ) ) {
-			return $payment_statuses;
+		if ( ! array_key_exists( 'cancelled', $payment_statuses ) ) {
+			$payment_statuses['cancelled'] = __( 'Cancelled', 'pronamic_ideal' );
 		}
 
-		$payment_statuses['cancelled'] = __( 'Cancelled', 'pronamic_ideal' );
+		if ( ! array_key_exists( 'partially_refunded', $payment_statuses ) ) {
+			$payment_statuses['partially_refunded'] = __( 'Partially Refunded', 'pronamic_ideal' );
+		}
 
 		return $payment_statuses;
 	}
@@ -511,7 +525,7 @@ class Extension extends AbstractPluginIntegration {
 	 *
 	 * @return void
 	 */
-	private function register_cancelled_post_status() {
+	private function register_post_statuses() {
 		register_post_status(
 			'cancelled',
 			array(
@@ -522,6 +536,19 @@ class Extension extends AbstractPluginIntegration {
 				'show_in_admin_status_list' => true,
 				/* translators: %s: count value */
 				'label_count'               => _n_noop( 'Cancelled <span class="count">(%s)</span>', 'Cancelled <span class="count">(%s)</span>', 'pronamic_ideal' ),
+			)
+		);
+
+		register_post_status(
+			'partially_refunded',
+			array(
+				'label'                     => _x( 'Partially Refunded', 'Easy Digital Downloads payment status', 'pronamic_ideal' ),
+				'public'                    => true,
+				'exclude_from_search'       => false,
+				'show_in_admin_all_list'    => true,
+				'show_in_admin_status_list' => true,
+				/* translators: %s: count value */
+				'label_count'               => _n_noop( 'Partially Refunded <span class="count">(%s)</span>', 'Partially Refunded <span class="count">(%s)</span>', 'pronamic_ideal' ),
 			)
 		);
 	}
@@ -536,18 +563,34 @@ class Extension extends AbstractPluginIntegration {
 	public function payments_table_views( $views ) {
 		$count = \wp_count_posts( 'edd_payment' );
 
-		$views['cancelled'] = sprintf(
-			'<a href="%1$s"%2$s>%3$s</a>&nbsp;<span class="count">(%4$s)</span>',
-			add_query_arg(
-				array(
-					'status' => 'cancelled',
-					'paged'  => false,
-				)
-			),
-			\filter_input( \INPUT_GET, 'status' ) === 'cancelled' ? ' class="current"' : '',
-			_x( 'Cancelled', 'Easy Digital Downloads cancelled payment status', 'pronamic_ideal' ),
-			\esc_html( $count->cancelled )
-		);
+		$statuses = array( 'cancelled', 'partially_refunded' );
+
+		foreach ( $statuses as $status ) {
+			// Check if view for status already exists.
+			if ( \array_key_exists( $status, $views ) ) {
+				continue;
+			}
+
+			// Get post status object.
+			$post_status = \get_post_status_object( $status );
+
+			if ( null === $post_status ) {
+				continue;
+			}
+
+			$views[ $status ] = sprintf(
+				'<a href="%1$s"%2$s>%3$s</a>&nbsp;<span class="count">(%4$s)</span>',
+				\add_query_arg(
+					array(
+						'status' => $status,
+						'paged'  => false,
+					)
+				),
+				\filter_input( \INPUT_GET, 'status' ) === $status ? ' class="current"' : '',
+				\esc_html( $post_status->label ),
+				\esc_html( \property_exists( $count, $status ) ? $count->$status : 0 )
+			);
+		}
 
 		return $views;
 	}
