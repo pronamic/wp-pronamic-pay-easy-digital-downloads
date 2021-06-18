@@ -168,6 +168,12 @@ class RefundsManager {
 			return;
 		}
 
+		$refunded_value = $refunded_amount->get_value();
+
+		if ( empty( $refunded_value ) ) {
+			return;
+		}
+
 		// Check EDD payment.
 		$edd_payment = \edd_get_payment( $payment->get_transaction_id(), true );
 
