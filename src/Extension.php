@@ -105,6 +105,75 @@ class Extension extends AbstractPluginIntegration {
 		$this->refunds_manager = new RefundsManager();
 
 		$this->refunds_manager->setup();
+
+		/**
+		 * Easy Digital Downloads purchase form before credit card form.
+		 * 
+		 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.10.6/includes/checkout/template.php#L111-L116
+		 */
+		\add_action( 'edd_purchase_form_before_cc_form', function() {
+			?>
+			<style type="text/css">
+				.pronamic-edd-fieldset {
+					display: block;
+				}
+			</style>
+
+			<fieldset class="pronamic-edd-fieldset">
+				<legend><?php \esc_html_e( 'Customer', 'pronamic_ideal' ); ?></legend>
+
+				<div class="" id="pronamic-edd-customer-type-control">
+					<label class="form-label" for="pronamic-edd-customer-type">
+						<?php \esc_html_e( 'Customer Type', 'pronamic_ideal' ); ?>
+						<span class="edd-required-indicator">*</span>
+					</label>
+
+					<select id="pronamic-edd-customer-type" name="" class="edd-input">
+						<option value="business" selected="selected"><?php \esc_html_e( 'Business Customer', 'pronamic_ideal' ); ?></option>
+						<option value="private"><?php \esc_html_e( 'Private Customer', 'pronamic_ideal' ); ?></option>
+					</select>
+				</div>
+
+				<div class="" id="pronamic-edd-company-name-control">
+					<label class="form-label" for="pronamic-edd-company-name">
+						<?php \esc_html_e( 'Company Name', 'pronamic_ideal' ); ?>
+						<span class="edd-required-indicator">*</span>
+					</label>
+
+					<input type="text" class="form-control edd-input" id="pronamic-edd-company-name" />
+				</div>
+
+				<div class="" id="pronamic-edd-country-control">
+					<label class="form-label" for="pronamic-edd-country">
+						<?php \esc_html_e( 'Country', 'pronamic_ideal' ); ?>
+						<span class="edd-required-indicator">*</span>
+					</label>
+
+					<select id="pronamic-edd-country" name="" class="edd-input">
+						<option value="nl"><?php \esc_html_e( 'Netherlands', 'pronamic_ideal' ); ?></option>
+						<option value="de" selected="selected"><?php \esc_html_e( 'Germany', 'pronamic_ideal' ); ?></option>
+					</select>
+				</div>
+
+				<div class="" id="pronamic-edd-vat-number-control">
+					<label class="form-label" for="pronamic-edd-vat-number">
+						<?php \esc_html_e( 'VAT Number', 'pronamic_ideal' ); ?>
+						<span class="edd-required-indicator">*</span>
+					</label>
+
+					<input type="text" class="form-control edd-input" id="pronamic-edd-company-name" />
+				</div>
+			</fieldset>
+
+			<script type="text/javascript">
+				document.querySelector( '#pronamic-edd-customer-type' ).addEventListener( 'change',function() {
+					document.querySelector( '#pronamic-edd-company-name-control' ).style.display = ( 'business' === this.value ) ? 'block' : 'none';
+					document.querySelector( '#pronamic-edd-country-control' ).style.display = ( 'business' === this.value ) ? 'block' : 'none';
+					document.querySelector( '#pronamic-edd-vat-number-control' ).style.display = ( 'business' === this.value ) ? 'block' : 'none';
+				} );
+			</script>
+			<?php
+		} );
 	}
 
 	/**
