@@ -213,6 +213,7 @@ class Extension extends AbstractPluginIntegration {
 			'pronamic_pay_maestro'                 => PaymentMethods::MAESTRO,
 			'pronamic_pay_payconiq'                => PaymentMethods::PAYCONIQ,
 			'pronamic_pay_paypal'                  => PaymentMethods::PAYPAL,
+			'pronamic_pay_spraypay'                => PaymentMethods::SPRAYPAY,
 		);
 
 		$optional = array_filter(
