@@ -353,11 +353,13 @@ class Gateway {
 			__( 'Easy Digital Downloads order %s', 'pronamic_ideal' ),
 			$payment->order_id
 		);
-		$payment->description = EasyDigitalDownloads::get_description(
+
+		$payment->set_description( EasyDigitalDownloads::get_description(
 			edd_get_option( $this->id . '_description' ),
 			$edd_payment_id,
 			$purchase_data
-		);
+		) );
+
 		$payment->config_id   = (int) $config_id;
 		$payment->source      = 'easydigitaldownloads';
 		$payment->source_id   = $edd_payment_id;
