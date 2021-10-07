@@ -269,7 +269,7 @@ class Extension extends AbstractPluginIntegration {
 					$note = array(
 						sprintf(
 							'%s %s.',
-							PaymentMethods::get_name( $payment->get_method() ),
+							PaymentMethods::get_name( $payment->get_payment_method() ),
 							__( 'payment reserved at gateway', 'pronamic_ideal' )
 						),
 					);

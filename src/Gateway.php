@@ -363,7 +363,8 @@ class Gateway {
 		$payment->config_id   = (int) $config_id;
 		$payment->source      = 'easydigitaldownloads';
 		$payment->source_id   = $edd_payment_id;
-		$payment->method      = $this->payment_method;
+
+		$payment->set_payment_method( $this->payment_method );
 
 		if ( array_key_exists( 'price', $purchase_data ) ) {
 			$payment->set_total_amount( new TaxedMoney( $purchase_data['price'], $currency, $purchase_data['tax'], $tax_percentage ) );
