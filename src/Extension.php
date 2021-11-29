@@ -125,7 +125,7 @@ class Extension extends AbstractPluginIntegration {
 		);
 
 		$optional = array(
-			'pronamic_pay_afterpay'                => PaymentMethods::AFTERPAY,
+			'pronamic_pay_afterpay'                => PaymentMethods::AFTERPAY_NL,
 			'pronamic_pay_alipay'                  => PaymentMethods::ALIPAY,
 			'pronamic_pay_belfius'                 => PaymentMethods::BELFIUS,
 			'pronamic_pay_billink'                 => PaymentMethods::BILLINK,
