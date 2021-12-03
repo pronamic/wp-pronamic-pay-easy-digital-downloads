@@ -354,15 +354,17 @@ class Gateway {
 			$payment->order_id
 		);
 
-		$payment->set_description( EasyDigitalDownloads::get_description(
-			edd_get_option( $this->id . '_description' ),
-			$edd_payment_id,
-			$purchase_data
-		) );
+		$payment->set_description(
+			EasyDigitalDownloads::get_description(
+				edd_get_option( $this->id . '_description' ),
+				$edd_payment_id,
+				$purchase_data
+			)
+		);
 
-		$payment->config_id   = (int) $config_id;
-		$payment->source      = 'easydigitaldownloads';
-		$payment->source_id   = $edd_payment_id;
+		$payment->config_id = (int) $config_id;
+		$payment->source    = 'easydigitaldownloads';
+		$payment->source_id = $edd_payment_id;
 
 		$payment->set_payment_method( $this->payment_method );
 
