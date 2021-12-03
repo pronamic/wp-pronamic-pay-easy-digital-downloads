@@ -147,6 +147,7 @@ class Extension extends AbstractPluginIntegration {
 			'pronamic_pay_payconiq'                => PaymentMethods::PAYCONIQ,
 			'pronamic_pay_paypal'                  => PaymentMethods::PAYPAL,
 			'pronamic_pay_spraypay'                => PaymentMethods::SPRAYPAY,
+			'pronamic_pay_twint'                   => PaymentMethods::TWINT,
 		);
 
 		$optional = array_filter(
