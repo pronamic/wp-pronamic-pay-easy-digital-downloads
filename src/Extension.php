@@ -1,4 +1,12 @@
 <?php
+/**
+ * Easy Digital Downloads extension
+ *
+ * @author    Pronamic <info@pronamic.eu>
+ * @copyright 2005-2022 Pronamic
+ * @license   GPL-3.0-or-later
+ * @package   Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads
+ */
 
 namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
 
@@ -12,7 +20,7 @@ use Pronamic\WordPress\Pay\Plugin;
 /**
  * Title: Easy Digital Downloads extension
  * Description:
- * Copyright: 2005-2021 Pronamic
+ * Copyright: 2005-2022 Pronamic
  * Company: Pronamic
  *
  * @author  Remco Tolsma
@@ -125,11 +133,12 @@ class Extension extends AbstractPluginIntegration {
 		);
 
 		$optional = array(
-			'pronamic_pay_afterpay'                => PaymentMethods::AFTERPAY,
+			'pronamic_pay_afterpay'                => PaymentMethods::AFTERPAY_NL,
 			'pronamic_pay_alipay'                  => PaymentMethods::ALIPAY,
 			'pronamic_pay_belfius'                 => PaymentMethods::BELFIUS,
 			'pronamic_pay_billink'                 => PaymentMethods::BILLINK,
 			'pronamic_pay_bunq'                    => PaymentMethods::BUNQ,
+			'pronamic_pay_blik'                    => PaymentMethods::BLIK,
 			'pronamic_pay_capayable'               => PaymentMethods::CAPAYABLE,
 			'pronamic_pay_direct_debit_bancontact' => PaymentMethods::DIRECT_DEBIT_BANCONTACT,
 			'pronamic_pay_direct_debit_ideal'      => PaymentMethods::DIRECT_DEBIT_IDEAL,
@@ -142,8 +151,11 @@ class Extension extends AbstractPluginIntegration {
 			'pronamic_pay_kbc'                     => PaymentMethods::KBC,
 			'pronamic_pay_klarna_pay_later'        => PaymentMethods::KLARNA_PAY_LATER,
 			'pronamic_pay_maestro'                 => PaymentMethods::MAESTRO,
+			'pronamic_pay_mb_way'                  => PaymentMethods::MB_WAY,
 			'pronamic_pay_payconiq'                => PaymentMethods::PAYCONIQ,
 			'pronamic_pay_paypal'                  => PaymentMethods::PAYPAL,
+			'pronamic_pay_spraypay'                => PaymentMethods::SPRAYPAY,
+			'pronamic_pay_twint'                   => PaymentMethods::TWINT,
 		);
 
 		$optional = array_filter(
@@ -268,7 +280,7 @@ class Extension extends AbstractPluginIntegration {
 					$note = array(
 						sprintf(
 							'%s %s.',
-							PaymentMethods::get_name( $payment->get_method() ),
+							PaymentMethods::get_name( $payment->get_payment_method() ),
 							__( 'payment reserved at gateway', 'pronamic_ideal' )
 						),
 					);

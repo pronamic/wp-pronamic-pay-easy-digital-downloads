@@ -1,4 +1,12 @@
 <?php
+/**
+ * Easy Digital Downloads gateway
+ *
+ * @author    Pronamic <info@pronamic.eu>
+ * @copyright 2005-2022 Pronamic
+ * @license   GPL-3.0-or-later
+ * @package   Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads
+ */
 
 namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
 
@@ -17,7 +25,7 @@ use Pronamic\WordPress\Pay\Payments\PaymentLineType;
 /**
  * Title: Easy Digital Downloads gateway
  * Description:
- * Copyright: 2005-2021 Pronamic
+ * Copyright: 2005-2022 Pronamic
  * Company: Pronamic
  *
  * @author  Remco Tolsma
@@ -353,15 +361,20 @@ class Gateway {
 			__( 'Easy Digital Downloads order %s', 'pronamic_ideal' ),
 			$payment->order_id
 		);
-		$payment->description = EasyDigitalDownloads::get_description(
-			edd_get_option( $this->id . '_description' ),
-			$edd_payment_id,
-			$purchase_data
+
+		$payment->set_description(
+			EasyDigitalDownloads::get_description(
+				edd_get_option( $this->id . '_description' ),
+				$edd_payment_id,
+				$purchase_data
+			)
 		);
-		$payment->config_id   = (int) $config_id;
-		$payment->source      = 'easydigitaldownloads';
-		$payment->source_id   = $edd_payment_id;
-		$payment->method      = $this->payment_method;
+
+		$payment->config_id = (int) $config_id;
+		$payment->source    = 'easydigitaldownloads';
+		$payment->source_id = $edd_payment_id;
+
+		$payment->set_payment_method( $this->payment_method );
 
 		if ( array_key_exists( 'price', $purchase_data ) ) {
 			$payment->set_total_amount( new TaxedMoney( $purchase_data['price'], $currency, $purchase_data['tax'], $tax_percentage ) );
