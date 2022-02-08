@@ -9,3 +9,5 @@
  */
 
 define( 'SCRIPT_DEBUG', true );
+
+define( 'EDD_VERSION', '2.11' );

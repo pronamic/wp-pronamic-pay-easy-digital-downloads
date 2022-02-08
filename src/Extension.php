@@ -118,7 +118,7 @@ class Extension extends AbstractPluginIntegration {
 	/**
 	 * Get payment methods.
 	 *
-	 * @return array
+	 * @return array<string, string>
 	 */
 	private static function get_payment_methods() {
 		$default = array(
@@ -158,19 +158,19 @@ class Extension extends AbstractPluginIntegration {
 			'pronamic_pay_twint'                   => PaymentMethods::TWINT,
 		);
 
-		$optional = array_filter(
+		$optional = \array_filter(
 			$optional,
 			function ( $payment_method ) {
 				return PaymentMethods::is_active( $payment_method );
 			}
 		);
 
-		$payment_methods = array_merge( $default, $optional );
+		$payment_methods = \array_merge( $default, $optional );
 
-		uasort(
+		\uasort(
 			$payment_methods,
 			function ( $a, $b ) {
-				return strnatcasecmp( PaymentMethods::get_name( $a ), PaymentMethods::get_name( $b ) );
+				return \strnatcasecmp( (string) PaymentMethods::get_name( $a ), (string) PaymentMethods::get_name( $b ) );
 			}
 		);
 
@@ -250,76 +250,77 @@ class Extension extends AbstractPluginIntegration {
 	 * Update the status of the specified payment
 	 *
 	 * @param Payment $payment Payment.
+	 * @return void
 	 */
 	public static function status_update( Payment $payment ) {
 		$source_id = (int) $payment->get_source_id();
 
 		// Only update if order is not completed.
-		$should_update = edd_get_payment_status( $source_id ) !== EasyDigitalDownloads::ORDER_STATUS_PUBLISH;
+		$should_update = \edd_get_payment_status( $source_id ) !== EasyDigitalDownloads::ORDER_STATUS_PUBLISH;
 
 		// Always empty cart for completed payments.
 		if ( $payment->get_status() === Core_Statuses::SUCCESS ) {
-			edd_empty_cart();
+			\edd_empty_cart();
 		}
 
 		if ( $should_update ) {
 			switch ( $payment->get_status() ) {
 				case Core_Statuses::CANCELLED:
-					edd_update_payment_status( $source_id, EasyDigitalDownloads::ORDER_STATUS_CANCELLED );
+					\edd_update_payment_status( $source_id, EasyDigitalDownloads::ORDER_STATUS_CANCELLED );
 
 					break;
 				case Core_Statuses::EXPIRED:
-					edd_update_payment_status( $source_id, EasyDigitalDownloads::ORDER_STATUS_ABANDONED );
+					\edd_update_payment_status( $source_id, EasyDigitalDownloads::ORDER_STATUS_ABANDONED );
 
 					break;
 				case Core_Statuses::FAILURE:
-					edd_update_payment_status( $source_id, EasyDigitalDownloads::ORDER_STATUS_FAILED );
+					\edd_update_payment_status( $source_id, EasyDigitalDownloads::ORDER_STATUS_FAILED );
 
 					break;
 				case Core_Statuses::RESERVED:
 					$note = array(
-						sprintf(
+						\sprintf(
 							'%s %s.',
 							PaymentMethods::get_name( $payment->get_payment_method() ),
-							__( 'payment reserved at gateway', 'pronamic_ideal' )
+							\__( 'payment reserved at gateway', 'pronamic_ideal' )
 						),
 					);
 
-					$gateway = Plugin::get_gateway( $payment->get_config_id() );
+					$gateway = Plugin::get_gateway( (int) $payment->get_config_id() );
 
-					if ( $gateway->supports( 'reservation_payments' ) ) {
-						$payment_edit_link = add_query_arg(
+					if ( null !== $gateway && $gateway->supports( 'reservation_payments' ) ) {
+						$payment_edit_link = \add_query_arg(
 							array(
 								'post'   => $payment->get_id(),
 								'action' => 'edit',
 							),
-							admin_url( 'post.php' )
+							\admin_url( 'post.php' )
 						);
 
-						$payment_link = sprintf(
+						$payment_link = \sprintf(
 							'<a href="%1$s">%2$s</a>',
 							$payment_edit_link,
-							sprintf(
+							\sprintf(
 								/* translators: %s: payment id */
-								esc_html( __( 'payment #%s', 'pronamic_ideal' ) ),
+								\esc_html( __( 'payment #%s', 'pronamic_ideal' ) ),
 								$payment->get_id()
 							)
 						);
 
-						$note[] = sprintf(
+						$note[] = \sprintf(
 							/* translators: %s: payment edit link */
 							__( 'Create an invoice at payment gateway for %1$s after processing the order.', 'pronamic_ideal' ),
 							$payment_link // WPCS: xss ok.
 						);
 					}
 
-					$note = implode( ' ', $note );
+					$note = \implode( ' ', $note );
 
-					edd_insert_payment_note( $source_id, $note );
+					\edd_insert_payment_note( $source_id, $note );
 
 					break;
 				case Core_Statuses::SUCCESS:
-					edd_insert_payment_note( $source_id, __( 'Payment completed.', 'pronamic_ideal' ) );
+					\edd_insert_payment_note( $source_id, __( 'Payment completed.', 'pronamic_ideal' ) );
 
 					/*
 					 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.8/includes/admin/payments/view-order-details.php#L36
@@ -327,15 +328,15 @@ class Extension extends AbstractPluginIntegration {
 					 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.8/includes/payments/functions.php#L1312-L1332
 					 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.8/includes/gateways/paypal-standard.php#L555-L576
 					 */
-					edd_update_payment_status( $source_id, EasyDigitalDownloads::ORDER_STATUS_PUBLISH );
+					\edd_update_payment_status( $source_id, EasyDigitalDownloads::ORDER_STATUS_PUBLISH );
 
 					break;
 				case Core_Statuses::OPEN:
-					edd_insert_payment_note( $source_id, __( 'Payment open.', 'pronamic_ideal' ) );
+					\edd_insert_payment_note( $source_id, __( 'Payment open.', 'pronamic_ideal' ) );
 
 					break;
 				default:
-					edd_insert_payment_note( $source_id, __( 'Payment unknown.', 'pronamic_ideal' ) );
+					\edd_insert_payment_note( $source_id, __( 'Payment unknown.', 'pronamic_ideal' ) );
 
 					break;
 			}
@@ -345,9 +346,8 @@ class Extension extends AbstractPluginIntegration {
 	/**
 	 * Filter currencies.
 	 *
-	 * @param array $currencies Available currencies.
-	 *
-	 * @return mixed
+	 * @param array<string, string> $currencies Available currencies.
+	 * @return array<string, string>
 	 */
 	public static function currencies( $currencies ) {
 		if ( PaymentMethods::is_active( PaymentMethods::GULDEN ) ) {
@@ -438,13 +438,13 @@ class Extension extends AbstractPluginIntegration {
 	 * @return string $text
 	 */
 	public function source_text( $text, Payment $payment ) {
-		$text = __( 'Easy Digital Downloads', 'pronamic_ideal' ) . '<br />';
+		$text = \__( 'Easy Digital Downloads', 'pronamic_ideal' ) . '<br />';
 
-		$text .= sprintf(
+		$text .= \sprintf(
 			'<a href="%s">%s</a>',
-			EasyDigitalDownloads::get_payment_url( $payment->source_id ),
+			EasyDigitalDownloads::get_payment_url( $payment->get_source_id() ),
 			/* translators: %s: payment number */
-			sprintf( __( 'Payment %s', 'pronamic_ideal' ), $payment->source_id )
+			\sprintf( __( 'Payment %s', 'pronamic_ideal' ), $payment->get_source_id() )
 		);
 
 		return $text;
@@ -459,7 +459,7 @@ class Extension extends AbstractPluginIntegration {
 	 * @return string
 	 */
 	public function source_description( $description, Payment $payment ) {
-		return __( 'Easy Digital Downloads Order', 'pronamic_ideal' );
+		return \__( 'Easy Digital Downloads Order', 'pronamic_ideal' );
 	}
 
 	/**
@@ -471,7 +471,7 @@ class Extension extends AbstractPluginIntegration {
 	 * @return string
 	 */
 	public function source_url( $url, Payment $payment ) {
-		return EasyDigitalDownloads::get_payment_url( $payment->source_id );
+		return EasyDigitalDownloads::get_payment_url( $payment->get_source_id() );
 	}
 
 	/**
@@ -480,9 +480,8 @@ class Extension extends AbstractPluginIntegration {
 	 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.1.3/includes/admin/settings/register-settings.php#L261-L268
 	 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.1.3/includes/checkout/template.php#L573-L609
 	 *
-	 * @param array $icons Icons.
-	 *
-	 * @return array
+	 * @param array<string, string> $icons Icons.
+	 * @return array<string, string>
 	 */
 	public static function accepted_payment_icons( $icons ) {
 		$payment_methods = self::get_payment_methods();
@@ -501,7 +500,11 @@ class Extension extends AbstractPluginIntegration {
 			// Add icon URL.
 			$url = plugins_url( $icon, Plugin::$file );
 
-			$icons[ $url ] = PaymentMethods::get_name( $payment_method );
+			$name = PaymentMethods::get_name( $payment_method );
+
+			if ( null !== $name ) {
+				$icons[ $url ] = $name;
+			}
 		}
 
 		return $icons;
@@ -517,8 +520,8 @@ class Extension extends AbstractPluginIntegration {
 	 *
 	 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.9.20/includes/admin/payments/class-payments-table.php#L427-L517
 	 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.9.20/includes/payments/functions.php#L761-L779
-	 * @param array $payment_statuses Easy Digital Downloads payment statuses.
-	 * @return array
+	 * @param array<string, string> $payment_statuses Easy Digital Downloads payment statuses.
+	 * @return array<string, string>
 	 */
 	public static function edd_payment_statuses( $payment_statuses ) {
 		if ( ! array_key_exists( 'cancelled', $payment_statuses ) ) {
@@ -568,9 +571,8 @@ class Extension extends AbstractPluginIntegration {
 	/**
 	 * Payments table views.
 	 *
-	 * @param array $views Payments table views.
-	 *
-	 * @return array
+	 * @param array<string, string> $views Payments table views.
+	 * @return array<string, string>
 	 */
 	public function payments_table_views( $views ) {
 		$count = \wp_count_posts( 'edd_payment' );
@@ -599,7 +601,7 @@ class Extension extends AbstractPluginIntegration {
 					)
 				),
 				\filter_input( \INPUT_GET, 'status' ) === $status ? ' class="current"' : '',
-				\esc_html( $post_status->label ),
+				\esc_html( \property_exists( $post_status, 'label' ) ? $post_status->label : '' ),
 				\esc_html( \property_exists( $count, $status ) ? $count->$status : 0 )
 			);
 		}
