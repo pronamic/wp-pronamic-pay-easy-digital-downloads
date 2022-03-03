@@ -113,6 +113,11 @@ class Extension extends AbstractPluginIntegration {
 		$this->refunds_manager = new RefundsManager();
 
 		$this->refunds_manager->setup();
+
+		// Company name.
+		$company_name_controller = new CompanyNameController();
+
+		$company_name_controller->setup();
 	}
 
 	/**
