@@ -265,10 +265,13 @@ class CompanyNameController {
 	 */
 	public function edd_get_payment_meta( $meta, $payment_id ) {
 		// EDD PDF Invoices uses both `edd-action` and `edd_action` parameters, so we need to check both.
-		$actions = \filter_input_array( INPUT_GET, array(
-			'edd-action' => FILTER_SANITIZE_STRING,
-			'edd_action' => FILTER_SANITIZE_STRING,
-		) );
+		$actions = \filter_input_array(
+			INPUT_GET,
+			array(
+				'edd-action' => FILTER_SANITIZE_STRING,
+				'edd_action' => FILTER_SANITIZE_STRING,
+			) 
+		);
 
 		if ( ! is_array( $actions ) || ! in_array( 'generate_pdf_invoice', $actions, true ) ) {
 			return $meta;
