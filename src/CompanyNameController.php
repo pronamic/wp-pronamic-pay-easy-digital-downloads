@@ -165,6 +165,8 @@ class CompanyNameController {
 	 * @return void
 	 */
 	public function purchase_form() {
+		\wp_nonce_field( 'pronamic-pay-edd-purchase', 'pronamic_pay_edd_purchase_nonce' );
+
 		?>
 		<fieldset class="pronamic-edd-fieldset">
 			<legend><?php \esc_html_e( 'Customer', 'pronamic_ideal' ); ?></legend>
@@ -209,7 +211,17 @@ class CompanyNameController {
 	 * @return array
 	 */
 	public function edd_payment_meta( $payment_meta ) {
-		$payment_meta['company'] = isset( $_POST['edd_company'] ) ? sanitize_text_field( wp_unslash( $_POST['edd_company'] ) ) : ''; // input var okay
+		if ( ! \array_key_exists( 'pronamic_pay_edd_purchase_nonce', $_POST ) ) {
+			return $payment_meta;
+		}
+
+		if ( false === \wp_verify_nonce( \sanitize_key( $_POST['pronamic_pay_edd_purchase_nonce'] ), 'pronamic-pay-edd-purchase' ) ) {
+			return $payment_meta;
+		}
+
+		if ( \array_key_exists( 'edd_company', $_POST ) ) {
+			$payment_meta['company'] = \sanitize_text_field( \wp_unslash( $_POST['edd_company'] ) );
+		}
 
 		return $payment_meta;
 	}
