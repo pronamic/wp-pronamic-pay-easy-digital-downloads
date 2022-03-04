@@ -75,6 +75,8 @@ class CompanyNameController {
 
 	/**
 	 * Register settings.
+	 * 
+	 * @return void
 	 */
 	public function register_settings() {
 		\register_setting(
@@ -89,6 +91,8 @@ class CompanyNameController {
 
 	/**
 	 * Admin init.
+	 * 
+	 * @return void
 	 */
 	public function admin_init() {
 		// Plugin settings - Easy Digital Downloads.
@@ -121,7 +125,8 @@ class CompanyNameController {
 	 *
 	 * @link https://github.com/WordPress/WordPress/blob/4.9.1/wp-admin/options-writing.php#L60-L68
 	 * @link https://github.com/WordPress/WordPress/blob/4.9.1/wp-admin/options-reading.php#L110-L141
-	 * @param array $args Arguments.
+	 * @param array<string, string> $args Arguments.
+	 * @return void
 	 */
 	public function input_checkbox( $args ) {
 		$id     = $args['label_for'];
@@ -192,8 +197,8 @@ class CompanyNameController {
 	 * Easy Digital Downlaods purchase form required fields
 	 *
 	 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.2/includes/process-purchase.php#L362
-	 * @param array $required_fields Required fields.
-	 * @return array
+	 * @param array<string, array<string, string>> $required_fields Required fields.
+	 * @return array<string, array<string, string>>
 	 */
 	public function purchase_form_required_fields( $required_fields ) {
 		$required_fields['edd_company'] = array(
@@ -207,7 +212,7 @@ class CompanyNameController {
 	/**
 	 * Get purchase data.
 	 * 
-	 * @return array
+	 * @return array<string, string>
 	 */
 	private function get_purchase_data() {
 		if ( ! \array_key_exists( 'pronamic_pay_edd_purchase_nonce', $_POST ) ) {
@@ -225,8 +230,8 @@ class CompanyNameController {
 	 * Payment meta.
 	 * 
 	 * @link https://github.com/awesomemotive/easy-digital-downloads/blob/2.2.2/includes/payments/functions.php#L181
-	 * @param array $payment_meta Meta.
-	 * @return array
+	 * @param array<string, string> $payment_meta Meta.
+	 * @return array<string, string>
 	 */
 	public function edd_payment_meta( $payment_meta ) {
 		$data = $this->get_purchase_data();
@@ -307,7 +312,10 @@ class CompanyNameController {
 	/**
 	 * Get payment meta
 	 *
-	 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.2/includes/payments/functions.php#L810
+	 * @link https://github.com/awesomemotive/easy-digital-downloads/blob/2.2.2/includes/payments/functions.php#L810
+	 * @param array<string, mixed> $meta       Meta.
+	 * @param int   $payment_id Payment ID.
+	 * @return array<string, mixed>
 	 */
 	public function edd_get_payment_meta( $meta, $payment_id ) {
 		// EDD PDF Invoices uses both `edd-action` and `edd_action` parameters, so we need to check both.
@@ -351,7 +359,9 @@ class CompanyNameController {
 	/**
 	 * Easy Digital Downloads export CSV columns payments
 	 *
-	 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.2/includes/admin/reporting/class-export.php#L84
+	 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.2/includes/admin/reporting/class-export.php#L84
+	 * @param array<string, string> $cols Columns.
+	 * @return array<string, string>
 	 */
 	public function edd_export_csv_cols_payments( $cols ) {
 		$cols['company'] = \__( 'Company', 'pronamic_ideal' );
@@ -362,7 +372,9 @@ class CompanyNameController {
 	/**
 	 * Easy Digital Downloads export get data payments
 	 *
-	 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.2/includes/admin/reporting/class-export-payments.php#L201
+	 * @link https://github.com/awesomemotive/easy-digital-downloads/blob/2.2.2/includes/admin/reporting/class-export-payments.php#L201
+	 * @param array<string, array> $data Export data.
+	 * @return array<string, array>
 	 */
 	public function edd_export_get_data_payments( $data ) {
 		foreach ( $data as $i => $payment ) {
@@ -379,9 +391,9 @@ class CompanyNameController {
 	/**
 	 * Easy Digital Downloads email tag `company_name`
 	 *
-	 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.6.10/includes/emails/class-edd-email-tags.php#L365
+	 * @link https://github.com/awesomemotive/easy-digital-downloads/blob/2.6.10/includes/emails/class-edd-email-tags.php#L365
 	 * @link https://gitlab.com/pronamic-plugins/edd-company-name/-/blob/develop/edd-company-name.php#L306-316
-	 * @param int $payment Payment ID.
+	 * @param int $payment_id Payment ID.
 	 * @return string
 	 */
 	public function email_tag_company_name( $payment_id ) {
