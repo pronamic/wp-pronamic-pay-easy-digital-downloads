@@ -180,7 +180,7 @@ class CompanyNameController {
 
 				<span class="edd-description"><?php \esc_html_e( 'Enter the name of your company.', 'pronamic_ideal' ); ?></span>
 
-				<input type="text" name="edd_company" class="form-control edd-input" id="pronamic-edd-company-name" />
+				<input type="text" name="edd_company" class="form-control edd-input" id="pronamic-edd-company-name" autocomplete="organization" />
 			</div>
 		</fieldset>
 		<?php
