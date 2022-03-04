@@ -198,7 +198,8 @@ class CompanyNameController {
 					\edd_field_is_required( 'edd_company' ) ? 'required="required"' : ''
 				);
 
-				?>				
+				?>
+								
 			</div>
 		</fieldset>
 		<?php
