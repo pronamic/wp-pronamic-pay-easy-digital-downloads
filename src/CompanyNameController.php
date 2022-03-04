@@ -243,21 +243,33 @@ class CompanyNameController {
 	 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.2/includes/admin/payments/actions.php#L193
 	 */
 	public function edd_updated_edited_purchase( $payment_id ) {
-		$company = isset( $_POST['edd-payment-company'] ) ? sanitize_text_field( wp_unslash( $_POST['edd-payment-company'] ) ) : ''; // input var okay
+		if ( ! \array_key_exists( 'pronamic_pay_edd_update_payment_nonce', $_POST ) ) {
+			return;
+		}
 
-		// Store the company name in the Easy Digital Download payment meta key
-		\edd_update_payment_meta( $payment_id, '_edd_payment_company', $company );
+		if ( false === \wp_verify_nonce( \sanitize_key( $_POST['pronamic_pay_edd_update_payment_nonce'] ), 'pronamic-pay-edd-update-payment' ) ) {
+			return;
+		}
 
-		// Store the copmany name also in a WordPress post meta key
-		\update_post_meta( $payment_id, '_edd_payment_company', $company );
+		if ( \array_key_exists( 'edd-payment-company', $_POST ) ) {
+			$company = \sanitize_text_field( \wp_unslash( $_POST['edd-payment-company'] ) );
+
+			// Store the company name in the Easy Digital Download payment meta key
+			\edd_update_payment_meta( $payment_id, '_edd_payment_company', $company );
+
+			// Store the copmany name also in a WordPress post meta key
+			\update_post_meta( $payment_id, '_edd_payment_company', $company );
+		}
 	}
 
 	/**
 	 * Payment view details
 	 *
-	 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.2/includes/admin/payments/view-order-details.php#L409
+	 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.2/includes/admin/payments/view-order-details.php#L409
 	 */
 	public function edd_payment_view_details( $payment_id ) {
+		\wp_nonce_field( 'pronamic-pay-edd-update-payment', 'pronamic_pay_edd_update_payment_nonce' );
+
 		$company = \get_post_meta( $payment_id, '_edd_payment_company', true );
 
 		?>
