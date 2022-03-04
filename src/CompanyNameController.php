@@ -205,22 +205,34 @@ class CompanyNameController {
 	}
 
 	/**
+	 * Get purchase data.
+	 * 
+	 * @return array
+	 */
+	private function get_purchase_data() {
+		if ( ! \array_key_exists( 'pronamic_pay_edd_purchase_nonce', $_POST ) ) {
+			return array();
+		}
+
+		if ( false === \wp_verify_nonce( \sanitize_key( $_POST['pronamic_pay_edd_purchase_nonce'] ), 'pronamic-pay-edd-purchase' ) ) {
+			return array();
+		}
+
+		return $_POST;
+	}
+
+	/**
 	 * Payment meta.
 	 * 
+	 * @link https://github.com/awesomemotive/easy-digital-downloads/blob/2.2.2/includes/payments/functions.php#L181
 	 * @param array $payment_meta Meta.
 	 * @return array
 	 */
 	public function edd_payment_meta( $payment_meta ) {
-		if ( ! \array_key_exists( 'pronamic_pay_edd_purchase_nonce', $_POST ) ) {
-			return $payment_meta;
-		}
+		$data = $this->get_purchase_data();
 
-		if ( false === \wp_verify_nonce( \sanitize_key( $_POST['pronamic_pay_edd_purchase_nonce'] ), 'pronamic-pay-edd-purchase' ) ) {
-			return $payment_meta;
-		}
-
-		if ( \array_key_exists( 'edd_company', $_POST ) ) {
-			$payment_meta['company'] = \sanitize_text_field( \wp_unslash( $_POST['edd_company'] ) );
+		if ( \array_key_exists( 'edd_company', $data ) ) {
+			$payment_meta['company'] = \sanitize_text_field( \wp_unslash( $data['edd_company'] ) );
 		}
 
 		return $payment_meta;
@@ -229,12 +241,18 @@ class CompanyNameController {
 	/**
 	 * Easy Digital Downloads insert payment
 	 *
-	 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.2/includes/payments/functions.php#L202
+	 * @link https://github.com/awesomemotive/easy-digital-downloads/blob/2.2.2/includes/payments/functions.php#L202
+	 * @param int $payment Payment.
+	 * @return void
 	 */
 	public function edd_insert_payment( $payment ) {
-		$company = isset( $_POST['edd_company'] ) ? sanitize_text_field( wp_unslash( $_POST['edd_company'] ) ) : ''; // input var okay
+		$data = $this->get_purchase_data();
 
-		\update_post_meta( $payment, '_edd_payment_company', $company );
+		if ( \array_key_exists( 'edd_company', $data ) ) {
+			$company = \sanitize_text_field( \wp_unslash( $data['edd_company'] ) );
+
+			\update_post_meta( $payment, '_edd_payment_company', $company );
+		}
 	}
 
 	/**
@@ -293,15 +311,16 @@ class CompanyNameController {
 	 */
 	public function edd_get_payment_meta( $meta, $payment_id ) {
 		// EDD PDF Invoices uses both `edd-action` and `edd_action` parameters, so we need to check both.
-		$actions = \filter_input_array(
-			INPUT_GET,
+		$actions = \array_intersect_key(
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$_GET,
 			array(
-				'edd-action' => FILTER_SANITIZE_STRING,
-				'edd_action' => FILTER_SANITIZE_STRING,
-			) 
+				'edd-action' => '',
+				'edd_action' => '',
+			)
 		);
 
-		if ( ! is_array( $actions ) || ! in_array( 'generate_pdf_invoice', $actions, true ) ) {
+		if ( ! \in_array( 'generate_pdf_invoice', $actions, true ) ) {
 			return $meta;
 		}
 
