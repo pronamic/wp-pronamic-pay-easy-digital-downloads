@@ -178,16 +178,27 @@ class CompanyNameController {
 
 			<div class="" id="pronamic-edd-company-name-control">
 				<label class="form-label" for="pronamic-edd-company-name">
-					<?php \esc_html_e( 'Company Name', 'pronamic_ideal' ); ?>
+					<?php 
 
-					<?php if ( \edd_field_is_required( 'edd_company' ) ) : ?>
-						<span class="edd-required-indicator">*</span>
-					<?php endif; ?>
+					\esc_html_e( 'Company Name', 'pronamic_ideal' );
+
+					if ( \edd_field_is_required( 'edd_company' ) ) {
+						echo ' <span class="edd-required-indicator">*</span>';
+					}
+
+					?>
 				</label>
 
 				<span class="edd-description"><?php \esc_html_e( 'Enter the name of your company.', 'pronamic_ideal' ); ?></span>
 
-				<input type="text" name="edd_company" class="form-control edd-input" id="pronamic-edd-company-name" autocomplete="organization" />
+				<?php
+
+				printf(
+					'<input type="text" name="edd_company" class="form-control edd-input" id="pronamic-edd-company-name" autocomplete="organization" %s />',
+					\edd_field_is_required( 'edd_company' ) ? 'required="required"' : ''
+				);
+
+				?>				
 			</div>
 		</fieldset>
 		<?php
