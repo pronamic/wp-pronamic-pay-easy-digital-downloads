@@ -240,7 +240,9 @@ class CompanyNameController {
 	/**
 	 * Easy Digital Downloads updated edited purchase
 	 *
-	 * @see https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.2/includes/admin/payments/actions.php#L193
+	 * @link https://github.com/awesomemotive/easy-digital-downloads/blob/2.2.2/includes/admin/payments/actions.php#L193
+	 * @param int $payment_id Easy Digital Downloads payment ID.
+	 * @return void
 	 */
 	public function edd_updated_edited_purchase( $payment_id ) {
 		if ( ! \array_key_exists( 'pronamic_pay_edd_update_payment_nonce', $_POST ) ) {
@@ -265,7 +267,9 @@ class CompanyNameController {
 	/**
 	 * Payment view details
 	 *
-	 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.2/includes/admin/payments/view-order-details.php#L409
+	 * @link https://github.com/awesomemotive/easy-digital-downloads/blob/2.2.2/includes/admin/payments/view-order-details.php#L409
+	 * @param int $payment_id Easy Digital Downloads payment ID.
+	 * @return void
 	 */
 	public function edd_payment_view_details( $payment_id ) {
 		\wp_nonce_field( 'pronamic-pay-edd-update-payment', 'pronamic_pay_edd_update_payment_nonce' );
