@@ -302,7 +302,7 @@ class CompanyNameController {
 		?>
 		<div class="column-container" style="margin-top: 1em;">
 			<div class="column">
-				<strong><?php \esc_html_e( 'Company:', 'pronamic_ideal' ); ?></strong>&nbsp;
+				<strong><?php \esc_html_e( 'Company:', 'pronamic_ideal' ); ?></strong><br />
 				<input type="text" name="edd-payment-company" value="<?php echo \esc_attr( $company ); ?>" class="medium-text" />
 			</div>
 		</div>
