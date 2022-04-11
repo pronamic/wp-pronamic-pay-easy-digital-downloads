@@ -28,27 +28,27 @@ class CompanyNameController {
 	 * @return void
 	 */
 	public function setup() {
-		\add_action( 'admin_init', array( $this, 'admin_init' ), 15 );
+		\add_action( 'admin_init', [ $this, 'admin_init' ], 15 );
 
 		if ( $this->is_company_name_field_enabled() ) {
-			\add_action( 'edd_purchase_form_before_cc_form', array( $this, 'purchase_form' ) );
+			\add_action( 'edd_purchase_form_before_cc_form', [ $this, 'purchase_form' ] );
 
-			\add_filter( 'edd_purchase_form_required_fields', array( $this, 'purchase_form_required_fields' ) );
+			\add_filter( 'edd_purchase_form_required_fields', [ $this, 'purchase_form_required_fields' ] );
 
-			\add_filter( 'edd_payment_meta', array( $this, 'edd_payment_meta' ) );
+			\add_filter( 'edd_payment_meta', [ $this, 'edd_payment_meta' ] );
 
-			\add_action( 'edd_insert_payment', array( $this, 'edd_insert_payment' ) );
+			\add_action( 'edd_insert_payment', [ $this, 'edd_insert_payment' ] );
 
-			\add_action( 'edd_updated_edited_purchase', array( $this, 'edd_updated_edited_purchase' ) );
+			\add_action( 'edd_updated_edited_purchase', [ $this, 'edd_updated_edited_purchase' ] );
 
-			\add_action( 'edd_payment_view_details', array( $this, 'edd_payment_view_details' ) );
+			\add_action( 'edd_payment_view_details', [ $this, 'edd_payment_view_details' ] );
 
 			// Templates.
-			\add_filter( 'edd_get_payment_meta', array( $this, 'edd_get_payment_meta' ), 10, 2 );
+			\add_filter( 'edd_get_payment_meta', [ $this, 'edd_get_payment_meta' ], 10, 2 );
 
 			// Export.
-			\add_filter( 'edd_export_csv_cols_payments', array( $this, 'edd_export_csv_cols_payments' ) );
-			\add_filter( 'edd_export_get_data_payments', array( $this, 'edd_export_get_data_payments' ) );
+			\add_filter( 'edd_export_csv_cols_payments', [ $this, 'edd_export_csv_cols_payments' ] );
+			\add_filter( 'edd_export_get_data_payments', [ $this, 'edd_export_get_data_payments' ] );
 		}
 
 		// Settings.
@@ -59,7 +59,7 @@ class CompanyNameController {
 			\edd_add_email_tag(
 				'company_name',
 				\__( 'The company name', 'pronamic_ideal' ),
-				array( $this, 'email_tag_company_name' )
+				[ $this, 'email_tag_company_name' ]
 			);
 		}
 	}
@@ -82,10 +82,10 @@ class CompanyNameController {
 		\register_setting(
 			'pronamic_pay',
 			'pronamic_pay_edd_company_name_field_enable',
-			array(
+			[
 				'type'    => 'boolean',
 				'default' => false,
-			)
+			]
 		);
 	}
 
@@ -107,16 +107,16 @@ class CompanyNameController {
 		\add_settings_field(
 			'pronamic_pay_edd_company_name_field_enable',
 			\__( 'Add company name field', 'pronamic_ideal' ),
-			array( $this, 'input_checkbox' ),
+			[ $this, 'input_checkbox' ],
 			'pronamic_pay',
 			'pronamic_pay_edd',
-			array(
+			[
 				'legend'      => \__( 'Add company name field', 'pronamic_ideal' ),
 				'description' => \__( 'Add company name field to purchase form fields', 'pronamic_ideal' ),
 				'label_for'   => 'pronamic_pay_edd_company_name_field_enable',
 				'classes'     => 'regular-text',
 				'type'        => 'checkbox',
-			)
+			]
 		);
 	}
 
@@ -213,10 +213,10 @@ class CompanyNameController {
 	 * @return array<string, array<string, string>>
 	 */
 	public function purchase_form_required_fields( $required_fields ) {
-		$required_fields['edd_company'] = array(
+		$required_fields['edd_company'] = [
 			'error_id'      => 'invalid_company',
 			'error_message' => \__( 'Please enter your company name', 'pronamic_ideal' ),
-		);
+		];
 
 		return $required_fields;
 	}
@@ -228,11 +228,11 @@ class CompanyNameController {
 	 */
 	private function get_purchase_data() {
 		if ( ! \array_key_exists( 'pronamic_pay_edd_purchase_nonce', $_POST ) ) {
-			return array();
+			return [];
 		}
 
 		if ( false === \wp_verify_nonce( \sanitize_key( $_POST['pronamic_pay_edd_purchase_nonce'] ), 'pronamic-pay-edd-purchase' ) ) {
-			return array();
+			return [];
 		}
 
 		return $_POST;
@@ -334,10 +334,10 @@ class CompanyNameController {
 		$actions = \array_intersect_key(
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$_GET,
-			array(
+			[
 				'edd-action' => '',
 				'edd_action' => '',
-			)
+			]
 		);
 
 		if ( ! \in_array( 'generate_pdf_invoice', $actions, true ) ) {

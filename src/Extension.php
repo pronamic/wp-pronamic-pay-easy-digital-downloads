@@ -40,9 +40,9 @@ class Extension extends AbstractPluginIntegration {
 	 */
 	public function __construct() {
 		parent::__construct(
-			array(
+			[
 				'name' => __( 'Easy Digital Downloads', 'pronamic_ideal' ),
-			)
+			]
 		);
 
 		// Dependencies.
@@ -57,8 +57,8 @@ class Extension extends AbstractPluginIntegration {
 	 * @return void
 	 */
 	public function setup() {
-		add_filter( 'pronamic_payment_source_text_easydigitaldownloads', array( $this, 'source_text' ), 10, 2 );
-		add_filter( 'pronamic_payment_source_description_easydigitaldownloads', array( $this, 'source_description' ), 10, 2 );
+		add_filter( 'pronamic_payment_source_text_easydigitaldownloads', [ $this, 'source_text' ], 10, 2 );
+		add_filter( 'pronamic_payment_source_description_easydigitaldownloads', [ $this, 'source_description' ], 10, 2 );
 
 		// Check if dependencies are met and integration is active.
 		if ( ! $this->is_active() ) {
@@ -70,42 +70,42 @@ class Extension extends AbstractPluginIntegration {
 		 * @since 1.1.0
 		 */
 		new Gateway(
-			array(
+			[
 				'id'             => 'pronamic_ideal',
 				'admin_label'    => __( 'Pronamic', 'pronamic_ideal' ),
 				'checkout_label' => __( 'iDEAL', 'pronamic_ideal' ),
-			)
+			]
 		);
 
 		foreach ( self::get_payment_methods() as $id => $payment_method ) {
 			new Gateway(
-				array(
+				[
 					'id'             => $id,
 					'checkout_label' => PaymentMethods::get_name( $payment_method ),
 					'payment_method' => $payment_method,
-				)
+				]
 			);
 		}
 
-		add_filter( 'pronamic_payment_source_url_easydigitaldownloads', array( $this, 'source_url' ), 10, 2 );
-		add_filter( 'pronamic_payment_redirect_url_easydigitaldownloads', array( __CLASS__, 'redirect_url' ), 10, 2 );
-		add_action( 'pronamic_payment_status_update_easydigitaldownloads', array( __CLASS__, 'status_update' ), 10, 1 );
+		add_filter( 'pronamic_payment_source_url_easydigitaldownloads', [ $this, 'source_url' ], 10, 2 );
+		add_filter( 'pronamic_payment_redirect_url_easydigitaldownloads', [ __CLASS__, 'redirect_url' ], 10, 2 );
+		add_action( 'pronamic_payment_status_update_easydigitaldownloads', [ __CLASS__, 'status_update' ], 10, 1 );
 
 		// Maybe empty cart for completed payment when handling returns.
-		add_action( 'save_post_pronamic_payment', array( __CLASS__, 'maybe_empty_cart' ), 10, 1 );
+		add_action( 'save_post_pronamic_payment', [ __CLASS__, 'maybe_empty_cart' ], 10, 1 );
 
 		// Icons.
-		add_filter( 'edd_accepted_payment_icons', array( __CLASS__, 'accepted_payment_icons' ) );
+		add_filter( 'edd_accepted_payment_icons', [ __CLASS__, 'accepted_payment_icons' ] );
 
 		// Currencies.
-		add_filter( 'edd_currencies', array( __CLASS__, 'currencies' ), 10, 1 );
-		add_filter( 'edd_currency_symbol', array( __CLASS__, 'currency_symbol' ), 10, 2 );
-		add_filter( 'edd_nlg_currency_filter_before', array( __CLASS__, 'currency_filter_before' ), 10, 3 );
-		add_filter( 'edd_nlg_currency_filter_after', array( __CLASS__, 'currency_filter_after' ), 10, 3 );
+		add_filter( 'edd_currencies', [ __CLASS__, 'currencies' ], 10, 1 );
+		add_filter( 'edd_currency_symbol', [ __CLASS__, 'currency_symbol' ], 10, 2 );
+		add_filter( 'edd_nlg_currency_filter_before', [ __CLASS__, 'currency_filter_before' ], 10, 3 );
+		add_filter( 'edd_nlg_currency_filter_after', [ __CLASS__, 'currency_filter_after' ], 10, 3 );
 
 		// Statuses.
-		add_filter( 'edd_payment_statuses', array( __CLASS__, 'edd_payment_statuses' ) );
-		add_filter( 'edd_payments_table_views', array( $this, 'payments_table_views' ) );
+		add_filter( 'edd_payment_statuses', [ __CLASS__, 'edd_payment_statuses' ] );
+		add_filter( 'edd_payments_table_views', [ $this, 'payments_table_views' ] );
 
 		$this->register_post_statuses();
 
@@ -126,7 +126,7 @@ class Extension extends AbstractPluginIntegration {
 	 * @return array<string, string>
 	 */
 	private static function get_payment_methods() {
-		$default = array(
+		$default = [
 			'pronamic_pay_mister_cash'        => PaymentMethods::BANCONTACT,
 			'pronamic_pay_bank_transfer'      => PaymentMethods::BANK_TRANSFER,
 			'pronamic_pay_bitcoin'            => PaymentMethods::BITCOIN,
@@ -135,9 +135,9 @@ class Extension extends AbstractPluginIntegration {
 			'pronamic_pay_direct_debit_ideal' => PaymentMethods::DIRECT_DEBIT_IDEAL,
 			'pronamic_pay_ideal'              => PaymentMethods::IDEAL,
 			'pronamic_pay_sofort'             => PaymentMethods::SOFORT,
-		);
+		];
 
-		$optional = array(
+		$optional = [
 			'pronamic_pay_afterpay'                => PaymentMethods::AFTERPAY_NL,
 			'pronamic_pay_alipay'                  => PaymentMethods::ALIPAY,
 			'pronamic_pay_belfius'                 => PaymentMethods::BELFIUS,
@@ -161,7 +161,7 @@ class Extension extends AbstractPluginIntegration {
 			'pronamic_pay_paypal'                  => PaymentMethods::PAYPAL,
 			'pronamic_pay_spraypay'                => PaymentMethods::SPRAYPAY,
 			'pronamic_pay_twint'                   => PaymentMethods::TWINT,
-		);
+		];
 
 		$optional = \array_filter(
 			$optional,
@@ -237,7 +237,7 @@ class Extension extends AbstractPluginIntegration {
 	 */
 	public static function maybe_empty_cart( $post_id ) {
 		// Only empty cart when handling returns.
-		if ( ! Util::input_has_vars( INPUT_GET, array( 'payment', 'key' ) ) ) {
+		if ( ! Util::input_has_vars( INPUT_GET, [ 'payment', 'key' ] ) ) {
 			return;
 		}
 
@@ -283,22 +283,22 @@ class Extension extends AbstractPluginIntegration {
 
 					break;
 				case Core_Statuses::RESERVED:
-					$note = array(
+					$note = [
 						\sprintf(
 							'%s %s.',
 							PaymentMethods::get_name( $payment->get_payment_method() ),
 							\__( 'payment reserved at gateway', 'pronamic_ideal' )
 						),
-					);
+					];
 
 					$gateway = Plugin::get_gateway( (int) $payment->get_config_id() );
 
 					if ( null !== $gateway && $gateway->supports( 'reservation_payments' ) ) {
 						$payment_edit_link = \add_query_arg(
-							array(
+							[
 								'post'   => $payment->get_id(),
 								'action' => 'edit',
-							),
+							],
 							\admin_url( 'post.php' )
 						);
 
@@ -548,7 +548,7 @@ class Extension extends AbstractPluginIntegration {
 	private function register_post_statuses() {
 		register_post_status(
 			'cancelled',
-			array(
+			[
 				'label'                     => _x( 'Cancelled', 'Easy Digital Downloads cancelled payment status', 'pronamic_ideal' ),
 				'public'                    => true,
 				'exclude_from_search'       => false,
@@ -556,12 +556,12 @@ class Extension extends AbstractPluginIntegration {
 				'show_in_admin_status_list' => true,
 				/* translators: %s: count value */
 				'label_count'               => _n_noop( 'Cancelled <span class="count">(%s)</span>', 'Cancelled <span class="count">(%s)</span>', 'pronamic_ideal' ),
-			)
+			]
 		);
 
 		register_post_status(
 			'partially_refunded',
-			array(
+			[
 				'label'                     => _x( 'Partially Refunded', 'Easy Digital Downloads payment status', 'pronamic_ideal' ),
 				'public'                    => true,
 				'exclude_from_search'       => false,
@@ -569,7 +569,7 @@ class Extension extends AbstractPluginIntegration {
 				'show_in_admin_status_list' => true,
 				/* translators: %s: count value */
 				'label_count'               => _n_noop( 'Partially Refunded <span class="count">(%s)</span>', 'Partially Refunded <span class="count">(%s)</span>', 'pronamic_ideal' ),
-			)
+			]
 		);
 	}
 
@@ -582,7 +582,7 @@ class Extension extends AbstractPluginIntegration {
 	public function payments_table_views( $views ) {
 		$count = \wp_count_posts( 'edd_payment' );
 
-		$statuses = array( 'cancelled', 'partially_refunded' );
+		$statuses = [ 'cancelled', 'partially_refunded' ];
 
 		foreach ( $statuses as $status ) {
 			// Check if view for status already exists.
@@ -600,10 +600,10 @@ class Extension extends AbstractPluginIntegration {
 			$views[ $status ] = sprintf(
 				'<a href="%1$s"%2$s>%3$s</a>&nbsp;<span class="count">(%4$s)</span>',
 				\add_query_arg(
-					array(
+					[
 						'status' => $status,
 						'paged'  => false,
-					)
+					]
 				),
 				\filter_input( \INPUT_GET, 'status' ) === $status ? ' class="current"' : '',
 				\esc_html( \property_exists( $post_status, 'label' ) ? $post_status->label : '' ),

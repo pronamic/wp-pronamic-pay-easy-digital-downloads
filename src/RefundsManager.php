@@ -31,10 +31,10 @@ class RefundsManager {
 	 */
 	public function setup() {
 		// Actions.
-		\add_action( 'edd_view_order_details_before', array( $this, 'order_admin_script' ), 100 );
-		\add_action( 'edd_pre_refund_payment', array( $this, 'maybe_refund_payment' ), 999 );
-		\add_action( 'pronamic_pay_update_payment', array( $this, 'maybe_update_refunded_payment' ), 15, 1 );
-		\add_action( 'edd_view_order_details_payment_meta_after', array( $this, 'order_details_payment_refunded_amount' ) );
+		\add_action( 'edd_view_order_details_before', [ $this, 'order_admin_script' ], 100 );
+		\add_action( 'edd_pre_refund_payment', [ $this, 'maybe_refund_payment' ], 999 );
+		\add_action( 'pronamic_pay_update_payment', [ $this, 'maybe_update_refunded_payment' ], 15, 1 );
+		\add_action( 'edd_view_order_details_payment_meta_after', [ $this, 'order_details_payment_refunded_amount' ] );
 	}
 
 	/**
