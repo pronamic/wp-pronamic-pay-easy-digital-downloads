@@ -29,29 +29,18 @@
 		}
 	},
 	"config": {
-		"sort-packages": true
+		"sort-packages": true,
+		"allow-plugins": {
+			"bamarni/composer-bin-plugin": true,
+			"roots/wordpress-core-installer": true,
+			"composer/installers": true,
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
 	},
 	"repositories": [
 		{
-			"type": "package",
-			"package": {
-				"name": "easydigitaldownloads/easy-digital-downloads",
-				"version": "2.9.8",
-				"dist": {
-					"url": "https://github.com/easydigitaldownloads/easy-digital-downloads/archive/2.9.8.zip",
-					"type": "zip"
-				},
-				"source": {
-					"url": "https://github.com/easydigitaldownloads/easy-digital-downloads",
-					"type": "github",
-					"reference": "tags/2.9.8"
-				},
-				"autoload": {
-					"classmap": [
-						"."
-					]
-				}
-			}
+			"type": "composer",
+			"url": "https://wpackagist.org"
 		}
 	],
 	"require": {
@@ -60,13 +49,13 @@
 	},
 	"require-dev": {
 		"bamarni/composer-bin-plugin": "^1.4",
-		"easydigitaldownloads/easy-digital-downloads": "^2.9",
 		"php-coveralls/php-coveralls": "^2.4",
 		"phpmd/phpmd": "^2.7",
-		"phpunit/phpunit": "^5.7 || ^6.0",
 		"pronamic/wp-coding-standards": "^1.0",
 		"roots/wordpress": "^5.8",
 		"wp-phpunit/wp-phpunit": "^5.8",
+		"wpackagist-plugin/easy-digital-downloads": "^2.11",
+		"wpackagist-plugin/wordpress-seo": "^17.7",
 		"yoast/phpunit-polyfills": "^1.0"
 	},
 	"scripts": {

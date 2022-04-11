@@ -2,8 +2,16 @@ includes:
 	- vendor-bin/phpstan/vendor/szepeviktor/phpstan-wordpress/extension.neon
 parameters:
 	customRulesetUsed: false
+	dynamicConstantNames:
+		- EDD_VERSION
 	level: max
 	bootstrapFiles:
 		- tests/phpstan/bootstrap.php
 	paths:
 		- src/
+	scanDirectories:
+		- wp-content/plugins/easy-digital-downloads/
+		- wp-content/plugins/wordpress-seo/
+	ignoreErrors:
+		- '#^Parameter \#1 \$error_id of function edd_set_error expects int, string given\.$#'
+		- '#^Access to an undefined property object::\$(cancelled|partially_refunded)\.$#'

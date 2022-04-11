@@ -31,10 +31,10 @@ class RefundsManager {
 	 */
 	public function setup() {
 		// Actions.
-		\add_action( 'edd_view_order_details_before', array( $this, 'order_admin_script' ), 100 );
-		\add_action( 'edd_pre_refund_payment', array( $this, 'maybe_refund_payment' ), 999 );
-		\add_action( 'pronamic_pay_update_payment', array( $this, 'maybe_update_refunded_payment' ), 15, 1 );
-		\add_action( 'edd_view_order_details_payment_meta_after', array( $this, 'order_details_payment_refunded_amount' ) );
+		\add_action( 'edd_view_order_details_before', [ $this, 'order_admin_script' ], 100 );
+		\add_action( 'edd_pre_refund_payment', [ $this, 'maybe_refund_payment' ], 999 );
+		\add_action( 'pronamic_pay_update_payment', [ $this, 'maybe_update_refunded_payment' ], 15, 1 );
+		\add_action( 'edd_view_order_details_payment_meta_after', [ $this, 'order_details_payment_refunded_amount' ] );
 	}
 
 	/**
@@ -54,7 +54,7 @@ class RefundsManager {
 		// Check config.
 		$config_id = EasyDigitalDownloads::get_pronamic_config_id( $payment_gateway );
 
-		$gateway = Plugin::get_gateway( $config_id );
+		$gateway = Plugin::get_gateway( (int) $config_id );
 
 		if ( null === $gateway || ! $gateway->supports( 'refunds' ) ) {
 			return;
@@ -102,7 +102,7 @@ class RefundsManager {
 		try {
 			$this->process_refund( $edd_payment, $payment );
 		} catch ( \Exception $e ) {
-			wp_die( \esc_html( $e->getMessage() ) );
+			Plugin::render_exception( $e );
 
 			exit;
 		}
@@ -118,9 +118,7 @@ class RefundsManager {
 	 */
 	private function process_refund( EDD_Payment $edd_payment, Payment $payment ) {
 		// Check gateway.
-		$config_id = $payment->get_config_id();
-
-		$gateway = Plugin::get_gateway( $config_id );
+		$gateway = $payment->get_gateway();
 
 		if ( null === $gateway ) {
 			throw new Exception( __( 'Unable to process refund because gateway does not exist.', 'pronamic_ideal' ) );
@@ -186,7 +184,7 @@ class RefundsManager {
 		}
 
 		// Check updated refund amount.
-		$edd_refunded_amount = (float) $edd_payment->get_meta( '_pronamic_pay_amount_refunded', true );
+		$edd_refunded_amount = $edd_payment->get_meta( '_pronamic_pay_amount_refunded', true );
 
 		$refunded_value = $refunded_amount->get_value();
 
@@ -215,15 +213,19 @@ class RefundsManager {
 	 * @return void
 	 */
 	private function add_refund_payment_note( EDD_Payment $edd_payment, $payment_id, Money $amount, $reference = null ) {
-		$payment_link = \sprintf(
-			'<a href="%1$s">%2$s</a>',
-			\get_edit_post_link( (int) $payment_id ),
-			\sprintf(
-				/* translators: %s: payment id */
-				esc_html( __( 'payment #%s', 'pronamic_ideal' ) ),
-				esc_html( $payment_id )
-			)
-		);
+		$payment_link = __( 'payment', 'pronamic_ideal' );
+
+		if ( null !== $payment_id ) {
+			$payment_link = \sprintf(
+				'<a href="%1$s">%2$s</a>',
+				\get_edit_post_link( (int) $payment_id ),
+				\sprintf(
+					/* translators: %s: payment id */
+					\esc_html( __( 'payment #%s', 'pronamic_ideal' ) ),
+					\esc_html( (string) $payment_id )
+				)
+			);
+		}
 
 		$note = \sprintf(
 			/* translators: 1: refunded amount, 2: edit payment anchor */

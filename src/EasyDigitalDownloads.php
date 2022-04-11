@@ -28,42 +28,42 @@ class EasyDigitalDownloads {
 	 *
 	 * @var string
 	 */
-	const ORDER_STATUS_PENDING = 'pending';
+	public const ORDER_STATUS_PENDING = 'pending';
 
 	/**
 	 * Order status completed
 	 *
 	 * @var string
 	 */
-	const ORDER_STATUS_PUBLISH = 'publish';
+	public const ORDER_STATUS_PUBLISH = 'publish';
 
 	/**
 	 * Order status refunded
 	 *
 	 * @var string
 	 */
-	const ORDER_STATUS_REFUNDED = 'refunded';
+	public const ORDER_STATUS_REFUNDED = 'refunded';
 
 	/**
 	 * Order status failed
 	 *
 	 * @var string
 	 */
-	const ORDER_STATUS_FAILED = 'failed';
+	public const ORDER_STATUS_FAILED = 'failed';
 
 	/**
 	 * Order status abandoned
 	 *
 	 * @var string
 	 */
-	const ORDER_STATUS_ABANDONED = 'abandoned';
+	public const ORDER_STATUS_ABANDONED = 'abandoned';
 
 	/**
 	 * Order status revoked/cancelled
 	 *
 	 * @var string
 	 */
-	const ORDER_STATUS_REVOKED = 'revoked';
+	public const ORDER_STATUS_REVOKED = 'revoked';
 
 	/**
 	 * Order status cancelled
@@ -71,29 +71,33 @@ class EasyDigitalDownloads {
 	 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.9.20/includes/admin/payments/class-payments-table.php#L506-L508
 	 * @var string
 	 */
-	const ORDER_STATUS_CANCELLED = 'cancelled';
+	public const ORDER_STATUS_CANCELLED = 'cancelled';
 
 	/**
 	 * Get payment URL by the specified payment ID.
 	 *
 	 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/3.0.0-beta2/includes/admin/payments/class-payments-table.php#L443
 	 *
-	 * @param string|int $payment_id Payment ID.
+	 * @param int|string|null $payment_id Payment ID.
 	 * @return string
 	 */
 	public static function get_payment_url( $payment_id ) {
 		if ( \defined( '\EDD_VERSION' ) && version_compare( \EDD_VERSION, '3', '<' ) ) {
-			return get_edit_post_link( (int) $payment_id );
+			$url = \get_edit_post_link( (int) $payment_id );
+
+			if ( null !== $url ) {
+				return $url;
+			}
 		}
 
-		return add_query_arg(
-			array(
+		return \add_query_arg(
+			[
 				'id'        => $payment_id,
 				'post_type' => 'download',
 				'page'      => 'edd-payment-history',
 				'view'      => 'view-order-details',
-			),
-			admin_url( 'edit.php' )
+			],
+			\admin_url( 'edit.php' )
 		);
 	}
 
@@ -109,7 +113,7 @@ class EasyDigitalDownloads {
 		 * @link https://github.com/Yoast/wordpress-seo/blob/8.4/inc/wpseo-functions.php#L62-L81
 		 */
 		if ( function_exists( 'yoast_get_primary_term' ) ) {
-			$name = yoast_get_primary_term( 'download_category', $post_id );
+			$name = \yoast_get_primary_term( 'download_category', $post_id );
 
 			return empty( $name ) ? null : $name;
 		}
@@ -121,11 +125,11 @@ class EasyDigitalDownloads {
 		$term_names = wp_get_post_terms(
 			$post_id,
 			'download_category',
-			array(
+			[
 				'fields'  => 'names',
 				'orderby' => 'count',
 				'order'   => 'DESC',
-			)
+			]
 		);
 
 		if ( $term_names instanceof WP_Error ) {
@@ -155,19 +159,18 @@ class EasyDigitalDownloads {
 		 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.4.3/includes/payments/functions.php#L1178-L1204
 		 */
 		if ( function_exists( 'edd_get_payment_number' ) ) {
-			return edd_get_payment_number( $payment_id );
+			return \edd_get_payment_number( $payment_id );
 		}
 
-		return $payment_id;
+		return (string) $payment_id;
 	}
 
 	/**
 	 * Get description.
 	 *
-	 * @param string $description   Description.
-	 * @param int    $payment_id    Payment ID.
-	 * @param array  $purchase_data Purchase data.
-	 *
+	 * @param string               $description   Description.
+	 * @param int                  $payment_id    Payment ID.
+	 * @param array<string, mixed> $purchase_data Purchase data.
 	 * @return string
 	 */
 	public static function get_description( $description, $payment_id, $purchase_data ) {
@@ -185,11 +188,11 @@ class EasyDigitalDownloads {
 		}
 
 		// Replacements.
-		$replacements = array(
+		$replacements = [
 			'{edd_cart_details_name}' => $edd_cart_details_name,
 			'{edd_payment_id}'        => $payment_id,
 			'{edd_payment_number}'    => self::get_payment_number( $payment_id ),
-		);
+		];
 
 		// Replace.
 		$description = strtr( $description, $replacements );
@@ -227,6 +230,7 @@ class EasyDigitalDownloads {
 	/**
 	 * Get the Pronamic configuration ID for this gateway.
 	 *
+	 * @param string $gateway_id Gateway identifier.
 	 * @return null|string
 	 */
 	public static function get_pronamic_config_id( $gateway_id ) {

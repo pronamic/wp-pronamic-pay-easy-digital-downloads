@@ -7,6 +7,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.1.0] - 2022-04-11
+- Add company name controller.
+
 ## [4.0.0] - 2022-01-10
 ### Changed
 - Updated to https://github.com/pronamic/wp-pay-core/releases/tag/4.0.0.
@@ -126,7 +129,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2015-01-20
 - First release.
 
-[unreleased]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/4.0.0...HEAD
+[unreleased]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/4.1.0...HEAD
+[4.1.0]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/4.0.0...4.1.0
 [4.0.0]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/3.0.0...4.0.0
 [3.0.0]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.2.0...3.0.0
 [2.2.0]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.1.4...2.2.0

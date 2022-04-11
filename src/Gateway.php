@@ -64,25 +64,25 @@ class Gateway {
 	/**
 	 * Supports.
 	 *
-	 * @var array
+	 * @var string[]
 	 */
 	private $supports;
 
 	/**
 	 * Bootstrap
 	 *
-	 * @param array $args Gateway properties.
+	 * @param array<string, mixed> $args Gateway properties.
 	 */
 	public function __construct( $args ) {
-		$args = wp_parse_args(
+		$args = \wp_parse_args(
 			$args,
-			array(
+			[
 				'id'             => null,
 				'admin_label'    => null,
 				'checkout_label' => null,
-				'supports'       => array(),
+				'supports'       => [],
 				'payment_method' => null,
-			)
+			]
 		);
 
 		if ( null === $args['admin_label'] ) {
@@ -101,13 +101,14 @@ class Gateway {
 		$this->payment_method = $args['payment_method'];
 
 		// Settings.
-		$checkout_label = edd_get_option( $this->id . '_checkout_label' );
+		$checkout_label = \edd_get_option( $this->id . '_checkout_label' );
+
 		if ( ! empty( $checkout_label ) ) {
 			$this->checkout_label = $checkout_label;
 		}
 
 		// Actions.
-		add_action( 'edd_gateway_' . $this->id, array( $this, 'process_purchase' ) );
+		\add_action( 'edd_gateway_' . $this->id, [ $this, 'process_purchase' ] );
 
 		/*
 		 * Remove CC Form
@@ -115,29 +116,28 @@ class Gateway {
 		 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/1.9.4/includes/checkout/template.php#L97
 		 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/1.9.4/includes/gateways/paypal-standard.php#L12
 		 */
-		add_action( 'edd_' . $this->id . '_cc_form', array( $this, 'payment_fields' ) );
+		\add_action( 'edd_' . $this->id . '_cc_form', [ $this, 'payment_fields' ] );
 
 		// Filters.
-		add_filter( 'edd_settings_sections_gateways', array( $this, 'register_gateway_section' ) );
-		add_filter( 'edd_settings_gateways', array( $this, 'settings_gateways' ) );
-		add_filter( 'edd_payment_gateways', array( $this, 'payment_gateways' ) );
+		\add_filter( 'edd_settings_sections_gateways', [ $this, 'register_gateway_section' ] );
+		\add_filter( 'edd_settings_gateways', [ $this, 'settings_gateways' ] );
+		\add_filter( 'edd_payment_gateways', [ $this, 'payment_gateways' ] );
 
-		add_filter( 'edd_get_payment_transaction_id-' . $this->id, array( $this, 'get_payment_transaction_id' ) );
+		\add_filter( 'edd_get_payment_transaction_id-' . $this->id, [ $this, 'get_payment_transaction_id' ] );
 	}
 
 	/**
 	 * Add the gateway to Easy Digital Downloads
 	 *
-	 * @param mixed $gateways Gateways.
-	 *
-	 * @return mixed $gateways
+	 * @param array<string, array<string, mixed>> $gateways Gateways.
+	 * @return array<string, array<string, mixed>> $gateways
 	 */
 	public function payment_gateways( $gateways ) {
-		$gateways[ $this->id ] = array(
+		$gateways[ $this->id ] = [
 			'admin_label'    => $this->admin_label,
 			'checkout_label' => $this->checkout_label,
 			'supports'       => $this->supports,
-		);
+		];
 
 		return $gateways;
 	}
@@ -147,9 +147,8 @@ class Gateway {
 	 *
 	 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.8.17/includes/admin/settings/register-settings.php#L1272-L1275
 	 *
-	 * @param array $gateway_sections Gateway sections.
-	 *
-	 * @return array
+	 * @param array<string, string> $gateway_sections Gateway sections.
+	 * @return array<string, string>
 	 */
 	public function register_gateway_section( $gateway_sections ) {
 		$gateway_sections[ $this->id ] = $this->admin_label;
@@ -169,31 +168,31 @@ class Gateway {
 	 * @return mixed $settings_gateways
 	 */
 	public function settings_gateways( $settings_gateways ) {
-		$settings = array(
-			$this->id                     => array(
+		$settings = [
+			$this->id                     => [
 				'id'   => $this->id,
 				/* translators: %s: admin label */
-				'name' => '<strong>' . sprintf( __( '%s Settings', 'pronamic_ideal' ), $this->admin_label ) . '</strong>',
+				'name' => '<strong>' . \sprintf( __( '%s Settings', 'pronamic_ideal' ), $this->admin_label ) . '</strong>',
 				/* translators: %s: gateway admin label */
-				'desc' => sprintf( __( 'Configure the %s settings', 'pronamic_ideal' ), $this->admin_label ),
+				'desc' => \sprintf( __( 'Configure the %s settings', 'pronamic_ideal' ), $this->admin_label ),
 				'type' => 'header',
-			),
-			$this->id . '_config_id'      => array(
+			],
+			$this->id . '_config_id'      => [
 				'id'      => $this->id . '_config_id',
 				'name'    => __( 'Gateway Configuration', 'pronamic_ideal' ),
 				'type'    => 'select',
 				'options' => Plugin::get_config_select_options( $this->payment_method ),
-				'std'     => get_option( 'pronamic_pay_config_id' ),
-			),
-			$this->id . '_checkout_label' => array(
+				'std'     => \get_option( 'pronamic_pay_config_id' ),
+			],
+			$this->id . '_checkout_label' => [
 				'id'   => $this->id . '_checkout_label',
 				'name' => __( 'Checkout Label', 'pronamic_ideal' ),
 				'type' => 'text',
 				// @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.5.9/includes/admin/settings/register-settings.php#L1537-L1541
 				// @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.5.9/includes/gateways/amazon-payments.php#L330
 				'std'  => $this->checkout_label,
-			),
-			$this->id . '_description'    => array(
+			],
+			$this->id . '_description'    => [
 				'id'   => $this->id . '_description',
 				'name' => __( 'Description', 'pronamic_ideal' ),
 				'type' => 'text',
@@ -201,11 +200,11 @@ class Gateway {
 				// @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.5.9/includes/gateways/amazon-payments.php#L330
 				'std'  => '{edd_cart_details_name}',
 				/* translators: %s: <code>{edd_cart_details_name}</code> */
-				'desc' => '<br />' . sprintf( __( 'Default: %s', 'pronamic_ideal' ), '<code>{edd_cart_details_name}</code>' ) .
+				'desc' => '<br />' . \sprintf( __( 'Default: %s', 'pronamic_ideal' ), '<code>{edd_cart_details_name}</code>' ) .
 					/* translators: %s: <code>{edd_cart_details_name}</code> */
-					'<br />' . sprintf( __( 'Available Tags: %s', 'pronamic_ideal' ), '<code>{edd_cart_details_name}</code> <code>{edd_payment_id}</code>' ),
-			),
-		);
+					'<br />' . \sprintf( __( 'Available Tags: %s', 'pronamic_ideal' ), '<code>{edd_cart_details_name}</code> <code>{edd_payment_id}</code>' ),
+			],
+		];
 
 		$settings_gateways[ $this->id ] = $settings;
 
@@ -217,9 +216,12 @@ class Gateway {
 	 *
 	 * @version 1.2.1
 	 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/1.9.4/includes/checkout/template.php#L167
+	 * @return void
 	 */
 	public function payment_fields() {
-		$gateway = Plugin::get_gateway( EasyDigitalDownloads::get_pronamic_config_id( $this->id ) );
+		$config_id = EasyDigitalDownloads::get_pronamic_config_id( $this->id );
+
+		$gateway = Plugin::get_gateway( (int) $config_id );
 
 		if ( null === $gateway ) {
 			return;
@@ -239,7 +241,7 @@ class Gateway {
 		}
 
 		echo '<fieldset id="edd_cc_fields" class="edd-do-validate">';
-		echo '<legend>', esc_html( $this->checkout_label ), '</legend>';
+		echo '<legend>', \esc_html( $this->checkout_label ), '</legend>';
 
 		foreach ( $fields as $field ) {
 			// Make field required.
@@ -247,7 +249,7 @@ class Gateway {
 			$field['required'] = true;
 
 			// @codingStandardsIgnoreStart
-			printf( '<p>%s</p>', Util::input_fields_html( array( $field ) ) );
+			\printf( '<p>%s</p>', Util::input_fields_html( [ $field ] ) );
 			// @codingStandardsIgnoreEnd
 		}
 
@@ -271,15 +273,14 @@ class Gateway {
 	 *   'cart_details' => array of cart details,
 	 * );
 	 *
-	 * @param array $purchase_data Purchase data.
+	 * @param array<string, mixed> $purchase_data Purchase data.
+	 * @return void
 	 */
 	public function process_purchase( $purchase_data ) {
-		$config_id = EasyDigitalDownloads::get_pronamic_config_id( $this->id );
-
 		// Collect payment data.
-		$edd_currency = edd_get_currency();
+		$edd_currency = \edd_get_currency();
 
-		$payment_data = array(
+		$payment_data = [
 			'price'        => $purchase_data['price'],
 			'date'         => $purchase_data['date'],
 			'user_email'   => $purchase_data['user_email'],
@@ -290,45 +291,49 @@ class Gateway {
 			'cart_details' => $purchase_data['cart_details'],
 			'gateway'      => $this->id,
 			'status'       => 'pending',
-		);
+		];
 
 		// Record the pending payment.
-		$edd_payment_id = edd_insert_payment( $payment_data );
+		$edd_payment_id = \edd_insert_payment( $payment_data );
 
 		// Check payment.
 		if ( false === $edd_payment_id ) {
 			// Log error.
-			edd_record_gateway_error(
-				__( 'Payment Error', 'pronamic_ideal' ),
-				sprintf(
+			\edd_record_gateway_error(
+				\__( 'Payment Error', 'pronamic_ideal' ),
+				\sprintf(
 					/* translators: %s: payment data JSON */
-					__( 'Payment creation failed before sending buyer to the payment provider. Payment data: %s', 'pronamic_ideal' ),
-					strval( wp_json_encode( $payment_data ) )
+					\__( 'Payment creation failed before sending buyer to the payment provider. Payment data: %s', 'pronamic_ideal' ),
+					\strval( \wp_json_encode( $payment_data ) )
 				)
 			);
 
-			edd_send_back_to_checkout(
-				array(
+			\edd_send_back_to_checkout(
+				[
 					'payment-mode' => $purchase_data['post_data']['edd-gateway'],
-				)
+				]
 			);
 
 			return;
 		}
 
-		$edd_payment = edd_get_payment( $edd_payment_id );
+		$edd_payment_id = (int) $edd_payment_id;
 
 		// Get gateway and currency.
-		$gateway = Plugin::get_gateway( $config_id );
+		$config_id = EasyDigitalDownloads::get_pronamic_config_id( $this->id );
 
-		if ( ! $gateway ) {
-			edd_set_error( 'pronamic_pay_error', Plugin::get_default_error_message() );
+		$gateway = Plugin::get_gateway( (int) $config_id );
 
-			edd_send_back_to_checkout(
-				array(
+		if ( null === $gateway ) {
+			\edd_set_error( 'pronamic_pay_error', Plugin::get_default_error_message() );
+
+			\edd_send_back_to_checkout(
+				[
 					'payment-mode=' => $purchase_data['post_data']['edd-gateway'],
-				)
+				]
 			);
+
+			return;
 		}
 
 		// Currency.
@@ -344,8 +349,8 @@ class Gateway {
 		 */
 		$tax_percentage = null;
 
-		if ( edd_use_taxes() ) {
-			if ( array_key_exists( 'tax_rate', $purchase_data ) ) {
+		if ( \edd_use_taxes() ) {
+			if ( \array_key_exists( 'tax_rate', $purchase_data ) ) {
 				$tax_rate = $purchase_data['tax_rate'];
 
 				$tax_percentage = $tax_rate * 100;
@@ -364,7 +369,7 @@ class Gateway {
 
 		$payment->set_description(
 			EasyDigitalDownloads::get_description(
-				edd_get_option( $this->id . '_description' ),
+				\edd_get_option( $this->id . '_description' ),
 				$edd_payment_id,
 				$purchase_data
 			)
@@ -376,7 +381,7 @@ class Gateway {
 
 		$payment->set_payment_method( $this->payment_method );
 
-		if ( array_key_exists( 'price', $purchase_data ) ) {
+		if ( \array_key_exists( 'price', $purchase_data ) ) {
 			$payment->set_total_amount( new TaxedMoney( $purchase_data['price'], $currency, $purchase_data['tax'], $tax_percentage ) );
 		}
 
@@ -399,22 +404,22 @@ class Gateway {
 
 		$payment->set_customer( $customer );
 
-		if ( array_key_exists( 'user_info', $purchase_data ) && is_array( $purchase_data['user_info'] ) ) {
+		if ( \array_key_exists( 'user_info', $purchase_data ) && \is_array( $purchase_data['user_info'] ) ) {
 			$user_info = $purchase_data['user_info'];
 
-			if ( array_key_exists( 'email', $user_info ) ) {
+			if ( \array_key_exists( 'email', $user_info ) ) {
 				$customer->set_email( $user_info['email'] );
 			}
 
-			if ( array_key_exists( 'first_name', $user_info ) ) {
+			if ( \array_key_exists( 'first_name', $user_info ) ) {
 				$name->set_first_name( $user_info['first_name'] );
 			}
 
-			if ( array_key_exists( 'last_name', $user_info ) ) {
+			if ( \array_key_exists( 'last_name', $user_info ) ) {
 				$name->set_last_name( $user_info['last_name'] );
 			}
 
-			if ( array_key_exists( 'address', $user_info ) && is_array( $user_info['address'] ) && ! empty( $user_info['address'] ) ) {
+			if ( \array_key_exists( 'address', $user_info ) && \is_array( $user_info['address'] ) && ! empty( $user_info['address'] ) ) {
 				$address_array = $user_info['address'];
 
 				$address = new Address();
@@ -422,31 +427,31 @@ class Gateway {
 				$address->set_name( $name );
 				$address->set_company_name( $company_name );
 
-				if ( array_key_exists( 'line1', $address_array ) ) {
+				if ( \array_key_exists( 'line1', $address_array ) ) {
 					$address->set_line_1( $address_array['line1'] );
 				}
 
-				if ( array_key_exists( 'line2', $address_array ) ) {
+				if ( \array_key_exists( 'line2', $address_array ) ) {
 					$address->set_line_2( $address_array['line2'] );
 				}
 
-				if ( array_key_exists( 'city', $address_array ) ) {
+				if ( \array_key_exists( 'city', $address_array ) ) {
 					$address->set_city( $address_array['city'] );
 				}
 
-				if ( array_key_exists( 'state', $address_array ) ) {
+				if ( \array_key_exists( 'state', $address_array ) ) {
 					$address->set_region( $address_array['state'] );
 				}
 
-				if ( array_key_exists( 'country', $address_array ) ) {
+				if ( \array_key_exists( 'country', $address_array ) ) {
 					$address->set_country_code( $address_array['country'] );
 				}
 
-				if ( array_key_exists( 'zip', $address_array ) ) {
+				if ( \array_key_exists( 'zip', $address_array ) ) {
 					$address->set_postal_code( $address_array['zip'] );
 				}
 
-				if ( array_key_exists( 'email', $user_info ) ) {
+				if ( \array_key_exists( 'email', $user_info ) ) {
 					$address->set_email( $user_info['email'] );
 				}
 
@@ -458,10 +463,10 @@ class Gateway {
 		// Lines.
 		$payment->lines = new PaymentLines();
 
-		if ( array_key_exists( 'cart_details', $purchase_data ) && is_array( $purchase_data['cart_details'] ) ) {
+		if ( \array_key_exists( 'cart_details', $purchase_data ) && \is_array( $purchase_data['cart_details'] ) ) {
 			$cart_details = $purchase_data['cart_details'];
 
-			$cart_detail_defaults = array(
+			$cart_detail_defaults = [
 				'name'        => null,
 				'id'          => null,
 				'item_number' => null,
@@ -472,10 +477,10 @@ class Gateway {
 				'tax'         => null,
 				'fees'        => null,
 				'price'       => null,
-			);
+			];
 
 			foreach ( $cart_details as $cart_detail ) {
-				$detail = wp_parse_args( $cart_detail, $cart_detail_defaults );
+				$detail = \wp_parse_args( $cart_detail, $cart_detail_defaults );
 
 				$line = $payment->lines->new_line();
 
@@ -493,7 +498,7 @@ class Gateway {
 				$item_price_id = \edd_get_cart_item_price_id( $detail );
 
 				if ( null !== $item_price_id ) {
-					$id = sprintf( '%s-%s', $id, $item_price_id );
+					$id = \sprintf( '%s-%s', $id, $item_price_id );
 				}
 
 				$line->set_id( $id );
@@ -515,26 +520,48 @@ class Gateway {
 				$line->set_type( PaymentLineType::DIGITAL );
 				$line->set_quantity( $detail['quantity'] );
 				$line->set_discount_amount( new Money( $detail['discount'], $currency ) );
-				$line->set_product_url( get_permalink( $detail['id'] ) );
-				$line->set_image_url( wp_get_attachment_url( get_post_thumbnail_id( $detail['id'] ) ) );
 				$line->set_product_category( EasyDigitalDownloads::get_download_category( $detail['id'] ) );
+
+				// Product URL.
+				$product_url = \get_permalink( $detail['id'] );
+
+				if ( false !== $product_url ) {
+					$line->set_product_url( $product_url );
+				}
+
+				// Image URL.
+				$attachment_id = \get_post_thumbnail_id( $detail['id'] );
+
+				if ( false !== $attachment_id ) {
+					$image_url = \wp_get_attachment_url( $attachment_id );
+
+					if ( false !== $image_url ) {
+						$line->set_image_url( $image_url );
+					}
+				}
 			}
 		}
 
 		// Fees.
-		$fees = $edd_payment->get_fees();
+		$edd_payment = \edd_get_payment( $edd_payment_id );
 
-		$fee_defaults = array(
+		$fees = [];
+
+		if ( false !== $edd_payment ) {
+			$fees = $edd_payment->get_fees();
+		}
+
+		$fee_defaults = [
 			'amount'      => null,
 			'label'       => null,
 			'type'        => null,
 			'no_tax'      => null,
 			'download_id' => null,
 			'price_id'    => null,
-		);
+		];
 
 		foreach ( $fees as $id => $fee ) {
-			$fee = wp_parse_args( $fee, $fee_defaults );
+			$fee = \wp_parse_args( $fee, $fee_defaults );
 
 			$line = $payment->lines->new_line();
 
@@ -553,20 +580,24 @@ class Gateway {
 		try {
 			$payment = Plugin::start_payment( $payment );
 		} catch ( \Exception $e ) {
-			edd_record_gateway_error(
+			\edd_record_gateway_error(
 				__( 'Payment Error', 'pronamic_ideal' ),
-				sprintf(
+				\sprintf(
 					/* translators: %s: payment data JSON */
 					__( 'Payment creation failed before sending buyer to the payment provider. Payment data: %s', 'pronamic_ideal' ),
-					(string) wp_json_encode( $payment_data )
+					(string) \wp_json_encode( $payment_data )
 				),
 				(int) $edd_payment_id
 			);
 
-			edd_set_error( 'pronamic_pay_error', Plugin::get_default_error_message() );
-			edd_set_error( 'pronamic_pay_error_' . $e->getCode(), $e->getMessage() );
+			\edd_set_error( 'pronamic_pay_error', Plugin::get_default_error_message() );
+			\edd_set_error( 'pronamic_pay_error_' . $e->getCode(), $e->getMessage() );
 
-			edd_send_back_to_checkout( '?payment-mode=' . $purchase_data['post_data']['edd-gateway'] );
+			\edd_send_back_to_checkout(
+				[
+					'payment-mode' => $purchase_data['post_data']['edd-gateway'],
+				]
+			);
 
 			return;
 		}
@@ -576,14 +607,18 @@ class Gateway {
 		 *
 		 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.3/includes/payments/functions.php#L1400-L1416
 		 */
-		edd_set_payment_transaction_id( $edd_payment_id, $payment->get_transaction_id() );
+		$transaction_id = $payment->get_transaction_id();
+
+		if ( null !== $transaction_id ) {
+			\edd_set_payment_transaction_id( $edd_payment_id, $transaction_id );
+		}
 
 		// Insert payment note.
 		$payment_link = add_query_arg(
-			array(
+			[
 				'post'   => $payment->get_id(),
 				'action' => 'edit',
-			),
+			],
 			admin_url( 'post.php' )
 		);
 
@@ -593,7 +628,7 @@ class Gateway {
 			sprintf( '<a href="%s">#%s</a>', $payment_link, $payment->get_id() )
 		);
 
-		edd_insert_payment_note( $edd_payment_id, $note );
+		\edd_insert_payment_note( $edd_payment_id, $note );
 
 		$gateway->redirect( $payment );
 

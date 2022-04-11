@@ -22,8 +22,8 @@ class PurchaseDataHelper {
 	 * Get post data value.
 	 *
 	 * @link https://github.com/WordPress/WordPress-Coding-Standards/wiki/Fixing-errors-for-input-data
-	 * @param array  $purchase_data Purchase data.
-	 * @param string $key           Post data key.
+	 * @param array<string, mixed> $purchase_data Purchase data.
+	 * @param string               $key           Post data key.
 	 * @return string|null
 	 */
 	public static function get_post_data_value( $purchase_data, $key ) {
@@ -56,7 +56,7 @@ class PurchaseDataHelper {
 	/**
 	 * Get company name from purchase data array.
 	 *
-	 * @param array $purchase_data Purchase data array.
+	 * @param array<string, mixed> $purchase_data Purchase data array.
 	 * @return string|null
 	 */
 	public static function get_company_name( $purchase_data ) {
@@ -71,7 +71,7 @@ class PurchaseDataHelper {
 	/**
 	 * Get VAT number from purchase data array.
 	 *
-	 * @param array $purchase_data Purchase data array.
+	 * @param array<string, mixed> $purchase_data Purchase data array.
 	 * @return string|null
 	 */
 	public static function get_vat_number( $purchase_data ) {
