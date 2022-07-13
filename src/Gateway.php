@@ -227,12 +227,6 @@ class Gateway {
 			return;
 		}
 
-		/*
-		 * Let the gateway know which payment method to use so it can return the correct inputs.
-		 * @since 1.2.1
-		 */
-		$gateway->set_payment_method( $this->payment_method );
-
 		$fields = $gateway->get_input_fields();
 
 		// Check if there are fields to display.
