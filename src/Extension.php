@@ -50,15 +50,21 @@ class Extension extends AbstractPluginIntegration {
 
 		$dependencies->add( new EasyDigitalDownloadsDependency() );
 
-		add_action( 'plugins_loaded', [ $this, 'setup_extension' ] );
+		/**
+		 * Plugins loaded.
+		 * 
+		 * @link https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/issues/3
+		 */
+		add_action( 'plugins_loaded', [ $this, 'plugins_loaded' ] );
 	}
 
 	/**
-	 * Setup plugin integration.
+	 * Plugins loaded.
 	 *
+	 * @link https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/issues/3
 	 * @return void
 	 */
-	public function setup_extension() {
+	public function plugins_loaded() {
 		add_filter( 'pronamic_payment_source_text_easydigitaldownloads', [ $this, 'source_text' ], 10, 2 );
 		add_filter( 'pronamic_payment_source_description_easydigitaldownloads', [ $this, 'source_description' ], 10, 2 );
 
