@@ -227,9 +227,14 @@ class Gateway {
 			return;
 		}
 
-		$fields = $gateway->get_input_fields();
+		$payment_method = $gateway->get_payment_method( $this->payment_method );
 
-		// Check if there are fields to display.
+		if ( null === $payment_method ) {
+			return;
+		}
+
+		$fields = $payment_method->get_fields();
+
 		if ( empty( $fields ) ) {
 			return;
 		}
@@ -238,13 +243,23 @@ class Gateway {
 		echo '<legend>', \esc_html( $this->checkout_label ), '</legend>';
 
 		foreach ( $fields as $field ) {
-			// Make field required.
-			$field['label']   .= ' <span class="edd-required-indicator">*</span>';
-			$field['required'] = true;
+			$label = $field->get_label();
 
-			// @codingStandardsIgnoreStart
-			\printf( '<p>%s</p>', Util::input_fields_html( [ $field ] ) );
-			// @codingStandardsIgnoreEnd
+			if ( $field->is_required() ) {
+				$label .= ' <span class="edd-required-indicator">*</span>';
+			}
+
+			echo '<p>';
+
+			\printf(
+				'<label for="%s">%s</label>',
+				\esc_attr( $field->get_id() ),
+				\esc_html( $label )
+			);
+
+			$field->output();
+
+			echo '</p>';
 		}
 
 		echo '</fieldset>';
