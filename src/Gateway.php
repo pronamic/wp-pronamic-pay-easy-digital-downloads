@@ -239,7 +239,7 @@ class Gateway {
 			return;
 		}
 
-		echo '<fieldset id="edd_cc_fields" class="edd-do-validate">';
+		echo '<fieldset class="edd-do-validate">';
 		echo '<legend>', \esc_html( $this->checkout_label ), '</legend>';
 
 		foreach ( $fields as $field ) {
