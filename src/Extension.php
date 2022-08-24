@@ -228,7 +228,6 @@ class Extension extends AbstractPluginIntegration {
 					\edd_get_payment_key( $source_id ),
 					\edd_get_success_page_uri()
 				);
-			case Core_Statuses::RESERVED:
 			case Core_Statuses::OPEN:
 				return \home_url( '/' );
 		}
