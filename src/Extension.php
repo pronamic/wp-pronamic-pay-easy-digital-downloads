@@ -290,48 +290,6 @@ class Extension extends AbstractPluginIntegration {
 					\edd_update_payment_status( $source_id, EasyDigitalDownloads::ORDER_STATUS_FAILED );
 
 					break;
-				case Core_Statuses::RESERVED:
-					$note = [
-						\sprintf(
-							'%s %s.',
-							PaymentMethods::get_name( $payment->get_payment_method() ),
-							\__( 'payment reserved at gateway', 'pronamic_ideal' )
-						),
-					];
-
-					$gateway = Plugin::get_gateway( (int) $payment->get_config_id() );
-
-					if ( null !== $gateway && $gateway->supports( 'reservation_payments' ) ) {
-						$payment_edit_link = \add_query_arg(
-							[
-								'post'   => $payment->get_id(),
-								'action' => 'edit',
-							],
-							\admin_url( 'post.php' )
-						);
-
-						$payment_link = \sprintf(
-							'<a href="%1$s">%2$s</a>',
-							$payment_edit_link,
-							\sprintf(
-								/* translators: %s: payment id */
-								\esc_html( __( 'payment #%s', 'pronamic_ideal' ) ),
-								$payment->get_id()
-							)
-						);
-
-						$note[] = \sprintf(
-							/* translators: %s: payment edit link */
-							__( 'Create an invoice at payment gateway for %1$s after processing the order.', 'pronamic_ideal' ),
-							$payment_link // WPCS: xss ok.
-						);
-					}
-
-					$note = \implode( ' ', $note );
-
-					\edd_insert_payment_note( $source_id, $note );
-
-					break;
 				case Core_Statuses::SUCCESS:
 					\edd_insert_payment_note( $source_id, __( 'Payment completed.', 'pronamic_ideal' ) );
 
