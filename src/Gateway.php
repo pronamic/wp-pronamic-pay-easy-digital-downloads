@@ -227,30 +227,39 @@ class Gateway {
 			return;
 		}
 
-		/*
-		 * Let the gateway know which payment method to use so it can return the correct inputs.
-		 * @since 1.2.1
-		 */
-		$gateway->set_payment_method( $this->payment_method );
+		$payment_method = $gateway->get_payment_method( $this->payment_method );
 
-		$fields = $gateway->get_input_fields();
+		if ( null === $payment_method ) {
+			return;
+		}
 
-		// Check if there are fields to display.
+		$fields = $payment_method->get_fields();
+
 		if ( empty( $fields ) ) {
 			return;
 		}
 
-		echo '<fieldset id="edd_cc_fields" class="edd-do-validate">';
+		echo '<fieldset class="edd-do-validate">';
 		echo '<legend>', \esc_html( $this->checkout_label ), '</legend>';
 
 		foreach ( $fields as $field ) {
-			// Make field required.
-			$field['label']   .= ' <span class="edd-required-indicator">*</span>';
-			$field['required'] = true;
+			$label = $field->get_label();
 
-			// @codingStandardsIgnoreStart
-			\printf( '<p>%s</p>', Util::input_fields_html( [ $field ] ) );
-			// @codingStandardsIgnoreEnd
+			if ( $field->is_required() ) {
+				$label .= ' <span class="edd-required-indicator">*</span>';
+			}
+
+			echo '<p>';
+
+			\printf(
+				'<label for="%s">%s</label>',
+				\esc_attr( $field->get_id() ),
+				\esc_html( $label )
+			);
+
+			$field->output();
+
+			echo '</p>';
 		}
 
 		echo '</fieldset>';
