@@ -106,8 +106,6 @@ class Extension extends AbstractPluginIntegration {
 		add_filter( 'edd_accepted_payment_icons', [ __CLASS__, 'accepted_payment_icons' ] );
 
 		// Currencies.
-		add_filter( 'edd_currencies', [ __CLASS__, 'currencies' ], 10, 1 );
-		add_filter( 'edd_currency_symbol', [ __CLASS__, 'currency_symbol' ], 10, 2 );
 		add_filter( 'edd_nlg_currency_filter_before', [ __CLASS__, 'currency_filter_before' ], 10, 3 );
 		add_filter( 'edd_nlg_currency_filter_after', [ __CLASS__, 'currency_filter_after' ], 10, 3 );
 
@@ -311,40 +309,6 @@ class Extension extends AbstractPluginIntegration {
 					break;
 			}
 		}
-	}
-
-	/**
-	 * Filter currencies.
-	 *
-	 * @param array<string, string> $currencies Available currencies.
-	 * @return array<string, string>
-	 */
-	public static function currencies( $currencies ) {
-		if ( PaymentMethods::is_active( PaymentMethods::GULDEN ) ) {
-			$currencies['NLG'] = sprintf(
-				/* translators: %s: Gulden */
-				'%s (G)',
-				PaymentMethods::get_name( PaymentMethods::GULDEN )
-			);
-		}
-
-		return $currencies;
-	}
-
-	/**
-	 * Filter currency symbol.
-	 *
-	 * @param string $symbol   Symbol.
-	 * @param string $currency Currency.
-	 *
-	 * @return string
-	 */
-	public static function currency_symbol( $symbol, $currency ) {
-		if ( 'NLG' === $currency ) {
-			$symbol = 'G';
-		}
-
-		return $symbol;
 	}
 
 	/**
