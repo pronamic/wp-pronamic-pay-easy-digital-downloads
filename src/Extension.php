@@ -105,10 +105,6 @@ class Extension extends AbstractPluginIntegration {
 		// Icons.
 		add_filter( 'edd_accepted_payment_icons', [ __CLASS__, 'accepted_payment_icons' ] );
 
-		// Currencies.
-		add_filter( 'edd_nlg_currency_filter_before', [ __CLASS__, 'currency_filter_before' ], 10, 3 );
-		add_filter( 'edd_nlg_currency_filter_after', [ __CLASS__, 'currency_filter_after' ], 10, 3 );
-
 		// Statuses.
 		add_filter( 'edd_payment_statuses', [ __CLASS__, 'edd_payment_statuses' ] );
 		add_filter( 'edd_payments_table_views', [ $this, 'payments_table_views' ] );
@@ -156,7 +152,6 @@ class Extension extends AbstractPluginIntegration {
 			'pronamic_pay_direct_debit_sofort'     => PaymentMethods::DIRECT_DEBIT_SOFORT,
 			'pronamic_pay_focum'                   => PaymentMethods::FOCUM,
 			'pronamic_pay_giropay'                 => PaymentMethods::GIROPAY,
-			'pronamic_pay_gulden'                  => PaymentMethods::GULDEN,
 			'pronamic_pay_idealqr'                 => PaymentMethods::IDEALQR,
 			'pronamic_pay_in3'                     => PaymentMethods::IN3,
 			'pronamic_pay_kbc'                     => PaymentMethods::KBC,
@@ -309,58 +304,6 @@ class Extension extends AbstractPluginIntegration {
 					break;
 			}
 		}
-	}
-
-	/**
-	 * Filter currency before.
-	 *
-	 * @param string $formatted Formatted symbol and price.
-	 * @param string $currency  Currency.
-	 * @param string $price     Price.
-	 *
-	 * @return string
-	 */
-	public static function currency_filter_before( $formatted, $currency, $price ) {
-		if ( ! function_exists( 'edd_currency_symbol' ) ) {
-			return $formatted;
-		}
-
-		$symbol = edd_currency_symbol( $currency );
-
-		switch ( $currency ) {
-			case 'NLG':
-				$formatted = $symbol . $price;
-
-				break;
-		}
-
-		return $formatted;
-	}
-
-	/**
-	 * Filter currency after.
-	 *
-	 * @param string $formatted Formatted symbol and price.
-	 * @param string $currency  Currency.
-	 * @param string $price     Price.
-	 *
-	 * @return string
-	 */
-	public static function currency_filter_after( $formatted, $currency, $price ) {
-		if ( ! function_exists( 'edd_currency_symbol' ) ) {
-			return $formatted;
-		}
-
-		$symbol = edd_currency_symbol( $currency );
-
-		switch ( $currency ) {
-			case 'NLG':
-				$formatted = $price . $symbol;
-
-				break;
-		}
-
-		return $formatted;
 	}
 
 	/**
