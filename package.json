@@ -43,5 +43,9 @@
     "grunt-phpmd": "^0.1.1",
     "grunt-phpunit": "^0.3.6",
     "load-grunt-tasks": "^5.1.0"
+  },
+  "scripts": {
+    "start": "wp-env start",
+    "login": "wp-env run cli wp user one-time-login admin"
   }
 }

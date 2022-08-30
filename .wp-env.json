@@ -4,7 +4,8 @@
 		".",
 		"../../../",
 		"https://downloads.wordpress.org/plugin/easy-digital-downloads.3.0.3.zip",
-		"https://downloads.wordpress.org/plugin/query-monitor.zip"
+		"https://downloads.wordpress.org/plugin/query-monitor.zip",
+		"https://downloads.wordpress.org/plugin/one-time-login.zip"
 	],
 	"config": {
 		"PRONAMIC_PAY_DEBUG": true
