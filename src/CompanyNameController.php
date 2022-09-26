@@ -199,7 +199,7 @@ class CompanyNameController {
 				);
 
 				?>
-								
+
 			</div>
 		</fieldset>
 		<?php
