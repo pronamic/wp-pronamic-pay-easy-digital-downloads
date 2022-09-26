@@ -49,14 +49,22 @@ class Extension extends AbstractPluginIntegration {
 		$dependencies = $this->get_dependencies();
 
 		$dependencies->add( new EasyDigitalDownloadsDependency() );
+
+		/**
+		 * Plugins loaded.
+		 * 
+		 * @link https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/issues/3
+		 */
+		add_action( 'plugins_loaded', [ $this, 'plugins_loaded' ] );
 	}
 
 	/**
-	 * Setup plugin integration.
+	 * Plugins loaded.
 	 *
+	 * @link https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/issues/3
 	 * @return void
 	 */
-	public function setup() {
+	public function plugins_loaded() {
 		add_filter( 'pronamic_payment_source_text_easydigitaldownloads', [ $this, 'source_text' ], 10, 2 );
 		add_filter( 'pronamic_payment_source_description_easydigitaldownloads', [ $this, 'source_description' ], 10, 2 );
 
@@ -96,12 +104,6 @@ class Extension extends AbstractPluginIntegration {
 
 		// Icons.
 		add_filter( 'edd_accepted_payment_icons', [ __CLASS__, 'accepted_payment_icons' ] );
-
-		// Currencies.
-		add_filter( 'edd_currencies', [ __CLASS__, 'currencies' ], 10, 1 );
-		add_filter( 'edd_currency_symbol', [ __CLASS__, 'currency_symbol' ], 10, 2 );
-		add_filter( 'edd_nlg_currency_filter_before', [ __CLASS__, 'currency_filter_before' ], 10, 3 );
-		add_filter( 'edd_nlg_currency_filter_after', [ __CLASS__, 'currency_filter_after' ], 10, 3 );
 
 		// Statuses.
 		add_filter( 'edd_payment_statuses', [ __CLASS__, 'edd_payment_statuses' ] );
@@ -150,7 +152,6 @@ class Extension extends AbstractPluginIntegration {
 			'pronamic_pay_direct_debit_sofort'     => PaymentMethods::DIRECT_DEBIT_SOFORT,
 			'pronamic_pay_focum'                   => PaymentMethods::FOCUM,
 			'pronamic_pay_giropay'                 => PaymentMethods::GIROPAY,
-			'pronamic_pay_gulden'                  => PaymentMethods::GULDEN,
 			'pronamic_pay_idealqr'                 => PaymentMethods::IDEALQR,
 			'pronamic_pay_in3'                     => PaymentMethods::IN3,
 			'pronamic_pay_kbc'                     => PaymentMethods::KBC,
@@ -220,7 +221,6 @@ class Extension extends AbstractPluginIntegration {
 					\edd_get_payment_key( $source_id ),
 					\edd_get_success_page_uri()
 				);
-			case Core_Statuses::RESERVED:
 			case Core_Statuses::OPEN:
 				return \home_url( '/' );
 		}
@@ -282,48 +282,6 @@ class Extension extends AbstractPluginIntegration {
 					\edd_update_payment_status( $source_id, EasyDigitalDownloads::ORDER_STATUS_FAILED );
 
 					break;
-				case Core_Statuses::RESERVED:
-					$note = [
-						\sprintf(
-							'%s %s.',
-							PaymentMethods::get_name( $payment->get_payment_method() ),
-							\__( 'payment reserved at gateway', 'pronamic_ideal' )
-						),
-					];
-
-					$gateway = Plugin::get_gateway( (int) $payment->get_config_id() );
-
-					if ( null !== $gateway && $gateway->supports( 'reservation_payments' ) ) {
-						$payment_edit_link = \add_query_arg(
-							[
-								'post'   => $payment->get_id(),
-								'action' => 'edit',
-							],
-							\admin_url( 'post.php' )
-						);
-
-						$payment_link = \sprintf(
-							'<a href="%1$s">%2$s</a>',
-							$payment_edit_link,
-							\sprintf(
-								/* translators: %s: payment id */
-								\esc_html( __( 'payment #%s', 'pronamic_ideal' ) ),
-								$payment->get_id()
-							)
-						);
-
-						$note[] = \sprintf(
-							/* translators: %s: payment edit link */
-							__( 'Create an invoice at payment gateway for %1$s after processing the order.', 'pronamic_ideal' ),
-							$payment_link // WPCS: xss ok.
-						);
-					}
-
-					$note = \implode( ' ', $note );
-
-					\edd_insert_payment_note( $source_id, $note );
-
-					break;
 				case Core_Statuses::SUCCESS:
 					\edd_insert_payment_note( $source_id, __( 'Payment completed.', 'pronamic_ideal' ) );
 
@@ -346,92 +304,6 @@ class Extension extends AbstractPluginIntegration {
 					break;
 			}
 		}
-	}
-
-	/**
-	 * Filter currencies.
-	 *
-	 * @param array<string, string> $currencies Available currencies.
-	 * @return array<string, string>
-	 */
-	public static function currencies( $currencies ) {
-		if ( PaymentMethods::is_active( PaymentMethods::GULDEN ) ) {
-			$currencies['NLG'] = sprintf(
-				/* translators: %s: Gulden */
-				'%s (G)',
-				PaymentMethods::get_name( PaymentMethods::GULDEN )
-			);
-		}
-
-		return $currencies;
-	}
-
-	/**
-	 * Filter currency symbol.
-	 *
-	 * @param string $symbol   Symbol.
-	 * @param string $currency Currency.
-	 *
-	 * @return string
-	 */
-	public static function currency_symbol( $symbol, $currency ) {
-		if ( 'NLG' === $currency ) {
-			$symbol = 'G';
-		}
-
-		return $symbol;
-	}
-
-	/**
-	 * Filter currency before.
-	 *
-	 * @param string $formatted Formatted symbol and price.
-	 * @param string $currency  Currency.
-	 * @param string $price     Price.
-	 *
-	 * @return string
-	 */
-	public static function currency_filter_before( $formatted, $currency, $price ) {
-		if ( ! function_exists( 'edd_currency_symbol' ) ) {
-			return $formatted;
-		}
-
-		$symbol = edd_currency_symbol( $currency );
-
-		switch ( $currency ) {
-			case 'NLG':
-				$formatted = $symbol . $price;
-
-				break;
-		}
-
-		return $formatted;
-	}
-
-	/**
-	 * Filter currency after.
-	 *
-	 * @param string $formatted Formatted symbol and price.
-	 * @param string $currency  Currency.
-	 * @param string $price     Price.
-	 *
-	 * @return string
-	 */
-	public static function currency_filter_after( $formatted, $currency, $price ) {
-		if ( ! function_exists( 'edd_currency_symbol' ) ) {
-			return $formatted;
-		}
-
-		$symbol = edd_currency_symbol( $currency );
-
-		switch ( $currency ) {
-			case 'NLG':
-				$formatted = $price . $symbol;
-
-				break;
-		}
-
-		return $formatted;
 	}
 
 	/**
