@@ -7,6 +7,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.2.1] - 2022-09-27
+- Update to `wp-pay/core` version `^4.4`.
+
 ## [4.2.0] - 2022-09-26
 - Fixed Easy Digital Downloads 3 compatibility.
 - Updated for new payment methods and fields registration.
@@ -133,7 +136,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2015-01-20
 - First release.
 
-[unreleased]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/4.2.0...HEAD
+[unreleased]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/4.2.1...HEAD
+[4.2.1]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/4.2.0...4.2.1
 [4.2.0]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/4.1.0...4.2.0
 [4.1.0]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/4.0.0...4.1.0
 [4.0.0]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/3.0.0...4.0.0
