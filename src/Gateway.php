@@ -243,18 +243,13 @@ class Gateway {
 		echo '<legend>', \esc_html( $this->checkout_label ), '</legend>';
 
 		foreach ( $fields as $field ) {
-			$label = $field->get_label();
-
-			if ( $field->is_required() ) {
-				$label .= ' <span class="edd-required-indicator">*</span>';
-			}
-
 			echo '<p>';
 
 			\printf(
-				'<label for="%s">%s</label>',
+				'<label for="%s">%s%s</label>',
 				\esc_attr( $field->get_id() ),
-				\esc_html( $label )
+				\esc_html( $field->get_label() ),
+				$field->is_required() ? ' <span class="edd-required-indicator">*</span>' : ''
 			);
 
 			$field->output();
