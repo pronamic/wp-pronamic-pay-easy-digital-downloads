@@ -51,11 +51,11 @@
 		"bamarni/composer-bin-plugin": "^1.4",
 		"php-coveralls/php-coveralls": "^2.4",
 		"phpmd/phpmd": "^2.7",
-		"pronamic/wp-coding-standards": "^1.0",
+		"pronamic/wp-coding-standards": "^1.2",
 		"roots/wordpress": "^5.8",
 		"wp-phpunit/wp-phpunit": "^5.8",
 		"wpackagist-plugin/easy-digital-downloads": "^2.11",
-		"wpackagist-plugin/wordpress-seo": "^17.7",
+		"wpackagist-plugin/wordpress-seo": "^19.7",
 		"yoast/phpunit-polyfills": "^1.0"
 	},
 	"scripts": {
