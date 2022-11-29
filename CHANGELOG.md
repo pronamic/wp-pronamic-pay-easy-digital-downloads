@@ -7,6 +7,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.2.2] - 2022-11-29
+- Fix required field indicator HTML escaped. [#5](https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/issues/5)
+
 ## [4.2.1] - 2022-09-27
 - Update to `wp-pay/core` version `^4.4`.
 
@@ -136,33 +139,34 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2015-01-20
 - First release.
 
-[unreleased]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/4.2.1...HEAD
+[unreleased]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/4.2.2...HEAD
+[4.2.2]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/4.2.1...4.2.2
 [4.2.1]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/4.2.0...4.2.1
 [4.2.0]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/4.1.0...4.2.0
 [4.1.0]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/4.0.0...4.1.0
-[4.0.0]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/3.0.0...4.0.0
-[3.0.0]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.2.0...3.0.0
-[2.2.0]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.1.4...2.2.0
-[2.1.4]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.1.3...2.1.4
-[2.1.3]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.1.2...2.1.3
-[2.1.2]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.1.1...2.1.2
-[2.1.1]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.1.0...2.1.1
-[2.1.0]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.0.7...2.1.0
-[2.0.7]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.0.6...2.0.7
-[2.0.6]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.0.5...2.0.6
-[2.0.5]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.0.4...2.0.5
-[2.0.4]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.0.3...2.0.4
-[2.0.3]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.0.2...2.0.3
-[2.0.2]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.0.1...2.0.2
-[2.0.1]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/2.0.0...2.0.1
-[2.0.0]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/1.2.7...2.0.0
-[1.2.7]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/1.2.6...1.2.7
-[1.2.6]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/1.2.5...1.2.6
-[1.2.5]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/1.2.4...1.2.5
-[1.2.4]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/1.2.3...1.2.4
-[1.2.3]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/1.2.2...1.2.3
-[1.2.2]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/1.2.1...1.2.2
-[1.2.1]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/1.2.0...1.2.1
-[1.2.0]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/1.1.0...1.2.0
-[1.1.0]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/1.0.1...1.1.0
-[1.0.1]: https://github.com/wp-pay-extensions/easy-digital-downloads/compare/1.0.0...1.0.1
+[4.0.0]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/3.0.0...4.0.0
+[3.0.0]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/2.2.0...3.0.0
+[2.2.0]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/2.1.4...2.2.0
+[2.1.4]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/2.1.3...2.1.4
+[2.1.3]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/2.1.2...2.1.3
+[2.1.2]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/2.1.1...2.1.2
+[2.1.1]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/2.1.0...2.1.1
+[2.1.0]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/2.0.7...2.1.0
+[2.0.7]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/2.0.6...2.0.7
+[2.0.6]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/2.0.5...2.0.6
+[2.0.5]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/2.0.4...2.0.5
+[2.0.4]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/2.0.3...2.0.4
+[2.0.3]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/2.0.2...2.0.3
+[2.0.2]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/2.0.1...2.0.2
+[2.0.1]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/2.0.0...2.0.1
+[2.0.0]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/1.2.7...2.0.0
+[1.2.7]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/1.2.6...1.2.7
+[1.2.6]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/1.2.5...1.2.6
+[1.2.5]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/1.2.4...1.2.5
+[1.2.4]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/1.2.3...1.2.4
+[1.2.3]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/1.2.2...1.2.3
+[1.2.2]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/1.2.1...1.2.2
+[1.2.1]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/1.2.0...1.2.1
+[1.2.0]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/1.1.0...1.2.0
+[1.1.0]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/1.0.1...1.1.0
+[1.0.1]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/1.0.0...1.0.1
