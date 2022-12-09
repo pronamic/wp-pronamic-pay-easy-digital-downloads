@@ -13,7 +13,6 @@ namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
 use Pronamic\WordPress\Pay\AbstractPluginIntegration;
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Payments\PaymentStatus as Core_Statuses;
-use Pronamic\WordPress\Pay\Core\Util;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Plugin;
 
@@ -237,7 +236,12 @@ class Extension extends AbstractPluginIntegration {
 	 */
 	public static function maybe_empty_cart( $post_id ) {
 		// Only empty cart when handling returns.
-		if ( ! Util::input_has_vars( INPUT_GET, [ 'payment', 'key' ] ) ) {
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended
+		if (
+			! \array_key_exists( 'payment', $_GET )
+				||
+			! \array_key_exists( 'key', $_GET )
+		) {
 			return;
 		}
 
