@@ -66,7 +66,7 @@ class CompanyNameController {
 
 	/**
 	 * Check if company name field is enabled.
-	 * 
+	 *
 	 * @return bool True if enabled, false otherwise.
 	 */
 	private function is_company_name_field_enabled() {
@@ -75,7 +75,7 @@ class CompanyNameController {
 
 	/**
 	 * Register settings.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function register_settings() {
@@ -91,7 +91,7 @@ class CompanyNameController {
 
 	/**
 	 * Admin init.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function admin_init() {
@@ -162,7 +162,7 @@ class CompanyNameController {
 
 	/**
 	 * Purchase form.
-	 * 
+	 *
 	 * @link https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/blob/ee6c1f21c1ff35aeda23f364f94e95ec5d1f205f/src/Extension.php#L137-L144
 	 * @link https://gitlab.com/pronamic-plugins/edd-company-name/-/blob/develop/edd-company-name.php#L71-91
 	 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.2.2/includes/checkout/template.php#L162
@@ -178,7 +178,7 @@ class CompanyNameController {
 
 			<div class="" id="pronamic-edd-company-name-control">
 				<label class="form-label" for="pronamic-edd-company-name">
-					<?php 
+					<?php
 
 					\esc_html_e( 'Company Name', 'pronamic_ideal' );
 
@@ -223,7 +223,7 @@ class CompanyNameController {
 
 	/**
 	 * Get purchase data.
-	 * 
+	 *
 	 * @return array<string, string>
 	 */
 	private function get_purchase_data() {
@@ -240,7 +240,7 @@ class CompanyNameController {
 
 	/**
 	 * Payment meta.
-	 * 
+	 *
 	 * @link https://github.com/awesomemotive/easy-digital-downloads/blob/2.2.2/includes/payments/functions.php#L181
 	 * @param array<string, string> $payment_meta Meta.
 	 * @return array<string, string>
@@ -326,7 +326,7 @@ class CompanyNameController {
 	 *
 	 * @link https://github.com/awesomemotive/easy-digital-downloads/blob/2.2.2/includes/payments/functions.php#L810
 	 * @param array<string, mixed> $meta       Meta.
-	 * @param int   $payment_id Payment ID.
+	 * @param int                  $payment_id Payment ID.
 	 * @return array<string, mixed>
 	 */
 	public function edd_get_payment_meta( $meta, $payment_id ) {

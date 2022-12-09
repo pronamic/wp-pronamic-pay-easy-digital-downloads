@@ -51,7 +51,7 @@ class Extension extends AbstractPluginIntegration {
 
 		/**
 		 * Plugins loaded.
-		 * 
+		 *
 		 * @link https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/issues/3
 		 */
 		add_action( 'plugins_loaded', [ $this, 'plugins_loaded' ] );
