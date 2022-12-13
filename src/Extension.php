@@ -159,6 +159,7 @@ class Extension extends AbstractPluginIntegration {
 			'pronamic_pay_mb_way'                  => PaymentMethods::MB_WAY,
 			'pronamic_pay_payconiq'                => PaymentMethods::PAYCONIQ,
 			'pronamic_pay_paypal'                  => PaymentMethods::PAYPAL,
+			'pronamic_pay_riverty'                 => PaymentMethods::RIVERTY,
 			'pronamic_pay_spraypay'                => PaymentMethods::SPRAYPAY,
 			'pronamic_pay_twint'                   => PaymentMethods::TWINT,
 		];
