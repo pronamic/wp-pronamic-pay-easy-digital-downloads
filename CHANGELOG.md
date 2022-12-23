@@ -7,6 +7,22 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.3.0] - 2022-12-23
+
+### Commits
+
+- Added Riverty gateway. ([9a8fed0](https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/commit/9a8fed0b6c4434f4aaedabf262ec09a69c18a467))
+- Added https://github.com/WordPress/wp-plugin-dependencies header. ([72da8c4](https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/commit/72da8c4ea30a4fcbb56a1a86bc1e21375e0852a6))
+
+### Composer
+
+- Changed `php` from `>=5.6.20` to `>=8.0`.
+- Changed `wp-pay/core` from `^4.4` to `v4.6.0`.
+	Release notes: https://github.com/pronamic/wp-pay-core/releases/tag/v4.2.2
+Full set of changes: [`4.2.2...4.3.0`][4.3.0]
+
+[4.3.0]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/v4.2.2...v4.3.0
+
 ## [4.2.2] - 2022-11-29
 - Fix required field indicator HTML escaped. [#5](https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/issues/5)
 
