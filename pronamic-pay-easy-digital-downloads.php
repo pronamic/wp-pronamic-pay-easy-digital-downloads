@@ -4,7 +4,7 @@
  * Plugin URI: https://www.pronamic.eu/plugins/pronamic-pay-easy-digital-downloads/
  * Description: Extend the Pronamic Pay plugin with Easy Digital Downloads support to receive payments through a variety of payment providers.
  *
- * Version: 4.3.0
+ * Version: 4.3.1
  * Requires at least: 5.9
  * Requires PHP: 8.0
  *
