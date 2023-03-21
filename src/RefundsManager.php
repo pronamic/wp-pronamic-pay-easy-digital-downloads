@@ -15,6 +15,7 @@ use Exception;
 use Pronamic\WordPress\Money\Money;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Plugin;
+use Pronamic\WordPress\Pay\Refunds\Refund;
 
 /**
  * Easy Digital Downloads refunds
@@ -133,11 +134,9 @@ class RefundsManager {
 			$payment->get_total_amount()->get_currency()
 		);
 
-		$refund_reference = Plugin::create_refund( $transaction_id, $gateway, $amount );
+		$refund = new Refund( $payment, $amount );
 
-		if ( null === $refund_reference ) {
-			throw new \Exception( __( 'Unable to create refund at gateway.', 'pronamic_ideal' ) );
-		}
+		Plugin::create_refund( $refund );
 
 		// Update payment amount refunded.
 		$edd_refunded_amount = $edd_payment->get_meta( '_pronamic_pay_amount_refunded', true );
