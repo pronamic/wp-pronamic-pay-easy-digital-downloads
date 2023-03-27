@@ -4,6 +4,7 @@
 	"keywords": ["wordpress", "wp", "pay", "edd", "easy", "digital", "downlaods", "extension", "pronamic"],
 	"homepage": "http://www.wp-pay.org/extensions/easy-digital-downloads/",
 	"license": "GPL-3.0-or-later",
+	"type": "wordpress-plugin",
 	"authors": [
 		{
 			"name": "Pronamic",
