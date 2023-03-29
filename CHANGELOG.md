@@ -7,6 +7,23 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.3.2] - 2023-03-29
+
+### Commits
+
+- Set Composer type to WordPress plugin. ([501beaf](https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/commit/501beaff9e4f08af56f5f514dc4ba386b6228813))
+- Use new refunds API. ([fe8e31e](https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/commit/fe8e31ea32c34e6209c99c6bf3977c6aefdbcb13))
+- Updated .gitattributes ([c14b1d6](https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/commit/c14b1d649d87566f83a18cb2d928510c96c4a500))
+- Requires PHP: 7.4. ([12f8eef](https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/commit/12f8eef8ec5933fba5773c882c3924b045afba97))
+
+### Composer
+
+- Changed `wp-pay/core` from `^4.6` to `v4.9.0`.
+	Release notes: https://github.com/pronamic/wp-pay-core/releases/tag/v4.9.0
+Full set of changes: [`4.3.1...4.3.2`][4.3.2]
+
+[4.3.2]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/v4.3.1...v4.3.2
+
 ## [4.3.1] - 2023-01-31
 ### Composer
 
