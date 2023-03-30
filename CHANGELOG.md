@@ -7,6 +7,16 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.3.3] - 2023-03-30
+
+### Commits
+
+- Fixed refunded amount check. ([a26677a](https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/commit/a26677ad9eb495118a161d119fe2ebda52fe58c3))
+
+Full set of changes: [`4.3.2...4.3.3`][4.3.3]
+
+[4.3.3]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/v4.3.2...v4.3.3
+
 ## [4.3.2] - 2023-03-29
 
 ### Commits
