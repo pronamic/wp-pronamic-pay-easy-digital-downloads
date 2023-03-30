@@ -141,18 +141,12 @@ class RefundsManager {
 		// Update payment amount refunded.
 		$edd_refunded_amount = $edd_payment->get_meta( '_pronamic_pay_amount_refunded', true );
 
-		$refunded_amount = $payment->get_refunded_amount();
-
-		if ( null === $refunded_amount ) {
-			$refunded_amount = new Money( 0, $payment->get_total_amount()->get_currency() );
-		}
-
-		$refunded_amount->add( $amount );
+		$refunded_amount = $payment->get_refunded_amount()->add( $amount );
 
 		$edd_payment->update_meta( '_pronamic_pay_amount_refunded', (string) $refunded_amount->get_value(), $edd_refunded_amount );
 
 		// Add refund payment note.
-		$this->add_refund_payment_note( $edd_payment, $payment->get_id(), $amount, $refund_reference );
+		$this->add_refund_payment_note( $edd_payment, $payment->get_id(), $amount, $refund->psp_id );
 	}
 
 	/**
@@ -165,13 +159,7 @@ class RefundsManager {
 		// Check refunded amount.
 		$refunded_amount = $payment->get_refunded_amount();
 
-		if ( null === $refunded_amount ) {
-			return;
-		}
-
-		$refunded_value = $refunded_amount->get_value();
-
-		if ( empty( $refunded_value ) ) {
+		if ( $refunded_amount->get_value() <= 0 ) {
 			return;
 		}
 
@@ -263,7 +251,7 @@ class RefundsManager {
 		// Check refunded amount.
 		$refunded_amount = $payment->get_refunded_amount();
 
-		if ( null === $refunded_amount ) {
+		if ( $refunded_amount->get_value() <= 0 ) {
 			return;
 		}
 
