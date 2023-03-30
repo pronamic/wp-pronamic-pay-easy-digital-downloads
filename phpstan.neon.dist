@@ -14,4 +14,3 @@ parameters:
 		- wp-content/plugins/wordpress-seo/
 	ignoreErrors:
 		- '#^Parameter \#1 \$error_id of function edd_set_error expects int, string given\.$#'
-		- '#^Access to an undefined property object::\$(cancelled|partially_refunded)\.$#'
