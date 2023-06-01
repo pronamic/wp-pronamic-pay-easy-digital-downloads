@@ -7,6 +7,17 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.3.4] - 2023-06-01
+
+### Commits
+
+- Switch from `pronamic/wp-deployer` to `pronamic/pronamic-cli`. ([fabf594](https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/commit/fabf59475e50e3e870db52ade8ee11fafdd5a758))
+- Updated .gitattributes ([e543b92](https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/commit/e543b92abedb78495e530778b2c1abcc5d2b1d8c))
+
+Full set of changes: [`4.3.3...4.3.4`][4.3.4]
+
+[4.3.4]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/v4.3.3...v4.3.4
+
 ## [4.3.3] - 2023-03-30
 
 ### Commits
