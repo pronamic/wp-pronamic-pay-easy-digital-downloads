@@ -643,12 +643,12 @@ class Gateway {
 	 * Get payment transaction ID
 	 *
 	 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/2.3/includes/payments/functions.php#L1378-L1398
-	 *
 	 * @param string $payment_id Payment ID.
-	 *
 	 * @return null
 	 */
 	public function get_payment_transaction_id( $payment_id ) {
-		return null;
+		$payment_id = null;
+
+		return $payment_id;
 	}
 }
