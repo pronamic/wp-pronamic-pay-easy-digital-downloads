@@ -122,7 +122,7 @@ class RefundsManager {
 		$gateway = $payment->get_gateway();
 
 		if ( null === $gateway ) {
-			throw new Exception( __( 'Unable to process refund because gateway does not exist.', 'pronamic_ideal' ) );
+			throw new \Exception( \esc_html__( 'Unable to process refund because gateway does not exist.', 'pronamic_ideal' ) );
 		}
 
 		// Transaction ID.
