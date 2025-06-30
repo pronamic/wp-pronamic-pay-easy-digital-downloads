@@ -118,7 +118,7 @@ class RefundsManager {
 				];
 
 				$note_message = \sprintf(
-					\__( '%1$s refunded. Transaction ID: %2$s', 'easy-digital-downloads' ),
+					\__( '%1$s refunded. Transaction ID: %2$s', 'pronamic_ideal' ),
 					$pronamic_amount->format_i18n(),
 					$pronamic_refund->psp_id
 				);
