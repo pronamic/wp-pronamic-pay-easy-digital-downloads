@@ -139,7 +139,7 @@ class RefundsManager {
 						'object_id'      => $edd_refund->id,
 						'object_type'    => 'order',
 						'transaction_id' => $pronamic_refund->psp_id,
-						'gateway'        => $order->gateway,
+						'gateway'        => $edd_order->gateway,
 						'status'         => 'complete',
 						'total'          => $pronamic_amount->get_value(),
 					]
