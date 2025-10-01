@@ -40,7 +40,7 @@ class Extension extends AbstractPluginIntegration {
 	public function __construct() {
 		parent::__construct(
 			[
-				'name' => __( 'Easy Digital Downloads', 'pronamic_ideal' ),
+				'name' => 'Easy Digital Downloads',
 			]
 		);
 
