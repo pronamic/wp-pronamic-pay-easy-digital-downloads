@@ -7,6 +7,16 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.3.7] - 2025-11-11
+
+### Commits
+
+- Added this point we shoud not use translation functions. ([5659514](https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/commit/56595147b3df35c67a87064ec0465a535f5eb67e))
+
+Full set of changes: [`4.3.6...4.3.7`][4.3.7]
+
+[4.3.7]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/v4.3.6...v4.3.7
+
 ## [4.3.6] - 2024-12-17
 
 ### Commits
