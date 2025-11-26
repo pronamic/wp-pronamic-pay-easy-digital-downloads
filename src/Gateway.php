@@ -13,6 +13,7 @@ namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
 use Pronamic\WordPress\Money\Currency;
 use Pronamic\WordPress\Money\Money;
 use Pronamic\WordPress\Money\TaxedMoney;
+use Pronamic\WordPress\Number\Number;
 use Pronamic\WordPress\Pay\Address;
 use Pronamic\WordPress\Pay\ContactName;
 use Pronamic\WordPress\Pay\Core\Util;
@@ -522,7 +523,7 @@ class Gateway {
 				$line->set_total_amount( new TaxedMoney( $detail['price'], $currency, $detail['tax'], $tax_percentage ) );
 
 				$line->set_type( PaymentLineType::DIGITAL );
-				$line->set_quantity( $detail['quantity'] );
+				$line->set_quantity( Number::from_mixed( $detail['quantity'] ) );
 				$line->set_discount_amount( new Money( $detail['discount'], $currency ) );
 				$line->set_product_category( EasyDigitalDownloads::get_download_category( $detail['id'] ) );
 
@@ -577,7 +578,7 @@ class Gateway {
 			$line->set_type( PaymentLineType::FEE );
 			$line->set_name( $fee['label'] );
 			$line->set_id( $fee['id'] );
-			$line->set_quantity( 1 );
+			$line->set_quantity( new Number( 1 ) );
 		}
 
 		// Start.
