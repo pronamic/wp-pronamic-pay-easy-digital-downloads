@@ -20,7 +20,6 @@ use Pronamic\WordPress\Pay\Refunds\Refund;
 /**
  * Easy Digital Downloads refunds
  *
- * @author  Reüel van der Steege
  * @version 2.2.0
  * @since   2.2.0
  */

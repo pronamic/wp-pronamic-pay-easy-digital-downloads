@@ -29,7 +29,6 @@ use Pronamic\WordPress\Pay\Payments\PaymentLineType;
  * Copyright: 2005-2026 Pronamic
  * Company: Pronamic
  *
- * @author  Remco Tolsma
  * @version 2.1.2
  * @since   1.1.0
  */

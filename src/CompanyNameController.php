@@ -16,7 +16,6 @@ namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
  * Copyright: 2005-2026 Pronamic
  * Company: Pronamic
  *
- * @author  Remco Tolsma
  * @version 4.1.0
  * @since   4.1.0
  * @link    https://gitlab.com/pronamic-plugins/edd-company-name/-/tree/develop
