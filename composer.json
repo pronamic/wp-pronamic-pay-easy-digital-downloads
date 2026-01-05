@@ -50,6 +50,7 @@
 	],
 	"require": {
 		"php": ">=8.2",
+		"pronamic/wp-number": "^1.4",
 		"wp-pay/core": "^4.28"
 	},
 	"require-dev": {
