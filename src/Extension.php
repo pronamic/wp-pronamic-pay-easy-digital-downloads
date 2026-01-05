@@ -17,10 +17,7 @@ use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Plugin;
 
 /**
- * Title: Easy Digital Downloads extension
- * Description:
- * Copyright: 2005-2026 Pronamic
- * Company: Pronamic
+ * Easy Digital Downloads extension class
  *
  * @version 2.1.2
  * @since   1.0.0

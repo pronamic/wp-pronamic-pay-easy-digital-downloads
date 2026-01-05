@@ -24,10 +24,7 @@ use Pronamic\WordPress\Pay\Payments\PaymentLines;
 use Pronamic\WordPress\Pay\Payments\PaymentLineType;
 
 /**
- * Title: Easy Digital Downloads gateway
- * Description:
- * Copyright: 2005-2026 Pronamic
- * Company: Pronamic
+ * Easy Digital Downloads gateway class
  *
  * @version 2.1.2
  * @since   1.1.0

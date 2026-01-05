@@ -13,10 +13,7 @@ namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
 use WP_Error;
 
 /**
- * Title: Easy Digital Downloads
- * Description:
- * Copyright: 2005-2026 Pronamic
- * Company: Pronamic
+ * Easy Digital Downloads class
  *
  * @version 2.1.0
  * @since   1.0.0

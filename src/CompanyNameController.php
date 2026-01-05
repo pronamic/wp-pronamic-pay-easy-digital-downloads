@@ -11,10 +11,7 @@
 namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
 
 /**
- * Title: Easy Digital Downloads company name controller
- * Description:
- * Copyright: 2005-2026 Pronamic
- * Company: Pronamic
+ * Easy Digital Downloads company name controller class
  *
  * @version 4.1.0
  * @since   4.1.0
