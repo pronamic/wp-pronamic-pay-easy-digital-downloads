@@ -98,7 +98,7 @@ class Extension extends AbstractPluginIntegration {
 		add_action( 'save_post_pronamic_payment', [ __CLASS__, 'maybe_empty_cart' ], 10, 1 );
 
 		// Icons.
-		add_filter( 'edd_accepted_payment_icons', [ $this, 'accepted_payment_icons' ] );
+		add_filter( 'edd_accepted_payment_icons', static::accepted_payment_icons( ... ) );
 
 		// Statuses.
 		add_filter( 'edd_payment_statuses', [ __CLASS__, 'edd_payment_statuses' ] );
