@@ -122,7 +122,7 @@ class Extension extends AbstractPluginIntegration {
 	 *
 	 * @return array<string, string>
 	 */
-	private static function get_payment_methods() {
+	protected static function get_payment_methods() {
 		$default = [
 			'pronamic_pay_mister_cash'        => PaymentMethods::BANCONTACT,
 			'pronamic_pay_bank_transfer'      => PaymentMethods::BANK_TRANSFER,
