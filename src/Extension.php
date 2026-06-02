@@ -80,7 +80,7 @@ class Extension extends AbstractPluginIntegration {
 			]
 		);
 
-		foreach ( self::get_payment_methods() as $id => $payment_method ) {
+		foreach ( static::get_payment_methods() as $id => $payment_method ) {
 			new Gateway(
 				[
 					'id'             => $id,
@@ -98,7 +98,7 @@ class Extension extends AbstractPluginIntegration {
 		add_action( 'save_post_pronamic_payment', [ __CLASS__, 'maybe_empty_cart' ], 10, 1 );
 
 		// Icons.
-		add_filter( 'edd_accepted_payment_icons', [ __CLASS__, 'accepted_payment_icons' ] );
+		add_filter( 'edd_accepted_payment_icons', static::accepted_payment_icons( ... ) );
 
 		// Statuses.
 		add_filter( 'edd_payment_statuses', [ __CLASS__, 'edd_payment_statuses' ] );
@@ -122,7 +122,7 @@ class Extension extends AbstractPluginIntegration {
 	 *
 	 * @return array<string, string>
 	 */
-	private static function get_payment_methods() {
+	protected static function get_payment_methods() {
 		$default = [
 			'pronamic_pay_mister_cash'        => PaymentMethods::BANCONTACT,
 			'pronamic_pay_bank_transfer'      => PaymentMethods::BANK_TRANSFER,
@@ -362,7 +362,7 @@ class Extension extends AbstractPluginIntegration {
 	 * @return array<string, string>
 	 */
 	public static function accepted_payment_icons( $icons ) {
-		$payment_methods = self::get_payment_methods();
+		$payment_methods = static::get_payment_methods();
 
 		foreach ( $payment_methods as $id => $payment_method ) {
 			$icon = sprintf(
