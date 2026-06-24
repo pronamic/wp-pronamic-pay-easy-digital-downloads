@@ -36,7 +36,7 @@
 	"homepage": "http://www.wp-pay.org/extensions/easy-digital-downloads/",
 	"devDependencies": {
 		"@wordpress/env": "^11.8.1",
-		"@wordpress/scripts": "^31.7"
+		"@wordpress/scripts": "^32.4"
 	},
 	"scripts": {
 		"lint:pkg-json": "wp-scripts lint-pkg-json",
