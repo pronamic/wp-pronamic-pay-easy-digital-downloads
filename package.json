@@ -35,14 +35,7 @@
   },
   "homepage": "http://www.wp-pay.org/extensions/easy-digital-downloads/",
   "devDependencies": {
-    "@wordpress/env": "^10.37.0",
-    "grunt": "~1.6.1",
-    "grunt-contrib-jshint": "^3.2.0",
-    "grunt-phpcs": "^0.4.0",
-    "grunt-phplint": "0.1.0",
-    "grunt-phpmd": "^0.1.1",
-    "grunt-phpunit": "^0.3.6",
-    "load-grunt-tasks": "^5.1.0"
+    "@wordpress/env": "^10.37.0"
   },
   "scripts": {
     "start": "wp-env start",
