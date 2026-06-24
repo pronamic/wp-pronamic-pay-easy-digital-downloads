@@ -99,7 +99,7 @@ final class Gateway {
 		$this->payment_method = $args['payment_method'];
 
 		// Compute final checkout label (may be overridden by saved option).
-		$checkout_label = $args['checkout_label'];
+		$checkout_label        = $args['checkout_label'];
 		$checkout_label_option = \edd_get_option( $args['id'] . '_checkout_label' );
 		if ( ! empty( $checkout_label_option ) ) {
 			$checkout_label = $checkout_label_option;
@@ -107,7 +107,7 @@ final class Gateway {
 		$this->checkout_label = $checkout_label;
 
 		// Actions.
-		\add_action( 'edd_gateway_' . $this->id, $this->process_purchase(...) );
+		\add_action( 'edd_gateway_' . $this->id, $this->process_purchase( ... ) );
 
 		/*
 		 * Remove CC Form
@@ -115,14 +115,14 @@ final class Gateway {
 		 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/1.9.4/includes/checkout/template.php#L97
 		 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/1.9.4/includes/gateways/paypal-standard.php#L12
 		 */
-		\add_action( 'edd_' . $this->id . '_cc_form', $this->payment_fields(...) );
+		\add_action( 'edd_' . $this->id . '_cc_form', $this->payment_fields( ... ) );
 
 		// Filters.
-		\add_filter( 'edd_settings_sections_gateways', $this->register_gateway_section(...) );
-		\add_filter( 'edd_settings_gateways', $this->settings_gateways(...) );
-		\add_filter( 'edd_payment_gateways', $this->payment_gateways(...) );
+		\add_filter( 'edd_settings_sections_gateways', $this->register_gateway_section( ... ) );
+		\add_filter( 'edd_settings_gateways', $this->settings_gateways( ... ) );
+		\add_filter( 'edd_payment_gateways', $this->payment_gateways( ... ) );
 
-		\add_filter( 'edd_get_payment_transaction_id-' . $this->id, $this->get_payment_transaction_id(...) );
+		\add_filter( 'edd_get_payment_transaction_id-' . $this->id, $this->get_payment_transaction_id( ... ) );
 	}
 
 	/**
@@ -166,7 +166,7 @@ final class Gateway {
 	 *
 	 * @return mixed $settings_gateways
 	 */
-	public function settings_gateways( $settings_gateways ) {
+	public function settings_gateways( mixed $settings_gateways ) {
 		$settings = [
 			$this->id                     => [
 				'id'   => $this->id,
@@ -563,7 +563,7 @@ final class Gateway {
 			'price_id'    => null,
 		];
 
-		foreach ( $fees as $id => $fee ) {
+		foreach ( $fees as $fee ) {
 			$fee = \wp_parse_args( $fee, $fee_defaults );
 
 			$line = $payment->lines->new_line();

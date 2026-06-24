@@ -53,7 +53,7 @@ final class Extension extends AbstractPluginIntegration {
 		 *
 		 * @link https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/issues/3
 		 */
-		add_action( 'plugins_loaded', $this->plugins_loaded(...) );
+		add_action( 'plugins_loaded', $this->plugins_loaded( ... ) );
 	}
 
 	/**
@@ -63,8 +63,8 @@ final class Extension extends AbstractPluginIntegration {
 	 * @return void
 	 */
 	public function plugins_loaded() {
-		add_filter( 'pronamic_payment_source_text_easydigitaldownloads', $this->source_text(...), 10, 2 );
-		add_filter( 'pronamic_payment_source_description_easydigitaldownloads', $this->source_description(...), 10, 2 );
+		add_filter( 'pronamic_payment_source_text_easydigitaldownloads', $this->source_text( ... ), 10, 2 );
+		add_filter( 'pronamic_payment_source_description_easydigitaldownloads', $this->source_description( ... ), 10, 2 );
 
 		// Check if dependencies are met and integration is active.
 		if ( ! $this->is_active() ) {
@@ -83,7 +83,7 @@ final class Extension extends AbstractPluginIntegration {
 			]
 		);
 
-		foreach ( static::get_payment_methods() as $id => $payment_method ) {
+		foreach ( self::get_payment_methods() as $id => $payment_method ) {
 			new Gateway(
 				[
 					'id'             => $id,
@@ -93,19 +93,19 @@ final class Extension extends AbstractPluginIntegration {
 			);
 		}
 
-		add_filter( 'pronamic_payment_source_url_easydigitaldownloads', $this->source_url(...), 10, 2 );
-		add_filter( 'pronamic_payment_redirect_url_easydigitaldownloads', self::redirect_url(...), 10, 2 );
-		add_action( 'pronamic_payment_status_update_easydigitaldownloads', self::status_update(...), 10, 1 );
+		add_filter( 'pronamic_payment_source_url_easydigitaldownloads', $this->source_url( ... ), 10, 2 );
+		add_filter( 'pronamic_payment_redirect_url_easydigitaldownloads', self::redirect_url( ... ), 10, 2 );
+		add_action( 'pronamic_payment_status_update_easydigitaldownloads', self::status_update( ... ), 10, 1 );
 
 		// Maybe empty cart for completed payment when handling returns.
-		add_action( 'save_post_pronamic_payment', self::maybe_empty_cart(...), 10, 1 );
+		add_action( 'save_post_pronamic_payment', self::maybe_empty_cart( ... ), 10, 1 );
 
 		// Icons.
-		add_filter( 'edd_accepted_payment_icons', static::accepted_payment_icons( ... ) );
+		add_filter( 'edd_accepted_payment_icons', self::accepted_payment_icons( ... ) );
 
 		// Statuses.
-		add_filter( 'edd_payment_statuses', self::edd_payment_statuses(...) );
-		add_filter( 'edd_payments_table_views', $this->payments_table_views(...) );
+		add_filter( 'edd_payment_statuses', self::edd_payment_statuses( ... ) );
+		add_filter( 'edd_payments_table_views', $this->payments_table_views( ... ) );
 
 		$this->register_post_statuses();
 
@@ -165,18 +165,14 @@ final class Extension extends AbstractPluginIntegration {
 
 		$optional = \array_filter(
 			$optional,
-			function ( $payment_method ) {
-				return PaymentMethods::is_active( $payment_method );
-			}
+			fn( $payment_method ) => PaymentMethods::is_active( $payment_method )
 		);
 
 		$payment_methods = \array_merge( $default, $optional );
 
 		\uasort(
 			$payment_methods,
-			function ( $a, $b ) {
-				return \strnatcasecmp( (string) PaymentMethods::get_name( $a ), (string) PaymentMethods::get_name( $b ) );
-			}
+			fn( $a, $b ) => \strnatcasecmp( (string) PaymentMethods::get_name( $a ), (string) PaymentMethods::get_name( $b ) )
 		);
 
 		return $payment_methods;
@@ -192,39 +188,16 @@ final class Extension extends AbstractPluginIntegration {
 	 */
 	public static function redirect_url( $url, $payment ) {
 		$source_id = (int) $payment->get_source_id();
-
-		switch ( $payment->get_status() ) {
-			case Core_Statuses::CANCELLED:
-			case Core_Statuses::EXPIRED:
-			case Core_Statuses::FAILURE:
-				/**
-				 * Failed transaction URI.
-				 *
-				 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.10.3/includes/checkout/functions.php#L184-L199
-				 */
-				return \edd_get_failed_transaction_uri();
-			case Core_Statuses::SUCCESS:
-				/**
-				 * Success page URI.
-				 *
-				 * The `payment_key` query argument is added so users will also see the receipt
-				 * when the purchase session is no longer available.
-				 *
-				 * @link https://github.com/wp-pay-extensions/easy-digital-downloads/pull/1
-				 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.10.3/includes/shortcodes.php#L657-L689
-				 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.10.3/includes/payments/functions.php#L1158-L1168
-				 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.10.3/includes/checkout/functions.php#L58-L75
-				 */
-				return \add_query_arg(
-					'payment_key',
-					\edd_get_payment_key( $source_id ),
+		return match ( $payment->get_status() ) {
+			Core_Statuses::CANCELLED, Core_Statuses::EXPIRED, Core_Statuses::FAILURE => \edd_get_failed_transaction_uri(),
+			Core_Statuses::SUCCESS => \add_query_arg(
+				'payment_key',
+				\edd_get_payment_key( $source_id ),
 					\edd_get_success_page_uri()
-				);
-			case Core_Statuses::OPEN:
-				return \home_url( '/' );
-		}
-
-		return $url;
+			),
+			Core_Statuses::OPEN => \home_url( '/' ),
+			default => $url,
+		};
 	}
 
 	/**
@@ -365,9 +338,9 @@ final class Extension extends AbstractPluginIntegration {
 	 * @return array<string, string>
 	 */
 	public static function accepted_payment_icons( $icons ) {
-		$payment_methods = static::get_payment_methods();
+		$payment_methods = self::get_payment_methods();
 
-		foreach ( $payment_methods as $id => $payment_method ) {
+		foreach ( $payment_methods as $payment_method ) {
 			$icon = sprintf(
 				'/images/%s/icon-64x48.png',
 				str_replace( '_', '-', $payment_method )

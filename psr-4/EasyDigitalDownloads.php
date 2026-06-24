@@ -27,42 +27,42 @@ final class EasyDigitalDownloads {
 	 *
 	 * @var string
 	 */
-	public const ORDER_STATUS_PENDING = 'pending';
+	public const string ORDER_STATUS_PENDING = 'pending';
 
 	/**
 	 * Order status completed
 	 *
 	 * @var string
 	 */
-	public const ORDER_STATUS_PUBLISH = 'publish';
+	public const string ORDER_STATUS_PUBLISH = 'publish';
 
 	/**
 	 * Order status refunded
 	 *
 	 * @var string
 	 */
-	public const ORDER_STATUS_REFUNDED = 'refunded';
+	public const string ORDER_STATUS_REFUNDED = 'refunded';
 
 	/**
 	 * Order status failed
 	 *
 	 * @var string
 	 */
-	public const ORDER_STATUS_FAILED = 'failed';
+	public const string ORDER_STATUS_FAILED = 'failed';
 
 	/**
 	 * Order status abandoned
 	 *
 	 * @var string
 	 */
-	public const ORDER_STATUS_ABANDONED = 'abandoned';
+	public const string ORDER_STATUS_ABANDONED = 'abandoned';
 
 	/**
 	 * Order status revoked/cancelled
 	 *
 	 * @var string
 	 */
-	public const ORDER_STATUS_REVOKED = 'revoked';
+	public const string ORDER_STATUS_REVOKED = 'revoked';
 
 	/**
 	 * Order status cancelled
@@ -70,7 +70,7 @@ final class EasyDigitalDownloads {
 	 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.9.20/includes/admin/payments/class-payments-table.php#L506-L508
 	 * @var string
 	 */
-	public const ORDER_STATUS_CANCELLED = 'cancelled';
+	public const string ORDER_STATUS_CANCELLED = 'cancelled';
 
 	/**
 	 * Get payment URL by the specified payment ID.

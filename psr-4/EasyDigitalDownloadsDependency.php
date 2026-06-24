@@ -28,6 +28,7 @@ final class EasyDigitalDownloadsDependency extends Dependency {
 	 * @link https://github.com/easydigitaldownloads/easy-digital-downloads/blob/2.9.22/easy-digital-downloads.php#L209
 	 * @return bool True if dependency is met, false otherwise.
 	 */
+	#[\Override]
 	public function is_met() {
 		return \defined( '\EDD_VERSION' );
 	}

@@ -27,27 +27,27 @@ final class CompanyNameController {
 	 * @return void
 	 */
 	public function setup() {
-		\add_action( 'admin_init', $this->admin_init(...), 15 );
+		\add_action( 'admin_init', $this->admin_init( ... ), 15 );
 
 		if ( $this->is_company_name_field_enabled() ) {
-			\add_action( 'edd_purchase_form_before_cc_form', $this->purchase_form(...) );
+			\add_action( 'edd_purchase_form_before_cc_form', $this->purchase_form( ... ) );
 
-			\add_filter( 'edd_purchase_form_required_fields', $this->purchase_form_required_fields(...) );
+			\add_filter( 'edd_purchase_form_required_fields', $this->purchase_form_required_fields( ... ) );
 
-			\add_filter( 'edd_payment_meta', $this->edd_payment_meta(...) );
+			\add_filter( 'edd_payment_meta', $this->edd_payment_meta( ... ) );
 
-			\add_action( 'edd_insert_payment', $this->edd_insert_payment(...) );
+			\add_action( 'edd_insert_payment', $this->edd_insert_payment( ... ) );
 
-			\add_action( 'edd_updated_edited_purchase', $this->edd_updated_edited_purchase(...) );
+			\add_action( 'edd_updated_edited_purchase', $this->edd_updated_edited_purchase( ... ) );
 
-			\add_action( 'edd_payment_view_details', $this->edd_payment_view_details(...) );
+			\add_action( 'edd_payment_view_details', $this->edd_payment_view_details( ... ) );
 
 			// Templates.
-			\add_filter( 'edd_get_payment_meta', $this->edd_get_payment_meta(...), 10, 2 );
+			\add_filter( 'edd_get_payment_meta', $this->edd_get_payment_meta( ... ), 10, 2 );
 
 			// Export.
-			\add_filter( 'edd_export_csv_cols_payments', $this->edd_export_csv_cols_payments(...) );
-			\add_filter( 'edd_export_get_data_payments', $this->edd_export_get_data_payments(...) );
+			\add_filter( 'edd_export_csv_cols_payments', $this->edd_export_csv_cols_payments( ... ) );
+			\add_filter( 'edd_export_get_data_payments', $this->edd_export_get_data_payments( ... ) );
 		}
 
 		// Settings.
@@ -58,7 +58,7 @@ final class CompanyNameController {
 			\edd_add_email_tag(
 				'company_name',
 				\__( 'The company name', 'pronamic_ideal' ),
-				$this->email_tag_company_name(...)
+				$this->email_tag_company_name( ... )
 			);
 		}
 	}
@@ -106,7 +106,7 @@ final class CompanyNameController {
 		\add_settings_field(
 			'pronamic_pay_edd_company_name_field_enable',
 			\__( 'Add company name field', 'pronamic_ideal' ),
-			$this->input_checkbox(...),
+			$this->input_checkbox( ... ),
 			'pronamic_pay',
 			'pronamic_pay_edd',
 			[
