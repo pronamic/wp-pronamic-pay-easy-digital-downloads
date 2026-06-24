@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Easy Digital Downloads extension
  *
@@ -22,13 +25,13 @@ use Pronamic\WordPress\Pay\Plugin;
  * @version 2.1.2
  * @since   1.0.0
  */
-class Extension extends AbstractPluginIntegration {
+final class Extension extends AbstractPluginIntegration {
 	/**
 	 * Refunds manager.
 	 *
-	 * @var RefundsManager
+	 * @var RefundsManager|null
 	 */
-	private $refunds_manager;
+	private ?RefundsManager $refunds_manager = null;
 
 	/**
 	 * Constructs and initialize Easy Digital Downloads extension.
@@ -50,7 +53,7 @@ class Extension extends AbstractPluginIntegration {
 		 *
 		 * @link https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/issues/3
 		 */
-		add_action( 'plugins_loaded', [ $this, 'plugins_loaded' ] );
+		add_action( 'plugins_loaded', $this->plugins_loaded(...) );
 	}
 
 	/**
@@ -60,8 +63,8 @@ class Extension extends AbstractPluginIntegration {
 	 * @return void
 	 */
 	public function plugins_loaded() {
-		add_filter( 'pronamic_payment_source_text_easydigitaldownloads', [ $this, 'source_text' ], 10, 2 );
-		add_filter( 'pronamic_payment_source_description_easydigitaldownloads', [ $this, 'source_description' ], 10, 2 );
+		add_filter( 'pronamic_payment_source_text_easydigitaldownloads', $this->source_text(...), 10, 2 );
+		add_filter( 'pronamic_payment_source_description_easydigitaldownloads', $this->source_description(...), 10, 2 );
 
 		// Check if dependencies are met and integration is active.
 		if ( ! $this->is_active() ) {
@@ -90,19 +93,19 @@ class Extension extends AbstractPluginIntegration {
 			);
 		}
 
-		add_filter( 'pronamic_payment_source_url_easydigitaldownloads', [ $this, 'source_url' ], 10, 2 );
-		add_filter( 'pronamic_payment_redirect_url_easydigitaldownloads', [ __CLASS__, 'redirect_url' ], 10, 2 );
-		add_action( 'pronamic_payment_status_update_easydigitaldownloads', [ __CLASS__, 'status_update' ], 10, 1 );
+		add_filter( 'pronamic_payment_source_url_easydigitaldownloads', $this->source_url(...), 10, 2 );
+		add_filter( 'pronamic_payment_redirect_url_easydigitaldownloads', self::redirect_url(...), 10, 2 );
+		add_action( 'pronamic_payment_status_update_easydigitaldownloads', self::status_update(...), 10, 1 );
 
 		// Maybe empty cart for completed payment when handling returns.
-		add_action( 'save_post_pronamic_payment', [ __CLASS__, 'maybe_empty_cart' ], 10, 1 );
+		add_action( 'save_post_pronamic_payment', self::maybe_empty_cart(...), 10, 1 );
 
 		// Icons.
 		add_filter( 'edd_accepted_payment_icons', static::accepted_payment_icons( ... ) );
 
 		// Statuses.
-		add_filter( 'edd_payment_statuses', [ __CLASS__, 'edd_payment_statuses' ] );
-		add_filter( 'edd_payments_table_views', [ $this, 'payments_table_views' ] );
+		add_filter( 'edd_payment_statuses', self::edd_payment_statuses(...) );
+		add_filter( 'edd_payments_table_views', $this->payments_table_views(...) );
 
 		$this->register_post_statuses();
 
