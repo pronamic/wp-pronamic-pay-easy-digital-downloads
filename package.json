@@ -1,44 +1,44 @@
 {
-  "name": "easy-digital-downloads",
-  "version": "4.4.0",
-  "description": "Easy Digital Downloads driver for the WordPress payment processing library.",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/wp-pay-extensions/easy-digital-downloads"
-  },
-  "keywords": [
-    "wordpress",
-    "wp",
-    "pay",
-    "edd",
-    "easy",
-    "digital",
-    "downloads",
-    "gateway",
-    "pronamic"
-  ],
-  "author": {
-    "name": "Pronamic",
-    "email": "info@pronamic.nl",
-    "url": "http://www.pronamic.nl/"
-  },
-  "contributors": [
-    {
-      "name": "Remco Tolsma",
-      "email": "info@remcotolsma.nl",
-      "url": "http://www.remcotolsma.nl/"
-    }
-  ],
-  "license": "GPL-3.0",
-  "bugs": {
-    "url": "https://github.com/wp-pay-extensions/easy-digital-downloads/issues"
-  },
-  "homepage": "http://www.wp-pay.org/extensions/easy-digital-downloads/",
-  "devDependencies": {
-    "@wordpress/env": "^11.8.1"
-  },
-  "scripts": {
-    "start": "wp-env start",
-    "login": "wp-env run cli wp user one-time-login admin"
-  }
+	"name": "easy-digital-downloads",
+	"version": "4.4.0",
+	"description": "Easy Digital Downloads driver for the WordPress payment processing library.",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/wp-pay-extensions/easy-digital-downloads"
+	},
+	"keywords": [
+		"wordpress",
+		"wp",
+		"pay",
+		"edd",
+		"easy",
+		"digital",
+		"downloads",
+		"gateway",
+		"pronamic"
+	],
+	"author": {
+		"name": "Pronamic",
+		"email": "info@pronamic.nl",
+		"url": "http://www.pronamic.nl/"
+	},
+	"contributors": [
+		{
+			"name": "Remco Tolsma",
+			"email": "info@remcotolsma.nl",
+			"url": "http://www.remcotolsma.nl/"
+		}
+	],
+	"license": "GPL-3.0",
+	"bugs": {
+		"url": "https://github.com/wp-pay-extensions/easy-digital-downloads/issues"
+	},
+	"homepage": "http://www.wp-pay.org/extensions/easy-digital-downloads/",
+	"devDependencies": {
+		"@wordpress/env": "^11.8.1"
+	},
+	"scripts": {
+		"start": "wp-env start",
+		"login": "wp-env run cli wp user one-time-login admin"
+	}
 }
