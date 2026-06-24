@@ -27,6 +27,18 @@
  * @package   Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * Autoload.
+ */
+require_once __DIR__ . '/vendor/autoload_packages.php';
+
+/**
+ * Bootstrap.
+ */
 add_filter(
 	'pronamic_pay_plugin_integrations',
 	function ( $integrations ) {
