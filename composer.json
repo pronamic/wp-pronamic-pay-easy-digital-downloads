@@ -51,7 +51,7 @@
 	"require": {
 		"php": ">=8.2",
 		"pronamic/wp-number": "^1.4",
-		"wp-pay/core": "^4.28"
+		"wp-pay/core": "^4.33"
 	},
 	"require-dev": {
 		"bamarni/composer-bin-plugin": "^1.8",
