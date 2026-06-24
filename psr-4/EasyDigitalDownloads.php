@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Easy Digital Downloads
  *
@@ -18,7 +21,7 @@ use WP_Error;
  * @version 2.1.0
  * @since   1.0.0
  */
-class EasyDigitalDownloads {
+final class EasyDigitalDownloads {
 	/**
 	 * Order status pending
 	 *

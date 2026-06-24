@@ -16,7 +16,7 @@
 
 	<filter>
 		<whitelist>
-			<directory suffix=".php">src</directory>
+			<directory suffix=".php">psr-4</directory>
 		</whitelist>
 	</filter>
 

@@ -1,0 +1,17 @@
+.distignore
+.DS_Store
+.git
+.github
+.gitattributes
+.gitignore
+.wp-env.json
+phpcs.xml.dist
+phpmd.ruleset.xml
+phpstan.neon.dist
+phpunit.xml.dist
+psalm.xml.dist
+rector.php
+/build
+/node_modules
+/tests
+/vendor-bin

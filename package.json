@@ -35,9 +35,11 @@
 	},
 	"homepage": "http://www.wp-pay.org/extensions/easy-digital-downloads/",
 	"devDependencies": {
-		"@wordpress/env": "^11.8.1"
+		"@wordpress/env": "^11.8.1",
+		"@wordpress/scripts": "^31.7"
 	},
 	"scripts": {
+		"lint:pkg-json": "wp-scripts lint-pkg-json",
 		"start": "wp-env start",
 		"login": "wp-env run cli wp user one-time-login admin"
 	}

@@ -26,7 +26,7 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Pronamic\\WordPress\\Pay\\Extensions\\EasyDigitalDownloads\\": "src"
+			"Pronamic\\WordPress\\Pay\\Extensions\\EasyDigitalDownloads\\": "psr-4"
 		}
 	},
 	"config": {
@@ -39,8 +39,9 @@
 			"automattic/jetpack-autoloader": true
 		},
 		"platform": {
-			"php": "8.2"
-		}
+			"php": "8.3"
+		},
+		"platform-check": false
 	},
 	"extra": {
 		"installer-paths": {
@@ -60,7 +61,7 @@
 		}
 	],
 	"require": {
-		"php": ">=8.2",
+		"php": ">=8.3",
 		"automattic/jetpack-autoloader": "^3.0 || ^4.0 || ^5.0",
 		"pronamic/wp-number": "^1.4",
 		"woocommerce/action-scheduler": "^3.9 || ^4.0",
@@ -92,6 +93,7 @@
 		"phpunit": "vendor/bin/phpunit",
 		"post-install-cmd": "echo 'Optionally run: composer bin all install'",
 		"post-update-cmd": "echo 'Optionally run: composer bin all update'",
-		"psalm": "vendor/bin/psalm"
+		"psalm": "vendor/bin/psalm",
+		"rector": "vendor/bin/rector"
 	}
 }

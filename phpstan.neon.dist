@@ -6,7 +6,7 @@ parameters:
 		- EDD_VERSION
 	level: max
 	paths:
-		- src/
+		- psr-4/
 	scanDirectories:
 		- wp-content/plugins/easy-digital-downloads/
 		- wp-content/plugins/wordpress-seo/

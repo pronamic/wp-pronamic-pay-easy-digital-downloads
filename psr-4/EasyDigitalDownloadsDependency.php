@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Easy Digital Downloads Dependency
  *
@@ -18,7 +21,7 @@ use Pronamic\WordPress\Pay\Dependencies\Dependency;
  * @version 2.1.0
  * @since   2.1.0
  */
-class EasyDigitalDownloadsDependency extends Dependency {
+final class EasyDigitalDownloadsDependency extends Dependency {
 	/**
 	 * Is met.
 	 *

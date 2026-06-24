@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Easy Digital Downloads gateway
  *
@@ -28,41 +31,41 @@ use Pronamic\WordPress\Pay\Payments\PaymentLineType;
  * @version 2.1.2
  * @since   1.1.0
  */
-class Gateway {
+final class Gateway {
 	/**
 	 * ID.
 	 *
 	 * @var string
 	 */
-	private $id;
+	private readonly string $id;
 
 	/**
 	 * Admin label.
 	 *
 	 * @var string
 	 */
-	private $admin_label;
+	private readonly string $admin_label;
 
 	/**
 	 * Checkout label.
 	 *
 	 * @var string
 	 */
-	private $checkout_label;
+	private readonly string $checkout_label;
 
 	/**
 	 * Payment method.
 	 *
-	 * @var string
+	 * @var string|null
 	 */
-	private $payment_method;
+	private readonly ?string $payment_method;
 
 	/**
 	 * Supports.
 	 *
 	 * @var string[]
 	 */
-	private $supports;
+	private readonly array $supports;
 
 	/**
 	 * Bootstrap
@@ -92,19 +95,19 @@ class Gateway {
 
 		$this->id             = $args['id'];
 		$this->admin_label    = $args['admin_label'];
-		$this->checkout_label = $args['checkout_label'];
 		$this->supports       = $args['supports'];
 		$this->payment_method = $args['payment_method'];
 
-		// Settings.
-		$checkout_label = \edd_get_option( $this->id . '_checkout_label' );
-
-		if ( ! empty( $checkout_label ) ) {
-			$this->checkout_label = $checkout_label;
+		// Compute final checkout label (may be overridden by saved option).
+		$checkout_label = $args['checkout_label'];
+		$checkout_label_option = \edd_get_option( $args['id'] . '_checkout_label' );
+		if ( ! empty( $checkout_label_option ) ) {
+			$checkout_label = $checkout_label_option;
 		}
+		$this->checkout_label = $checkout_label;
 
 		// Actions.
-		\add_action( 'edd_gateway_' . $this->id, [ $this, 'process_purchase' ] );
+		\add_action( 'edd_gateway_' . $this->id, $this->process_purchase(...) );
 
 		/*
 		 * Remove CC Form
@@ -112,14 +115,14 @@ class Gateway {
 		 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/1.9.4/includes/checkout/template.php#L97
 		 * @link https://github.com/easydigitaldownloads/Easy-Digital-Downloads/blob/1.9.4/includes/gateways/paypal-standard.php#L12
 		 */
-		\add_action( 'edd_' . $this->id . '_cc_form', [ $this, 'payment_fields' ] );
+		\add_action( 'edd_' . $this->id . '_cc_form', $this->payment_fields(...) );
 
 		// Filters.
-		\add_filter( 'edd_settings_sections_gateways', [ $this, 'register_gateway_section' ] );
-		\add_filter( 'edd_settings_gateways', [ $this, 'settings_gateways' ] );
-		\add_filter( 'edd_payment_gateways', [ $this, 'payment_gateways' ] );
+		\add_filter( 'edd_settings_sections_gateways', $this->register_gateway_section(...) );
+		\add_filter( 'edd_settings_gateways', $this->settings_gateways(...) );
+		\add_filter( 'edd_payment_gateways', $this->payment_gateways(...) );
 
-		\add_filter( 'edd_get_payment_transaction_id-' . $this->id, [ $this, 'get_payment_transaction_id' ] );
+		\add_filter( 'edd_get_payment_transaction_id-' . $this->id, $this->get_payment_transaction_id(...) );
 	}
 
 	/**

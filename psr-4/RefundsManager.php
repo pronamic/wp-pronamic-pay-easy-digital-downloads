@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Easy Digital Downloads refunds manager.
  *
@@ -19,16 +22,16 @@ use Pronamic\WordPress\Pay\Refunds\Refund;
 /**
  * Easy Digital Downloads refunds.
  */
-class RefundsManager {
+final class RefundsManager {
 	/**
 	 * Setup refunds manager.
 	 *
 	 * @return void
 	 */
 	public function setup() {
-		\add_action( 'edd_after_submit_refund_table', [ $this, 'display_refund_checkbox' ] );
-		\add_action( 'edd_refund_order', [ $this, 'maybe_refund_order_at_gateway' ], 10, 3 );
-		\add_action( 'pronamic_pay_update_payment', [ $this, 'maybe_sync_gateway_refund' ], 15, 1 );
+		\add_action( 'edd_after_submit_refund_table', $this->display_refund_checkbox(...) );
+		\add_action( 'edd_refund_order', $this->maybe_refund_order_at_gateway(...), 10, 3 );
+		\add_action( 'pronamic_pay_update_payment', $this->maybe_sync_gateway_refund(...), 15, 1 );
 	}
 
 	/**

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Easy Digital Downloads purchase data helper
  *
@@ -16,7 +19,7 @@ namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
  * @version 2.1.2
  * @since   2.1.2
  */
-class PurchaseDataHelper {
+final class PurchaseDataHelper {
 	/**
 	 * Get post data value.
 	 *

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Plugin Name: Pronamic Pay Easy Digital Downloads Add-On
  * Plugin URI: https://www.pronamic.eu/plugins/pronamic-pay-easy-digital-downloads/
@@ -40,7 +43,7 @@ require_once __DIR__ . '/vendor/autoload_packages.php';
  * Bootstrap.
  */
 add_action(
-	'init',
+	'plugins_loaded',
 	function () {
 		load_plugin_textdomain( 'pronamic-pay-easy-digital-downloads', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 	}
