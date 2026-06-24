@@ -78,7 +78,7 @@
 		"vimeo/psalm": "^5.25",
 		"wp-pay-gateways/mollie": "^4.19",
 		"wp-phpunit/wp-phpunit": "^6.4",
-		"wpackagist-plugin/easy-digital-downloads": "^3.2",
+		"wpackagist-plugin/easy-digital-downloads": "^3.6",
 		"wpackagist-plugin/wordpress-seo": "^22.3",
 		"yoast/phpunit-polyfills": "^2.0"
 	},
