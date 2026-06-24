@@ -1,6 +1,6 @@
 <?php
 /**
- * Easy Digital Downloads refunds
+ * Easy Digital Downloads refunds manager.
  *
  * @author    Pronamic <info@pronamic.eu>
  * @copyright 2005-2026 Pronamic
@@ -10,18 +10,14 @@
 
 namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
 
-use EDD_Payment;
-use Exception;
 use Pronamic\WordPress\Money\Money;
+use Pronamic\WordPress\Number\Number;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Plugin;
 use Pronamic\WordPress\Pay\Refunds\Refund;
 
 /**
- * Easy Digital Downloads refunds
- *
- * @version 2.2.0
- * @since   2.2.0
+ * Easy Digital Downloads refunds.
  */
 class RefundsManager {
 	/**
@@ -30,29 +26,23 @@ class RefundsManager {
 	 * @return void
 	 */
 	public function setup() {
-		// Actions.
-		\add_action( 'edd_view_order_details_before', [ $this, 'order_admin_script' ], 100 );
-		\add_action( 'edd_pre_refund_payment', [ $this, 'maybe_refund_payment' ], 999 );
-		\add_action( 'pronamic_pay_update_payment', [ $this, 'maybe_update_refunded_payment' ], 15, 1 );
-		\add_action( 'edd_view_order_details_payment_meta_after', [ $this, 'order_details_payment_refunded_amount' ] );
+		\add_action( 'edd_after_submit_refund_table', [ $this, 'display_refund_checkbox' ] );
+		\add_action( 'edd_refund_order', [ $this, 'maybe_refund_order_at_gateway' ], 10, 3 );
+		\add_action( 'pronamic_pay_update_payment', [ $this, 'maybe_sync_gateway_refund' ], 15, 1 );
 	}
 
 	/**
-	 * Add checkbox to refund payment when viewing order.
+	 * Display gateway refund checkbox in EDD refund form.
 	 *
-	 * @param int $payment_id Easy Digital Downloads payment ID.
+	 * @param \EDD\Orders\Order $edd_order EDD order.
 	 * @return void
 	 */
-	public function order_admin_script( $payment_id = 0 ) {
-		// Check gateway.
-		$payment_gateway = edd_get_payment_gateway( $payment_id );
-
-		if ( 'pronamic_' !== substr( $payment_gateway, 0, 9 ) ) {
+	public function display_refund_checkbox( \EDD\Orders\Order $edd_order ) {
+		if ( ! $this->is_pronamic_gateway( (string) $edd_order->gateway ) ) {
 			return;
 		}
 
-		// Check config.
-		$config_id = EasyDigitalDownloads::get_pronamic_config_id( $payment_gateway );
+		$config_id = EasyDigitalDownloads::get_pronamic_config_id( (string) $edd_order->gateway );
 
 		$gateway = Plugin::get_gateway( (int) $config_id );
 
@@ -61,204 +51,256 @@ class RefundsManager {
 		}
 
 		?>
+		<div class="edd-form-group edd-pronamic-pay-refund-transaction">
+			<div class="edd-form-group__control">
+				<input type="checkbox" id="edd-pronamic-pay-refund" name="edd-pronamic-pay-refund" class="edd-form-group__input" value="1">
+				<label for="edd-pronamic-pay-refund" class="edd-form-group__label">
+					<?php
 
-		<script type="text/javascript">
-			jQuery( document ).ready( function( $ ) {
-				$( 'select[name="edd-payment-status"]' ).change( function() {
-					if ( 'refunded' == $( this ).val() ) {
-						$( this ).parent().parent().append( '<input type="checkbox" id="edd-pronamic-pay-refund" name="edd-pronamic-pay-refund" value="1" style="margin-top:0">' );
-						$( this ).parent().parent().append( '<label for="edd-pronamic-pay-refund"><?php echo \esc_html( __( 'Refund payment at gateway', 'pronamic_ideal' ) ); ?></label>' );
-					} else {
-						$( '#edd-pronamic-pay-refund' ).remove();
-						$( 'label[for="edd-pronamic-pay-refund"]' ).remove();
-					}
-				} );
-			} );
-		</script>
+					echo \esc_html(
+						\sprintf(
+							\__( 'Refund transaction in %s', 'pronamic_ideal' ),
+							\get_the_title( (int) $config_id )
+						)
+					);
 
+					?>
+				</label>
+			</div>
+		</div>
 		<?php
 	}
 
 	/**
-	 * Maybe refund payment.
+	 * Maybe refund at gateway after an EDD refund is created.
 	 *
-	 * @param EDD_Payment $edd_payment Easy Digital Downloads payment.
+	 * @param int  $order_id     EDD order ID.
+	 * @param int  $refund_id    EDD refund order ID.
+	 * @param bool $all_refunded Entire order refunded.
 	 * @return void
 	 */
-	public function maybe_refund_payment( EDD_Payment $edd_payment ) {
-		// Check refund request.
-		if ( ! \filter_has_var( \INPUT_POST, 'edd-pronamic-pay-refund' ) ) {
+	public function maybe_refund_order_at_gateway( $order_id, $refund_id, $all_refunded ) {
+		if ( ! \current_user_can( 'edit_shop_payments', $order_id ) ) {
 			return;
 		}
 
-		// Check payment.
-		$payment = \get_pronamic_payment_by_transaction_id( \edd_get_payment_transaction_id( $edd_payment->ID ) );
-
-		if ( null === $payment ) {
+		if ( empty( $_POST['data'] ) ) {
 			return;
 		}
 
-		// Process refund.
-		try {
-			$this->process_refund( $edd_payment, $payment );
-		} catch ( \Exception $e ) {
-			Plugin::render_exception( $e );
+		$edd_order = \edd_get_order( $order_id );
 
-			exit;
-		}
-	}
-
-	/**
-	 * Process refund.
-	 *
-	 * @param EDD_Payment $edd_payment Easy Digital Downloads payment.
-	 * @param Payment     $payment     Pronamic payment.
-	 * @return void
-	 * @throws \Exception Throws exception if original gateway does not exist anymore.
-	 */
-	private function process_refund( EDD_Payment $edd_payment, Payment $payment ) {
-		// Check gateway.
-		$gateway = $payment->get_gateway();
-
-		if ( null === $gateway ) {
-			throw new \Exception( \esc_html__( 'Unable to process refund because gateway does not exist.', 'pronamic_ideal' ) );
+		if ( false === $edd_order || ! $this->is_pronamic_gateway( (string) $edd_order->gateway ) ) {
+			return;
 		}
 
-		// Transaction ID.
-		$transaction_id = \edd_get_payment_transaction_id( $edd_payment->ID );
+		$form_data_raw = \wp_unslash( $_POST['data'] );
 
-		// Create refund.
+		if ( ! \is_string( $form_data_raw ) ) {
+			return;
+		}
+
+		\parse_str( $form_data_raw, $form_data );
+
+		if ( empty( $form_data['edd-pronamic-pay-refund'] ) ) {
+			return;
+		}
+
+		$transaction_id = $this->get_order_transaction_id( $edd_order );
+
+		if ( null === $transaction_id ) {
+			return;
+		}
+
+		$pronamic_payment = \get_pronamic_payment_by_transaction_id( $transaction_id );
+
+		if ( null === $pronamic_payment ) {
+			return;
+		}
+
+		$edd_refund = \edd_get_order( $refund_id );
+
+		if ( false === $edd_refund ) {
+			return;
+		}
+
 		$amount = new Money(
-			$edd_payment->get_meta( '_edd_payment_total', true ),
-			$payment->get_total_amount()->get_currency()
+			Number::from_mixed( $edd_refund->total )->negative(),
+			$pronamic_payment->get_total_amount()->get_currency()
 		);
 
-		$refund = new Refund( $payment, $amount );
+		$refund = new Refund( $pronamic_payment, $amount );
 
 		Plugin::create_refund( $refund );
 
-		// Update payment amount refunded.
-		$edd_refunded_amount = $edd_payment->get_meta( '_pronamic_pay_amount_refunded', true );
+		$note = \sprintf(
+			/* translators: 1: refunded amount, 2: gateway refund reference */
+			\__( '%1$s refunded. Transaction ID: %2$s.', 'pronamic_ideal' ),
+			$amount->format_i18n(),
+			$refund->psp_id
+		);
 
-		$refunded_amount = $payment->get_refunded_amount()->add( $amount );
+		foreach ( [ $order_id, $refund_id ] as $note_object_id ) {
+			\edd_add_note(
+				[
+					'object_id'   => $note_object_id,
+					'object_type' => 'order',
+					'user_id'     => \is_admin() ? \get_current_user_id() : 0,
+					'content'     => $note,
+				]
+			);
+		}
 
-		$edd_payment->update_meta( '_pronamic_pay_amount_refunded', (string) $refunded_amount->get_value(), $edd_refunded_amount );
-
-		// Add refund payment note.
-		$this->add_refund_payment_note( $edd_payment, $payment->get_id(), $amount, $refund->psp_id );
+		\edd_add_order_transaction(
+			[
+				'object_id'      => $refund_id,
+				'object_type'    => 'order',
+				'transaction_id' => $refund->psp_id,
+				'gateway'        => $edd_order->gateway,
+				'status'         => 'complete',
+				'total'          => \edd_negate_amount( (float) $amount->get_value() ),
+			]
+		);
 	}
 
 	/**
-	 * Maybe update refunded payment.
+	 * Maybe synchronize refunded amount from gateway updates to EDD order.
 	 *
-	 * @param Payment $payment Payment.
+	 * @param Payment $payment Pronamic payment.
 	 * @return void
 	 */
-	public function maybe_update_refunded_payment( Payment $payment ) {
-		// Check refunded amount.
+	public function maybe_sync_gateway_refund( Payment $payment ) {
 		$refunded_amount = $payment->get_refunded_amount();
 
 		if ( $refunded_amount->get_value() <= 0 ) {
 			return;
 		}
 
-		// Check EDD payment.
-		$edd_payment = \edd_get_payment( $payment->get_transaction_id(), true );
+		$transaction_id = $payment->get_transaction_id();
 
-		if ( false === $edd_payment ) {
+		if ( null === $transaction_id ) {
 			return;
 		}
 
-		// Check updated refund amount.
-		$edd_refunded_amount = $edd_payment->get_meta( '_pronamic_pay_amount_refunded', true );
+		$order_id = \edd_get_order_id_from_transaction_id( $transaction_id );
+
+		if ( $order_id <= 0 ) {
+			return;
+		}
+
+		$edd_order = \edd_get_order( $order_id );
+
+		if ( false === $edd_order || ! $this->is_pronamic_gateway( (string) $edd_order->gateway ) ) {
+			return;
+		}
+
+		$edd_refunded_amount = $this->get_edd_refunded_amount( $edd_order, $refunded_amount->get_currency() );
+
+		if ( $edd_refunded_amount->get_value() === $refunded_amount->get_value() ) {
+			return;
+		}
 
 		$refunded_value = $refunded_amount->get_value();
 
-		if ( $edd_refunded_amount === $refunded_value ) {
-			return;
-		}
+		\edd_update_order(
+			$order_id,
+			[
+				'status' => $refunded_value < $payment->get_total_amount()->get_value() ? 'partially_refunded' : 'refunded',
+			]
+		);
 
-		// Update EDD payment.
-		$edd_payment->update_meta( '_pronamic_pay_amount_refunded', (string) $refunded_value, (string) $edd_refunded_amount );
+		$difference = $refunded_amount->subtract( $edd_refunded_amount );
 
-		$edd_payment->update_status( $refunded_value < $payment->get_total_amount()->get_value() ? 'partially_refunded' : 'refunded' );
-
-		// Add refund payment note.
-		$amount_difference = $refunded_amount->subtract( new Money( $edd_refunded_amount, $refunded_amount->get_currency() ) );
-
-		$this->add_refund_payment_note( $edd_payment, $payment->get_id(), $amount_difference );
+		$this->add_order_note(
+			$order_id,
+			\sprintf(
+				/* translators: 1: refunded amount total, 2: amount difference */
+				\__( 'Refund amount synchronized to %1$s (difference %2$s).', 'pronamic_ideal' ),
+				$refunded_amount->format_i18n(),
+				$difference->format_i18n()
+			)
+		);
 	}
 
 	/**
-	 * Add refunded payment note.
+	 * Get refunded amount currently registered in EDD for an order.
 	 *
-	 * @param EDD_Payment $edd_payment Easy Digital Downloads payment.
-	 * @param int|null    $payment_id  Payment ID.
-	 * @param Money       $amount      Refunded amount.
-	 * @param string      $reference   Gateway refund reference.
-	 * @return void
+	 * @param \EDD\Orders\Order                      $edd_order EDD order.
+	 * @param \Pronamic\WordPress\Money\Currency|string $currency  Currency.
+	 * @return Money
 	 */
-	private function add_refund_payment_note( EDD_Payment $edd_payment, $payment_id, Money $amount, $reference = null ) {
-		$payment_link = __( 'payment', 'pronamic_ideal' );
+	private function get_edd_refunded_amount( \EDD\Orders\Order $edd_order, $currency ) {
+		$order_total = (float) $edd_order->total;
+		$current_total = (float) \edd_get_order_total( $edd_order->id );
+		$refunded_value = $order_total - $current_total;
 
-		if ( null !== $payment_id ) {
-			$payment_link = \sprintf(
-				'<a href="%1$s">%2$s</a>',
-				\get_edit_post_link( (int) $payment_id ),
-				\sprintf(
-					/* translators: %s: payment id */
-					\esc_html( __( 'payment #%s', 'pronamic_ideal' ) ),
-					\esc_html( (string) $payment_id )
-				)
-			);
+		if ( $refunded_value < 0 ) {
+			$refunded_value = 0;
 		}
 
-		$note = \sprintf(
-			/* translators: 1: refunded amount, 2: edit payment anchor */
-			__( 'Refunded %1$s for %2$s.', 'pronamic_ideal' ),
-			$amount->format_i18n(),
-			$payment_link
-		);
-
-		if ( null !== $reference ) {
-			$note = \sprintf(
-				/* translators: 1: refunded amount, 2: edit payment anchor, 3: gateway refund reference */
-				__( 'Refunded %1$s for %2$s (gateway reference `%3$s`).', 'pronamic_ideal' ),
-				$amount->format_i18n(),
-				$payment_link,
-				$reference
-			);
-		}
-
-		\edd_insert_payment_note( $edd_payment->ID, $note );
+		return new Money( $refunded_value, $currency );
 	}
 
 	/**
-	 * Show refunded amount in order details payments meta box.
+	 * Resolve transaction ID for an EDD order.
 	 *
-	 * @param int $edd_payment_id EDD payment ID.
+	 * @param \EDD\Orders\Order $edd_order EDD order.
+	 * @return string|null
+	 */
+	private function get_order_transaction_id( \EDD\Orders\Order $edd_order ) {
+		$transaction_id = $edd_order->get_transaction_id();
+
+		if ( \is_scalar( $transaction_id ) && '' !== (string) $transaction_id ) {
+			return (string) $transaction_id;
+		}
+
+		$transactions = \edd_get_order_transactions(
+			[
+				'object_id'   => $edd_order->id,
+				'object_type' => 'order',
+				'number'      => 1,
+				'status'      => 'complete',
+			]
+		);
+
+		if ( ! \is_array( $transactions ) || [] === $transactions ) {
+			return null;
+		}
+
+		$transaction = \reset( $transactions );
+
+		if ( ! isset( $transaction->transaction_id ) || empty( $transaction->transaction_id ) ) {
+			return null;
+		}
+
+		return (string) $transaction->transaction_id;
+	}
+
+	/**
+	 * Add note to EDD order.
+	 *
+	 * @param int    $order_id EDD order ID.
+	 * @param string $note     Note message.
 	 * @return void
 	 */
-	public function order_details_payment_refunded_amount( $edd_payment_id ) {
-		// Check payment.
-		$payment = \get_pronamic_payment_by_transaction_id( \edd_get_payment_transaction_id( $edd_payment_id ) );
-
-		if ( null === $payment ) {
-			return;
-		}
-
-		// Check refunded amount.
-		$refunded_amount = $payment->get_refunded_amount();
-
-		if ( $refunded_amount->get_value() <= 0 ) {
-			return;
-		}
-
-		// Print refunded amount.
-		\printf(
-			'<div class="edd-admin-box-inside"><p><span class="label">%1$s:</span> <span>%2$s</span></p></div>',
-			\esc_html__( 'Refunded Amount', 'pronamic_ideal' ),
-			\esc_html( $refunded_amount->format_i18n() )
+	private function add_order_note( $order_id, $note ) {
+		\edd_add_note(
+			[
+				'object_id'   => $order_id,
+				'object_type' => 'order',
+				'user_id'     => \is_admin() ? \get_current_user_id() : 0,
+				'content'     => $note,
+			]
 		);
+	}
+
+	/**
+	 * Check if this is a Pronamic gateway.
+	 *
+	 * @param string $gateway Gateway.
+	 * @return bool
+	 */
+	private function is_pronamic_gateway( $gateway ) {
+		return \str_starts_with( $gateway, 'pronamic_' );
 	}
 }
