@@ -3,7 +3,7 @@
  * Easy Digital Downloads purchase data helper
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2024 Pronamic
+ * @copyright 2005-2026 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads
  */
@@ -13,7 +13,6 @@ namespace Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads;
 /**
  * Easy Digital Downloads purchase data helper
  *
- * @author  Remco Tolsma
  * @version 2.1.2
  * @since   2.1.2
  */

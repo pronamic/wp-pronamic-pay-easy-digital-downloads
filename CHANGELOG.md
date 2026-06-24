@@ -7,6 +7,35 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.4.0] - 2026-01-05
+
+### Commits
+
+- Requires PHP 8.2. ([ba241b5](https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/commit/ba241b5f43ebb13a0e6a287fc780e4b0e34fe26a))
+- Merge pull request #8 from pronamic/core-230-payment-line-quantity-type ([0cb3169](https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/commit/0cb3169f78b4af8632a3b7d553c4c7612f2e9f31))
+- Updated for quantity `Number` (https://github.com/pronamic/wp-pay-core/issues/230). ([6e2fc8e](https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/commit/6e2fc8e937018ce8d494ebb38dbc915c859fff6b))
+
+### Composer
+
+- Added `pronamic/wp-number` `^1.4`.
+- Changed `php` from `>=8.0` to `>=8.2`.
+- Changed `wp-pay/core` from `^4.16` to `v4.29.0`.
+	Release notes: https://github.com/pronamic/wp-pay-core/releases/tag/v4.29.0
+
+Full set of changes: [`4.3.7...4.4.0`][4.4.0]
+
+[4.4.0]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/v4.3.7...v4.4.0
+
+## [4.3.7] - 2025-11-11
+
+### Commits
+
+- Added this point we shoud not use translation functions. ([5659514](https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/commit/56595147b3df35c67a87064ec0465a535f5eb67e))
+
+Full set of changes: [`4.3.6...4.3.7`][4.3.7]
+
+[4.3.7]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/v4.3.6...v4.3.7
+
 ## [4.3.6] - 2024-12-17
 
 ### Commits

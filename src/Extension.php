@@ -3,7 +3,7 @@
  * Easy Digital Downloads extension
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2024 Pronamic
+ * @copyright 2005-2026 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads
  */
@@ -17,12 +17,8 @@ use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Plugin;
 
 /**
- * Title: Easy Digital Downloads extension
- * Description:
- * Copyright: 2005-2024 Pronamic
- * Company: Pronamic
+ * Easy Digital Downloads extension class
  *
- * @author  Remco Tolsma
  * @version 2.1.2
  * @since   1.0.0
  */
@@ -40,7 +36,7 @@ class Extension extends AbstractPluginIntegration {
 	public function __construct() {
 		parent::__construct(
 			[
-				'name' => __( 'Easy Digital Downloads', 'pronamic_ideal' ),
+				'name' => 'Easy Digital Downloads',
 			]
 		);
 
@@ -84,7 +80,7 @@ class Extension extends AbstractPluginIntegration {
 			]
 		);
 
-		foreach ( self::get_payment_methods() as $id => $payment_method ) {
+		foreach ( static::get_payment_methods() as $id => $payment_method ) {
 			new Gateway(
 				[
 					'id'             => $id,
@@ -102,7 +98,7 @@ class Extension extends AbstractPluginIntegration {
 		add_action( 'save_post_pronamic_payment', [ __CLASS__, 'maybe_empty_cart' ], 10, 1 );
 
 		// Icons.
-		add_filter( 'edd_accepted_payment_icons', [ __CLASS__, 'accepted_payment_icons' ] );
+		add_filter( 'edd_accepted_payment_icons', static::accepted_payment_icons( ... ) );
 
 		// Statuses.
 		add_filter( 'edd_payment_statuses', [ __CLASS__, 'edd_payment_statuses' ] );
@@ -126,7 +122,7 @@ class Extension extends AbstractPluginIntegration {
 	 *
 	 * @return array<string, string>
 	 */
-	private static function get_payment_methods() {
+	protected static function get_payment_methods() {
 		$default = [
 			'pronamic_pay_mister_cash'        => PaymentMethods::BANCONTACT,
 			'pronamic_pay_bank_transfer'      => PaymentMethods::BANK_TRANSFER,
@@ -366,7 +362,7 @@ class Extension extends AbstractPluginIntegration {
 	 * @return array<string, string>
 	 */
 	public static function accepted_payment_icons( $icons ) {
-		$payment_methods = self::get_payment_methods();
+		$payment_methods = static::get_payment_methods();
 
 		foreach ( $payment_methods as $id => $payment_method ) {
 			$icon = sprintf(

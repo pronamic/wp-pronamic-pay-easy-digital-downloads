@@ -3,7 +3,7 @@
  * Easy Digital Downloads refunds manager
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2025 Pronamic
+ * @copyright 2005-2026 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Extensions\EasyDigitalDownloads
  */
@@ -16,7 +16,7 @@ use Pronamic\WordPress\Pay\Plugin;
 use Pronamic\WordPress\Pay\Refunds\Refund;
 
 /**
- * Easy Digital Downloads refunds manager class
+ * Easy Digital Downloads refunds.
  */
 class RefundsManager {
 	/**
