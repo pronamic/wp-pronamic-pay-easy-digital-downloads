@@ -35,7 +35,7 @@
   },
   "homepage": "http://www.wp-pay.org/extensions/easy-digital-downloads/",
   "devDependencies": {
-    "@wordpress/env": "^10.37.0"
+    "@wordpress/env": "^11.8.1"
   },
   "scripts": {
     "start": "wp-env start",
