@@ -7,6 +7,41 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.5.0] - 2026-07-31
+
+### Commits
+
+- Added plugin bootstrap integration for the Mollie gateway when the Mollie gateway package is available.
+- Updated the refunds flow for Easy Digital Downloads 3.x and added a dedicated refunds manager.
+- Modernized the extension codebase with PSR-4 autoloading, updated coding standards, and refreshed local development tooling.
+- Replaced the Grunt-based JavaScript tooling with `@wordpress/scripts` and refreshed the local `wp-env` setup.
+
+### Composer
+
+- Changed `php` from `>=8.2` to `>=8.3`.
+- Added `automattic/jetpack-autoloader` `^3.0 || ^4.0 || ^5.0`, locked to `v5.0.20`.
+	Summary: maintenance release with changelog and `readme.txt` updates.
+	Release notes: https://github.com/Automattic/jetpack-autoloader/releases/tag/v5.0.20
+- Added `woocommerce/action-scheduler` `^3.9 || ^4.0`, locked to `3.9.3`.
+	Summary: adds recurring action scheduling hooks, improves action claiming with `SKIP LOCKED`, and includes WordPress 6.8 compatibility updates.
+	Release notes: https://github.com/woocommerce/action-scheduler/releases/tag/3.9.3
+- Changed `wp-pay/core` from `^4.28` to `^4.33`, locked to `v4.33.0`.
+	Summary: moves payment method registration to a dedicated action hook and shifts default payment methods out of core.
+	Release notes: https://github.com/pronamic/wp-pay-core/releases/tag/v4.33.0
+- Added `rector/rector` `^1.2`, locked to `1.2.10`.
+	Summary: adds PHP 8.3 rectors and includes fixes for dependency insertion and PHPUnit code quality rules.
+	Release notes: https://github.com/rectorphp/rector/releases/tag/1.2.10
+- Added `wp-pay-gateways/mollie` `^4.19`, locked to `v4.19.0`.
+	Summary: removes recurring payment lines that do not match the recurring payment amount.
+	Release notes: https://github.com/pronamic/wp-pronamic-pay-mollie/releases/tag/v4.19.0
+- Changed `wpackagist-plugin/easy-digital-downloads` from `^3.2` to `^3.6`, locked to `3.6.9`.
+	Summary: adds PayPal Fastlane support and ships admin, cart preview, email, import, and compatibility fixes.
+	Release notes: https://github.com/awesomemotive/easy-digital-downloads/releases/tag/3.6.9
+
+Full set of changes: [`4.4.0...4.5.0`][4.5.0]
+
+[4.5.0]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/v4.4.0...v4.5.0
+
 ## [4.4.0] - 2026-01-05
 
 ### Commits
@@ -253,7 +288,7 @@ Full set of changes: [`4.2.2...4.3.0`][4.3.0]
 ## 1.0.0 - 2015-01-20
 - First release.
 
-[unreleased]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/4.2.2...HEAD
+[unreleased]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/v4.5.0...HEAD
 [4.2.2]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/4.2.1...4.2.2
 [4.2.1]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/4.2.0...4.2.1
 [4.2.0]: https://github.com/pronamic/wp-pronamic-pay-easy-digital-downloads/compare/4.1.0...4.2.0
